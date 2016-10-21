@@ -1,0 +1,30 @@
+#main {
+
+	div.bottom {
+
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+
+		p {
+			margin: 0;
+			padding: 0;
+			text-align: center;			
+
+			button {
+				width: 100%;
+				margin: 0;
+				height: 40px;
+				line-height: 40px;
+			}
+
+			a {
+				margin: 0;
+				width: 80%;
+			}
+
+		}
+
+	}
+
+}

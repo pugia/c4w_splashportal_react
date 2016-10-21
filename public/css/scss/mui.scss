@@ -1,0 +1,16 @@
+// import MUI colors
+@import "../../bower_components/mui/src/sass/mui/colors";
+
+// customize MUI variables
+$mui-primary-color:       #0075aa;
+$mui-success-color:       #729C45;
+$mui-btn-height:					42px;
+/*$mui-primary-color-dark:  mui-color('purple', '700');
+$mui-primary-color-light: mui-color('purple', '100');
+
+$mui-accent-color:        mui-color('green', 'A200');
+$mui-accent-color-dark:   mui-color('green', 'A100');
+$mui-accent-color-light:  mui-color('green', 'A400');
+*/
+// import MUI SASS
+@import "../../bower_components/mui/src/sass/mui";

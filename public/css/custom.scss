@@ -1,0 +1,708 @@
+@import "scss/mui";
+@import "scss/mixins";
+ 
+/* VARIABLES */
+$appbar-height: 64px;
+$loading-bar-height: 3px;
+$loading-bar-color: #9bbe6c;
+$divider-color: rgba(0,0,0,0.24);
+$menu-element-height: 60px;
+
+$social-login-button-size: 55px;
+$social-login-icon-size: 30px;
+
+#main {
+	
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	font-family: 'Roboto', sans-serif;
+
+	.main-content {
+		overflow: scroll;
+		position: relative;
+
+		&.overlay {
+			.main-menu .overlay {
+				display: block;
+			}
+		}
+
+	}
+
+	nav {
+
+		div.topbar {
+
+			background: #4d8185;
+			position: relative;
+
+			.appbar-action {
+				background: none;
+				position: absolute;
+				color: #fff;
+				border: none;
+				left: 0;
+				top: 0;
+				width: $appbar-height;
+				height: 100%;
+				margin: 0;
+				padding: 0;
+				text-align: center;
+				cursor: pointer;
+			}
+
+			h2 {
+				margin: 0;
+				padding: 0 $appbar-height;
+				color: #fff;
+				font-family: Roboto;
+				font-size: 14px;
+				text-transform: uppercase;
+			}
+
+		}
+
+	}
+
+
+	.main-menu {
+
+		& > #main-menu-check {
+			display: none;
+		}
+
+		& > #main-menu-check:checked + .menu {
+			top: 0;
+			@include transition(top .3s ease);
+		}
+
+		& > .menu {
+			position: absolute;
+			z-index: 2000;
+			@include transition(top .6s ease);
+			background-image: linear-gradient(0deg, #84B7BB 0%, #4D8185 100%);
+			box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.50), inset 0px 2px 3px 0px rgba(255,255,255,0.50);
+			width: 100%;
+			top: -100%;
+
+			& > ul {
+				max-height: 80%;
+				overflow: scroll;
+			}
+
+			ul {
+
+				list-style: none;
+				margin: 0;
+				padding: 0;
+				border-bottom: 1px solid #fff;
+
+				li {
+					min-height: $menu-element-height;
+					padding: 0;
+					&:last-child {
+						& > div label {
+							border-bottom: none;
+						}
+					}
+
+					& > div {
+
+						position: relative;
+
+						label {
+							display: block;
+							padding-left: 36px;
+							padding-right: 12px;
+							line-height: $menu-element-height;
+							height: $menu-element-height;
+							color: #fff;
+							text-transform: uppercase;
+							border-bottom: 1px solid #fff;
+							cursor: pointer;
+
+						  -webkit-touch-callout: none; 
+						  -webkit-user-select: none;   
+						  -khtml-user-select: none;    
+						  -moz-user-select: none;      
+						  -ms-user-select: none;       
+						  user-select: none;           
+
+						}
+
+						input {
+							display: none;
+						}
+
+						input:checked ~ ul {
+							display: block;
+						}
+
+						ul {
+							display: none;
+						}
+
+						label > span.icon-open-close {
+							position: absolute;
+							height: 34px;
+							line-height: 34px;
+							right: calc(5% + 15px);
+							color: #fff;
+							top: calc(#{$menu-element-height} / 2 - 17px);
+							@include transition(all .2s);
+						}
+
+						input:checked ~ label > span.icon-open-close {
+							@include rotate(180deg);
+						}
+
+						& > ul {
+							list-style: none;
+							padding: 0;
+							margin: 0;
+							background: #D0DBDC;
+							border-bottom: none;
+
+
+							li {
+								&.selected {
+									font-weight: bold;
+								}
+								label {
+									color: #000;
+								}
+							}
+
+						}
+
+					}
+
+				}
+			}
+
+			& > label.close {
+				color: #fff;
+				line-height: 24px;
+				height: 24px;
+				text-align: center;
+				cursor: pointer;
+				display: none;
+			}
+
+			&[min-height~="300px"] > label.close {
+				display: block;
+			}
+
+		}
+
+		& > .overlay {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			left: 0;
+			top: 0;
+			background: rgba(0,0,0,0.70);
+			z-index: 1000;
+			display: none;
+		}
+
+	}
+
+
+
+
+	.loading-bar {
+		height: $loading-bar-height;
+		background: #fff;
+		position: relative;;
+
+		& > .bar {
+			width: 0%;
+			min-width: 0%;
+			max-width: 100%;
+			height: $loading-bar-height;
+			display: block;
+			position: relative;
+			background: $loading-bar-color;
+			left: 0;
+			@include transition(width .3s ease);
+		}
+
+	}
+	
+	.bottombar {
+
+		position: fixed;
+		width: 100%;
+		bottom: 0;
+		background: none;
+
+		button {
+			width: 100%;
+			position: relative;
+			margin: 0;
+			border-radius: 0;
+
+			span {
+				position: absolute;
+				height: 100%;
+				width: 100%;
+				left: 0;
+				top: 0;
+			}
+
+			&.mui-btn--double {
+				span {
+					padding: 16px 26px;
+				}
+			}
+
+			i {
+				line-height: inherit !important;
+			}
+		}
+		
+	}
+
+	.divider {
+
+		display: block;
+		overflow: hidden;
+		position: relative;
+		color: $divider-color;
+		text-align: center;
+		margin: 25px 0;
+		min-height: 3px;
+
+		&:before, &:after {
+			content: "";
+			display: block;
+			border-bottom: 1px solid $divider-color;
+			height: 1px;
+			width: 50%;
+			position: absolute;
+			top: 50%;
+		}
+
+		&:before {
+			right: 50%;
+		}
+
+		&:after {
+			left: 50%;
+		}
+
+		&.with-text {
+			&:before {
+				right: 60%;
+			}
+			&:after {
+				left: 60%;
+			}
+		}
+
+	}
+
+	.social-login {
+
+		text-align: center;
+		background: #C5DEE9;
+		position: relative;
+		padding: 13px;
+
+		&:before, &:after {
+			content: "";
+			width: 100%;
+			position: absolute;
+			height: 1px;
+			border-top: 1px dashed #0075AA;
+			left: 0;
+			top: -2px;
+		}
+
+		&:after {
+			top: auto;
+			bottom: -2px;
+		}
+
+		.mui-btn {
+			width: $social-login-button-size;
+			height: $social-login-button-size;
+			padding: 0;
+			margin: 0 3px;
+			border-radius: 0;
+
+			& i {
+				font-size: $social-login-icon-size;
+				line-height: $social-login-button-size;
+			}
+
+		}
+
+		.social-facebook {
+			color: #fff;
+			background: #4a90e2;
+		}
+		.social-twitter {
+			color: #fff;
+			background: #3db4f2;
+		}
+		.social-linkedin {
+			color: #fff;
+			background: #328eea;
+		}
+
+	}
+
+	.mui-textfield {
+
+		position: relative;
+
+		&.mui--is-not-empty > label {
+
+			font-size: 12px;
+			line-height: 15px;
+			text-overflow: ellipsis;
+			transform: translate(0px, 0px);
+
+			& ~ span {
+				opacity: 0;
+			}
+		}
+
+		&.mui--is-empty > label ~ span.error {
+			opacity: 0 !important;
+		}
+
+		&.mui--is-empty > label ~ span.success {
+			opacity: 0 !important;
+		}
+
+
+		input {
+			border-bottom-style: dotted;
+			/*border-width: 1px;*/
+		}
+
+		span {
+			font-size: 12px;
+			line-height: 15px;
+			color: rgba(0, 0, 0, 0.26);
+			position: absolute;
+			opacity: 0;
+
+			&.info {
+				opacity: 1;
+			}
+
+		}
+
+		&.error {
+
+			input {
+				border-color: $mui-danger-color;
+			}
+
+			label {
+				color: $mui-danger-color;
+			}
+
+			span.error {
+				opacity: 1;
+				color: $mui-danger-color;
+			}
+
+		}
+
+		&.success {
+
+			input {
+				border-color: $mui-success-color;
+			}
+
+			label {
+				color: $mui-success-color;
+			}
+
+			span.success {
+				opacity: 1;
+				color: $mui-success-color;
+			}
+
+		}
+
+	}
+
+	.mui-checkbox {
+
+		& > label {
+			display: block;
+			padding-left: 30px;
+			position: relative;
+
+			& > svg {
+
+				position: absolute;
+				left: 0;
+
+				path.check {
+					opacity: 0;
+				}
+			}
+
+		}
+
+		& > input {
+			display: none;
+		}
+
+		& > input:checked + label {
+			& > svg {
+				path.check {
+					opacity: 1;
+				}
+			}
+		}
+
+		& > span {
+			display: none;
+			font-size: 12px;
+			line-height: 15px;
+			color: rgba(0, 0, 0, 0.26);			
+			padding-left: 30px;	
+		}
+
+		&.error {
+
+			& > label {
+				& > svg {
+					rect {
+						stroke: $mui-danger-color;
+					}
+					path.check {
+						fill: $mui-danger-color;
+					}
+				}
+			}
+
+			& > span {
+				display: block;
+				color: $mui-danger-color;
+			}
+		}
+
+	}
+
+	.accordion {
+
+		& > .section {
+			border-top: 1px solid #CFE4ED;
+			border-bottom: 1px solid #CFE4ED;
+
+			& > label.accordion-title {
+
+				padding: 0 15px;
+				display: block;
+				height: 34px;
+				line-height: 34px;
+				position: relative;
+				background: #EEF0F0;
+				cursor: pointer;
+
+				&.success {
+					background-image: linear-gradient(-90deg, #E7F9CE 16%, #CAF0A0 50%);					
+				}
+
+				&.error {
+					background-image: linear-gradient(-90deg, #FFD5DB 16%, #FFAAB5 50%);
+				}
+
+				& > span {
+
+					position: absolute;
+					height: 34px;
+					line-height: 34px;
+
+					&.icon-open-close {
+						right: 15px;
+						color: $mui-primary-color;
+					}
+
+					&.icon-left {
+						left: 15px;
+						color: #4D8185;
+					}
+
+					&.title {
+						left: 45px;
+					}
+
+				}
+
+
+
+				& + input {
+					display: none;
+
+					& + 
+
+					&:checked + .accordion-content {
+						height: auto;
+					}
+
+				}
+
+			}
+
+			& > .accordion-content {
+				display: block;
+				overflow: hidden;
+				height: 0;
+				padding: 0 15px 0 45px;
+			}
+
+			& > input {
+				display: none;
+
+				&:checked {
+					& + label.accordion-title {
+
+						& > span.icon-open-close {
+					    -webkit-transform: rotate(180deg);
+					    -moz-transform: rotate(180deg);
+					    -ms-transform: rotate(180deg);
+					    -o-transform: rotate(180deg);
+							transform: rotate(180deg);
+						}
+
+						& + .accordion-content {
+							height: auto;
+						}
+
+					}
+				}
+
+			}
+
+		}
+
+	}
+
+	.label {
+		font-size: 8px;
+		padding: 2px;
+
+		&.label-black {
+			background: #000;
+			color: #fff;
+		}
+
+	}
+
+	.action-component {
+
+		text-align: center;
+		padding: 20px 0;
+
+		& > .validation-icon {
+			width: 130px;
+			height: 130px;
+			background: $mui-primary-color;
+			color: #fff;
+			line-height: 130px;
+			text-align: center;
+			margin: 0 auto 10px;
+			border-radius: 100%;
+
+			.fa {
+				font-size: 70px;
+				line-height: 130px;
+			}
+
+		}
+
+	}
+
+	.suggestion {
+		text-align: center;
+		padding: 7px 15px;
+		background: #D9EBF3;
+		margin: 0;
+
+		p {
+			font-size: 10px;
+			line-height: 16px;
+			font-weight: bold;
+			margin: 0;
+			padding: 0;
+		}
+	}
+
+	.mui-btn--0075aa {
+	  @include button-variant(
+	    #fff,
+	    #0075aa);
+	  @include button-flat-variant(
+	    #0075aa,
+	    $mui-btn-flat-bg-color-hover);
+	}
+	
+	.mui-btn--50a1c6 {
+	  @include button-variant(
+	    #fff,
+	    #50a1c6);
+	  @include button-flat-variant(
+	    #50a1c6,
+	    $mui-btn-flat-bg-color-hover);
+	}
+	
+	.mui-btn--68c6f0 {
+	  @include button-variant(
+	    #fff,
+	    #68c6f0);
+	  @include button-flat-variant(
+	    #68c6f0,
+	    $mui-btn-flat-bg-color-hover);
+	}
+
+	.mui-btn.mui-btn--double {
+
+		line-height: 16px;
+		padding-height: 16px;
+		text-align: left;
+
+	}
+
+	.mui-btn--more {
+	  @include button-variant(
+	    rgba(255,255,255,.7),
+	    rgba(255,255,255,.1));
+	  @include button-flat-variant(
+	    rgba(255,255,255,.7),
+	    rgba(255,255,255,.1));
+	}
+
+	.mui-btn--black {
+	  @include button-variant(
+	    #fff,
+	    #000);
+	  @include button-flat-variant(
+	    #fff,
+	    #000);
+	}
+
+	.mui-panel {
+		/* card: */
+		background: #FFFFFF;
+		box-shadow: 0px 13px 21px 0px #1F6D8A;
+		border-radius: 4px 5px 5px 5px;
+		overflow: hidden;
+	}
+
+}
+
+@import "scss/showcase";

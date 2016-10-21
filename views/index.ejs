@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Splashportal</title>
+    <!-- <link href="/css/mui.css" rel="stylesheet" type="text/css" /> -->
+    <script src="//cdn.muicss.com/mui-0.9.0/js/mui.min.js"></script>
+  </head>
+  <body>
+    
+    <div id="main">
+
+      <nav class="main-nav">
+        <div class="topbar mui--appbar-height">
+          <label class="appbar-action mui--appbar-height mui--appbar-line-height mui--pull-left" for="main-menu-check" onClick="resetMenu()">
+            <i class="fa fa-bars"></i>
+          </label>
+          <h2 class="mui--appbar-height mui--appbar-line-height mui--text-left">Logo</h2>
+        </div>
+
+      </nav>
+      
+      <div class="main-content with-appbar-top with-appbar-bottom with-loading-bar" id="main-content" style="background: url('/img/Showcase@2x.png') no-repeat center center / cover">
+
+        <div class="main-menu">
+          <input type="checkbox" id="main-menu-check" />
+          <div class="menu">
+
+            <ul>
+              <li>
+                <div>
+                  <label>About</label>
+                </div>
+              </li>
+              <li>
+                <div>
+                  <input class="menu" type="checkbox" id="i_lang" />
+                  <label for="i_lang">Languages<span class="icon-open-close"><i class="fa fa-chevron-down" aria-hidden="true"></i></span></label>
+                  <ul>
+                    <li class="selected"><label>English</label></li>
+                    <li><label>Italiano</label></li>
+                  </ul>
+                </div>
+              </li>
+              <li>
+                <div>
+                  <input class="menu" type="checkbox" id="i_app" />
+                  <label for="i_app">Apps<span class="icon-open-close"><i class="fa fa-chevron-down" aria-hidden="true"></i></span></label>
+                  <ul>
+                    <li><label>Prima</label></li>
+                    <li><label>Seconda</label></li>
+                    <li><label>Terza</label></li>
+                    <li><label>Quarta</label></li>
+                    <li><label>Quinta</label></li>
+                    <li><label>Sesta</label></li>
+                  </ul>
+                </div>
+              </li>
+            </ul>
+
+            <label for="main-menu-check" class="close" onClick="resetMenu()">
+             <i class="fa fa-chevron-up" aria-hidden="true"></i>
+            </label>
+
+          </div>
+          <div class="overlay" onClick="closeMenu()"></div>
+        </div>
+
+        <div class="content-background">
+
+          <div class="bottom">
+
+            <p style="margin-bottom: 34px"><a class="mui-btn mui-btn--black" href="#/stage01">GO ONLINE</a></p>
+            <p style="color: #fff; font-size: 11px; margin-bottom: 12px;">EXPLORE MORE</p>
+
+            <p><button class="mui-btn mui-btn--more"><i class="fa fa-chevron-down" aria-hidden="true"></i></button></p>
+
+          </div>
+        
+        </div>
+      </div>
+            
+    </div>
+
+    <link href="/css/custom.css" rel="stylesheet">
+    <link href="/css/showcase.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css" />  
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
+
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/node/css-element-queries/src/ResizeSensor.js"></script>
+    <script src="/node/css-element-queries/src/ElementQueries.js"></script>
+
+
+    <script>
+    (function() {
+
+      let m = document.getElementById("main");
+      let c = m.childNodes;
+      var h = m.offsetHeight;
+      for (var x in c) { h -= (c[x].nodeType == '1' && c[x].id != 'main-content') ? c[x].offsetHeight : 0; }
+      document.getElementById("main-content").style.height = h+'px';
+
+      $('#main').on('change', '#main-menu-check', function() {
+        $('#main-content').toggleClass('overlay', ($(this).prop('checked')));
+      })
+
+    })();
+
+    function closeMenu() {
+      $('#main-menu-check').prop('checked', false);
+      $('#main-content').toggleClass('overlay', false);
+    }
+    function resetMenu() {
+      $('.main-menu input.menu').prop('checked', false);
+    }
+    </script>
+
+  </body>
+</html>
