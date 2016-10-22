@@ -586,6 +586,15 @@ var socialClick = function socialClick(social) {
 
 var Stage01 = React.createClass({
 	displayName: 'Stage01',
+	componentDidMount: function componentDidMount() {
+		var m = document.getElementById("main");
+		var c = document.getElementById("real-container").childNodes;
+		var h = m.offsetHeight;
+		for (var x in c) {
+			h -= c[x].nodeType == '1' && c[x].id != 'main-content' ? c[x].offsetHeight : 0;
+		}
+		document.getElementById("main-content").style.height = h + 'px';
+	},
 
 
 	render: function render() {
@@ -614,6 +623,9 @@ var Stage01 = React.createClass({
 				color: 'rgba(0,0,0,0.87)',
 				textTransform: 'uppercase',
 				fontWeight: '500'
+			},
+			form: {
+				paddingBottom: '60px'
 			}
 		};
 
@@ -689,7 +701,7 @@ var Stage01 = React.createClass({
 					React.createElement(Divider, { text: 'or' }),
 					React.createElement(
 						'form',
-						{ className: 'mui-container' },
+						{ className: 'mui-container', style: style.form },
 						React.createElement(
 							'p',
 							{ className: 'mui--text-center', style: style.socialTitle },
@@ -836,6 +848,14 @@ var Stage02 = React.createClass({
 
 
 	componentDidMount: function componentDidMount() {
+
+		var m = document.getElementById("main");
+		var c = document.getElementById("real-container").childNodes;
+		var h = m.offsetHeight;
+		for (var x in c) {
+			h -= c[x].nodeType == '1' && c[x].id != 'main-content' ? c[x].offsetHeight : 0;
+		}
+		document.getElementById("main-content").style.height = h + 'px';
 
 		this.state = $('#main').data('stored_data') ? $.extend(true, this.state, JSON.parse($('#main').data('stored_data'))) : this.state;
 
@@ -1137,6 +1157,14 @@ var Stage03 = React.createClass({
 
 	componentDidMount: function componentDidMount() {
 
+		var m = document.getElementById("main");
+		var c = document.getElementById("real-container").childNodes;
+		var h = m.offsetHeight;
+		for (var x in c) {
+			h -= c[x].nodeType == '1' && c[x].id != 'main-content' ? c[x].offsetHeight : 0;
+		}
+		document.getElementById("main-content").style.height = h + 'px';
+
 		if (this.state.email == null) {
 			clearInterval(timer);window.location.href = '/#/stage02';
 		}
@@ -1316,6 +1344,14 @@ var Stage04 = React.createClass({
 
 	componentDidMount: function componentDidMount() {
 
+		var m = document.getElementById("main");
+		var c = document.getElementById("real-container").childNodes;
+		var h = m.offsetHeight;
+		for (var x in c) {
+			h -= c[x].nodeType == '1' && c[x].id != 'main-content' ? c[x].offsetHeight : 0;
+		}
+		document.getElementById("main-content").style.height = h + 'px';
+
 		timer = setTimeout(function () {
 			window.location.href = '/#/stage06';
 		}, 3000);
@@ -1442,14 +1478,11 @@ var Stage06 = React.createClass({
 	componentDidMount: function componentDidMount() {
 
 		var m = document.getElementById("main");
-		var r = document.getElementById("real-container");
-		var c = r.childNodes;
+		var c = document.getElementById("real-container").childNodes;
 		var h = m.offsetHeight;
-
 		for (var x in c) {
 			h -= c[x].nodeType == '1' && c[x].id != 'main-content' ? c[x].offsetHeight : 0;
 		}
-
 		document.getElementById("main-content").style.height = h + 'px';
 	},
 

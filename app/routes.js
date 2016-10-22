@@ -6,7 +6,7 @@ module.exports = function(app) {
 	app.get('/', function(req, res){
 		// var Child = React.createFactory(require('./components/Showcase'));
 	  var mainHtml = ''; //ReactDOMServer.renderToString(Child({}));
-	  res.render('stages.ejs', { main: mainHtml, rand: '1.0.0' });
+	  res.render('stages.ejs', { main: mainHtml, rand: Math.random().toString(36).substring(7) });
 	});
 
 	// app.get('/stage01', function(req, res){
