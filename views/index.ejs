@@ -21,61 +21,94 @@
       
       <div class="main-content with-appbar-top with-appbar-bottom with-loading-bar" id="main-content" style="background: url('/img/Showcase@2x.png') no-repeat center center / cover">
 
-        <div class="main-menu">
-          <input type="checkbox" id="main-menu-check" />
-          <div class="menu">
-
-            <ul>
-              <li>
-                <div>
-                  <label>About</label>
-                </div>
-              </li>
-              <li>
-                <div>
-                  <input class="menu" type="checkbox" id="i_lang" />
-                  <label for="i_lang">Languages<span class="icon-open-close"><i class="fa fa-chevron-down" aria-hidden="true"></i></span></label>
-                  <ul>
-                    <li class="selected"><label>English</label></li>
-                    <li><label>Italiano</label></li>
-                  </ul>
-                </div>
-              </li>
-              <li>
-                <div>
-                  <input class="menu" type="checkbox" id="i_app" />
-                  <label for="i_app">Apps<span class="icon-open-close"><i class="fa fa-chevron-down" aria-hidden="true"></i></span></label>
-                  <ul>
-                    <li><label>Prima</label></li>
-                    <li><label>Seconda</label></li>
-                    <li><label>Terza</label></li>
-                    <li><label>Quarta</label></li>
-                    <li><label>Quinta</label></li>
-                    <li><label>Sesta</label></li>
-                  </ul>
-                </div>
-              </li>
-            </ul>
-
-            <label for="main-menu-check" class="close" onClick="resetMenu()">
-             <i class="fa fa-chevron-up" aria-hidden="true"></i>
-            </label>
-
-          </div>
-          <div class="overlay" onClick="closeMenu()"></div>
-        </div>
 
         <div class="content-background">
 
-          <div class="bottom">
+          <div class="main-menu">
+            <input type="checkbox" id="main-menu-check" />
+            <div class="menu">
 
-            <p style="margin-bottom: 34px"><a class="mui-btn mui-btn--black" href="#/stage01">GO ONLINE</a></p>
-            <p style="color: #fff; font-size: 11px; margin-bottom: 12px;">EXPLORE MORE</p>
+              <ul>
+                <li>
+                  <div>
+                    <label>About</label>
+                  </div>
+                </li>
+                <li>
+                  <div>
+                    <input class="menu" type="checkbox" id="i_lang" />
+                    <label for="i_lang">Languages<span class="icon-open-close"><i class="fa fa-chevron-down" aria-hidden="true"></i></span></label>
+                    <ul>
+                      <li class="selected"><label>English</label></li>
+                      <li><label>Italiano</label></li>
+                    </ul>
+                  </div>
+                </li>
+                <li>
+                  <div>
+                    <input class="menu" type="checkbox" id="i_app" />
+                    <label for="i_app">Apps<span class="icon-open-close"><i class="fa fa-chevron-down" aria-hidden="true"></i></span></label>
+                    <ul>
+                      <li><label>Prima</label></li>
+                      <li><label>Seconda</label></li>
+                      <li><label>Terza</label></li>
+                      <li><label>Quarta</label></li>
+                      <li><label>Quinta</label></li>
+                      <li><label>Sesta</label></li>
+                    </ul>
+                  </div>
+                </li>
+              </ul>
 
-            <p><button class="mui-btn mui-btn--more"><i class="fa fa-chevron-down" aria-hidden="true"></i></button></p>
+              <label for="main-menu-check" class="close" onClick="resetMenu()">
+               <i class="fa fa-chevron-up" aria-hidden="true"></i>
+              </label>
+
+            </div>
+            <div class="overlay" onClick="closeMenu()"></div>
+          </div>
+
+          <div class="app-menu close">
+
+            <span class="icon-open-close">
+              <i class="fa fa-chevron-up" aria-hidden="true"></i>
+            </span>
+
+            <div class="list">
+  
+              <h3>APPS</h3>
+  
+              <ul>
+
+                <li>
+                  <span class="icon" style="background-image: url(/img/apps/wifi@2x.png)"></span>
+                  <h4>Wifi plans</h4>
+                  <p>Choose your favourite Wi-Fi plan</p>
+                </li>
+
+                <li>
+                  <span class="icon" style="background-image: url(/img/apps/info@2x.png)"></span>
+                  <h4>Info</h4>
+                  <p>More info about us</p>
+                </li>
+
+                <li>
+                  <span class="icon" style="background-image: url(/img/apps/nearby@2x.png)"></span>
+                  <h4>Nearby</h4>
+                  <p>Find the store around you</p>
+                </li>
+
+                <li>
+                  <span class="icon" style="background-image: url(/img/apps/weather@2x.png)"></span>
+                  <h4>The Weather</h4>
+                  <p>Let’s check the weather in all the world</p>
+                </li>
+
+              </ul>
+            </div>
 
           </div>
-        
+
         </div>
       </div>
             
@@ -102,6 +135,8 @@
 
       $('#main').on('change', '#main-menu-check', function() {
         $('#main-content').toggleClass('overlay', ($(this).prop('checked')));
+      }).on('click', 'h2', function() {
+        $('.app-menu').toggleClass('close');
       })
 
     })();

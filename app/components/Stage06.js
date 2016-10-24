@@ -2,6 +2,7 @@ var React = global.React;
 var MainNav = React.createFactory(require('./MainNav'));
 var Divider = React.createFactory(require('./Divider'));
 var MainMenu = React.createFactory(require('./MainMenu'));
+var AppMenu = React.createFactory(require('./AppMenu'));
 
 var resetMenu = function() {
 	var im = Array.prototype.slice.call(document.querySelectorAll('.main-menu input.menu'));
@@ -29,8 +30,9 @@ var Stage06 = React.createClass({
 			panel: {
 				position: 'absolute',
 				width: '90%',
-				height: '90%',
-				margin: '5%'
+				height: 'calc(90% - 40px)',
+				margin: '5%',
+				top: '40px'
 			}
 		}
 
@@ -51,6 +53,8 @@ var Stage06 = React.createClass({
 	        <div className="content-background">
 
 	        	<MainMenu resetMenu={resetMenu.bind(this)} />
+
+	        	<AppMenu />
 
 	        	<div className="mui-panel" style={style.panel}>
 						  

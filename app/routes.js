@@ -22,7 +22,7 @@ module.exports = function(app) {
 	// });
 
 	app.get('/full', function(req, res){
-	  res.render('stage02.ejs');
+	  res.render('index.ejs');
 	});
 
 	app.get('/stage03', function(req, res){
