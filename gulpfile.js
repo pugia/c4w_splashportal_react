@@ -7,6 +7,8 @@ var watchify = require('watchify');
 var babel = require('babelify');
 var minify = require('gulp-minify');
 var sass = require('gulp-sass');
+var child = require('child_process');
+var fs = require('fs');
 
 function compile(watch) {
   var bundler = watchify(
@@ -58,7 +60,14 @@ function sass_task() {
 gulp.task('build', function() { return compile(); });
 gulp.task('watch', function() { return watch(); });
 
-gulp.task('default', ['watch']);
+gulp.task('server', function() {
+  var server = child.spawn('node', ['server.js']);
+  var log = fs.createWriteStream('log/server.log', {flags: 'a'});
+  server.stdout.pipe(log);
+  server.stderr.pipe(log);
+});
+
+gulp.task('default', ['server', 'watch']);
 
 /* SASS */
 gulp.task('sass', function () { return sass_task(); });
