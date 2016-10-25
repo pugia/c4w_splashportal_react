@@ -6,7 +6,6 @@ var browserify = require('browserify');
 var watchify = require('watchify');
 var babel = require('babelify');
 var minify = require('gulp-minify');
-var sass = require('gulp-sass');
 var child = require('child_process');
 var fs = require('fs');
 
@@ -48,15 +47,6 @@ function watch() {
   sass_task();
 };
 
-function sass_task() {
-  return gulp.src('./public/css/*.scss')
-    .pipe(sass.sync({
-      outputStyle: 'compressed',
-      environment: 'production'
-    }).on('error', sass.logError))
-    .pipe(gulp.dest('./public/css'));
-}
-
 gulp.task('build', function() { return compile(); });
 gulp.task('watch', function() { return watch(); });
 
@@ -70,6 +60,18 @@ gulp.task('server', function() {
 gulp.task('default', ['server', 'watch']);
 
 /* SASS */
+var sass = require('gulp-sass');
+
+var sass_watch = './style/*.scss'
+
+function sass_task() {
+  return gulp.src(sass_watch)
+    .pipe(sass.sync({
+      outputStyle: 'compressed',
+      environment: 'production'
+    }).on('error', sass.logError))
+    .pipe(gulp.dest('./public/css'));
+}
 gulp.task('sass', function () { return sass_task(); });
-gulp.watch('./public/css/*.scss', ['sass']);
+gulp.watch(sass_watch, ['sass']);
 

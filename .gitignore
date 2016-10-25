@@ -10,5 +10,5 @@ pids
 
 # Dependency directories
 node_modules
-public/bower_components
+public/components
 

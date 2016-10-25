@@ -1,5 +1,6 @@
 {
-  "name": "Splashportal",
+  "name": "c4w_splashportal_react",
+  "repository": "https://github.com/pugia/c4w_splashportal_react",
   "main": "server.js",
   "dependencies": {
     "babel-register": "^6.16.3",
@@ -27,5 +28,10 @@
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.7.0"
-  }
+  },
+  "scripts": {
+    "postinstall": "bower install -p",
+    "prestart": "bower install",
+    "start": "gulp"
+  }  
 }
