@@ -12,6 +12,10 @@ var showHideOverlay = function() {
 	mc.className = (show) ? mc.className + ' overlay' : mc.className.replace(new RegExp('(?:^|\\s)'+ 'overlay' + '(?:\\s|$)'), ' ');
 }
 
+var restart = function() {
+  window.location.href="/#/";
+}
+
 var MainMenu = React.createClass({
 
   render: function () {
@@ -24,7 +28,7 @@ var MainMenu = React.createClass({
           <ul>
             <li>
               <div>
-                <label>About</label>
+                <label onClick={restart.bind(this)}>About</label>
               </div>
             </li>
             <li>

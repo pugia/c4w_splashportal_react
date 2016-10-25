@@ -28,8 +28,6 @@ var checkMailBlur = function() {
 	email_field.parentNode.classList.toggle('mui--is-not-empty', email_field.value != '');
 	email_field.parentNode.classList.toggle('mui--is-empty', email_field.value == '');
 
-	// $(email_field).parent('.mui-textfield').toggleClass('mui--is-not-empty', email_field.value != '').toggleClass('mui--is-empty', email_field.value == '');
-
 	return r;
 
 }
@@ -54,8 +52,12 @@ var nextStage = function() {
   	}));
   	window.location.href = '/#/stage02'
 	} else {
+		this.refs.email_field.parentNode.className += ' error';
 		this.refs.email_field.focus();
 	}
+
+	return false;
+
 }
 
 var socialClick = function(social) {
@@ -67,6 +69,10 @@ var socialClick = function(social) {
 var Stage01 = React.createClass({
 
 	componentDidMount() {
+
+		localStorage.removeItem('stored_date');
+		localStorage.removeItem('login_time');
+
     let m = document.getElementById("main");
     let c = document.getElementById("real-container").childNodes;
     var h = m.offsetHeight;
@@ -101,6 +107,9 @@ var Stage01 = React.createClass({
 				textTransform: 'uppercase',
 				fontWeight: '500'
 			},
+			social: {
+				marginTop: '30px'
+			},
 			form: {
 				paddingBottom: '60px'
 			}
@@ -112,7 +121,7 @@ var Stage01 = React.createClass({
 	      <nav className="main-nav">
 	        <div className="topbar mui--appbar-height">
 	          <a href="/#" className="appbar-action mui--appbar-height mui--appbar-line-height mui--pull-left">
-	            <i className="fa fa-arrow-left"></i>
+	            <img src="/img/arrow-back.svg" />
 	          </a>
 	          <h2 className="mui--appbar-height mui--appbar-line-height mui--text-center">Wifi account</h2>
 	        </div>
@@ -126,7 +135,7 @@ var Stage01 = React.createClass({
 	            <p className="mui--text-center" style={style.subTitle}>get your free wifi</p>
 	          </div>
 
-	          <div className="social">
+	          <div className="social" style={style.social}>
 	            <p className="mui--text-center" style={style.socialTitle}>use your social account</p>
 
 	            <div className="social-login">
@@ -138,7 +147,7 @@ var Stage01 = React.createClass({
 
 						<Divider text="or" />
 
-	          <form className="mui-container" style={style.form}>
+	          <form className="mui-container" style={style.form} onSubmit={nextStage.bind(this)}>
 		          <p className="mui--text-center" style={style.socialTitle}>go online with your email</p>
 	            <div className="mui-textfield mui-textfield--float-label">
 	              <input type="text" name="email_field" ref="email_field" onBlur={checkMailBlur.bind(this)} onKeyUp={inputClassChange.bind(this,'email_field')} onChange={inputClassChange.bind(this,'email_field')} />

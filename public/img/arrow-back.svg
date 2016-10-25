@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="22px" height="18px" viewBox="0 0 22 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 40.3 (33839) - http://www.bohemiancoding.com/sketch -->
+    <title>Shape</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Screens---Visual-Design-Prototype" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" fill-opacity="0.8">
+        <g id="Stage-2-(1)" transform="translate(-14.000000, -14.000000)" fill="#FFFFFF">
+            <g id="STATUS-BAR-COMPONENT">
+                <g id="Back-button" transform="translate(14.000000, 14.000000)">
+                    <polygon id="Shape" points="22 7.77272727 5.26625 7.77272727 12.9525 1.56564935 11 -1.77635684e-15 0 8.88311688 11 17.7662338 12.93875 16.2005844 5.26625 9.99350649 22 9.99350649"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

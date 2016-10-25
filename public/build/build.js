@@ -245,6 +245,10 @@ var showHideOverlay = function showHideOverlay() {
   mc.className = show ? mc.className + ' overlay' : mc.className.replace(new RegExp('(?:^|\\s)' + 'overlay' + '(?:\\s|$)'), ' ');
 };
 
+var restart = function restart() {
+  window.location.href = "/#/";
+};
+
 var MainMenu = React.createClass({
   displayName: 'MainMenu',
 
@@ -269,7 +273,7 @@ var MainMenu = React.createClass({
               null,
               React.createElement(
                 'label',
-                null,
+                { onClick: restart.bind(this) },
                 'About'
               )
             )
@@ -650,8 +654,6 @@ var checkMailBlur = function checkMailBlur() {
 	email_field.parentNode.classList.toggle('mui--is-not-empty', email_field.value != '');
 	email_field.parentNode.classList.toggle('mui--is-empty', email_field.value == '');
 
-	// $(email_field).parent('.mui-textfield').toggleClass('mui--is-not-empty', email_field.value != '').toggleClass('mui--is-empty', email_field.value == '');
-
 	return r;
 };
 
@@ -674,8 +676,11 @@ var nextStage = function nextStage() {
 		}));
 		window.location.href = '/#/stage02';
 	} else {
+		this.refs.email_field.parentNode.className += ' error';
 		this.refs.email_field.focus();
 	}
+
+	return false;
 };
 
 var socialClick = function socialClick(social) {
@@ -686,6 +691,10 @@ var socialClick = function socialClick(social) {
 var Stage01 = React.createClass({
 	displayName: 'Stage01',
 	componentDidMount: function componentDidMount() {
+
+		localStorage.removeItem('stored_date');
+		localStorage.removeItem('login_time');
+
 		var m = document.getElementById("main");
 		var c = document.getElementById("real-container").childNodes;
 		var h = m.offsetHeight;
@@ -723,6 +732,9 @@ var Stage01 = React.createClass({
 				textTransform: 'uppercase',
 				fontWeight: '500'
 			},
+			social: {
+				marginTop: '30px'
+			},
 			form: {
 				paddingBottom: '60px'
 			}
@@ -740,7 +752,7 @@ var Stage01 = React.createClass({
 					React.createElement(
 						'a',
 						{ href: '/#', className: 'appbar-action mui--appbar-height mui--appbar-line-height mui--pull-left' },
-						React.createElement('i', { className: 'fa fa-arrow-left' })
+						React.createElement('img', { src: '/img/arrow-back.svg' })
 					),
 					React.createElement(
 						'h2',
@@ -771,7 +783,7 @@ var Stage01 = React.createClass({
 					),
 					React.createElement(
 						'div',
-						{ className: 'social' },
+						{ className: 'social', style: style.social },
 						React.createElement(
 							'p',
 							{ className: 'mui--text-center', style: style.socialTitle },
@@ -800,7 +812,7 @@ var Stage01 = React.createClass({
 					React.createElement(Divider, { text: 'or' }),
 					React.createElement(
 						'form',
-						{ className: 'mui-container', style: style.form },
+						{ className: 'mui-container', style: style.form, onSubmit: nextStage.bind(this) },
 						React.createElement(
 							'p',
 							{ className: 'mui--text-center', style: style.socialTitle },
@@ -886,13 +898,13 @@ var accordion1Check = function accordion1Check(self) {
 
 	$('#access_data_section > label').toggleClass('error', !re.test(email_field.value)).toggleClass('success', re.test(email_field.value));
 
-	self.state.completed = re.test(email_field.value) ? 100 : 0;
 	if (first) {
 		self.refs.accordion1_a1.checked = !re.test(email_field.value);
 	}
-	self.refs.lbarBar.style.width = self.state.completed + '%';
 
 	inputClassChange('email_field_acc');
+
+	loadingBarStatus(self);
 
 	return re.test(email_field.value);
 };
@@ -913,13 +925,14 @@ var accordion2Check = function accordion2Check(self) {
 		self.refs.accordion1_a2.checked = true;
 	}
 
+	loadingBarStatus(self);
+
 	return r;
 };
 
 var accordionCheckBoth = function accordionCheckBoth() {
 
 	var r = true;
-
 	if (!accordion1Check(this, false)) {
 		r = false;
 	}
@@ -929,9 +942,26 @@ var accordionCheckBoth = function accordionCheckBoth() {
 
 	if (r) {
 		$('#main').data('stored_data', JSON.stringify(this.state));
+		localStorage.setItem('stored_date', JSON.stringify(this.state));
 		localStorage.setItem('login_time', moment().format());
 		window.location.href = '/#/stage03';
 	}
+
+	return false;
+};
+
+var loadingBarStatus = function loadingBarStatus(self) {
+
+	var email_field = self.refs.email_field_acc;
+	self.state.email = email_field.value;
+	var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	self.state.completed = re.test(email_field.value) ? 50 : 0;
+
+	if (self.refs.terms_privacy_flag.checked) {
+		self.state.completed += 50;
+	}
+
+	self.refs.lbarBar.style.width = self.state.completed + '%';
 };
 
 var Stage02 = React.createClass({
@@ -948,6 +978,8 @@ var Stage02 = React.createClass({
 
 	componentDidMount: function componentDidMount() {
 
+		localStorage.removeItem('login_time');
+
 		var m = document.getElementById("main");
 		var c = document.getElementById("real-container").childNodes;
 		var h = m.offsetHeight;
@@ -956,7 +988,11 @@ var Stage02 = React.createClass({
 		}
 		document.getElementById("main-content").style.height = h + 'px';
 
-		this.state = $('#main').data('stored_data') ? $.extend(true, this.state, JSON.parse($('#main').data('stored_data'))) : this.state;
+		if (localStorage.getItem('stored_date')) {
+			this.state = JSON.parse(localStorage.getItem('stored_date'));
+		} else {
+			this.state = $('#main').data('stored_data') ? $.extend(true, this.state, JSON.parse($('#main').data('stored_data'))) : this.state;
+		}
 
 		this.refs.email_field_acc.value = this.state.email;
 		this.refs.terms_privacy_flag.checked = this.state.terms_privacy_flag;
@@ -965,6 +1001,7 @@ var Stage02 = React.createClass({
 		this.refs.accordion1_a2.checked = true;
 
 		accordion1Check(this, true);
+		loadingBarStatus(this);
 
 		// this.checkAccordionStatus();
 	},
@@ -978,6 +1015,12 @@ var Stage02 = React.createClass({
 			},
 			mTop: {
 				marginTop: '12px'
+			},
+			iconAccess: {
+				backgroundImage: 'url(/img/access@2x.png)'
+			},
+			iconTerms: {
+				backgroundImage: 'url(/img/terms@2x.png)'
 			}
 		};
 
@@ -993,7 +1036,7 @@ var Stage02 = React.createClass({
 					React.createElement(
 						'a',
 						{ href: '/#/stage01', className: 'appbar-action mui--appbar-height mui--appbar-line-height mui--pull-left' },
-						React.createElement('i', { className: 'fa fa-arrow-left' })
+						React.createElement('img', { src: '/img/arrow-back.svg' })
 					),
 					React.createElement(
 						'h2',
@@ -1023,11 +1066,7 @@ var Stage02 = React.createClass({
 							React.createElement(
 								'label',
 								{ className: 'accordion-title', htmlFor: 'accordion1_a1' },
-								React.createElement(
-									'span',
-									{ className: 'icon-left' },
-									React.createElement('i', { className: 'fa fa-unlock-alt', 'aria-hidden': 'true' })
-								),
+								React.createElement('span', { className: 'icon-left', style: style.iconAccess }),
 								React.createElement(
 									'span',
 									{ className: 'icon-open-close' },
@@ -1070,27 +1109,7 @@ var Stage02 = React.createClass({
 							React.createElement(
 								'label',
 								{ className: 'accordion-title', htmlFor: 'accordion1_a2' },
-								React.createElement(
-									'span',
-									{ className: 'icon-left' },
-									React.createElement(
-										'svg',
-										{ width: '12px', height: '12px', viewBox: '0 0 16 16' },
-										React.createElement(
-											'g',
-											{ stroke: 'none', strokeWidth: '1', fill: 'none', fillRule: 'evenodd' },
-											React.createElement(
-												'g',
-												{ transform: 'translate(-21.000000, -176.000000)', fill: '#4D8185' },
-												React.createElement(
-													'g',
-													{ transform: 'translate(0.000000, 165.000000)' },
-													React.createElement('path', { d: 'M36.2727273,13.1818182 L36.2727273,12.8181818 C36.2727273,11.8145455 35.4581818,11 34.4545455,11 C33.4509091,11 32.6363636,11.8145455 32.6363636,12.8181818 L32.6363636,13.1818182 C32.2363636,13.1818182 31.9090909,13.5090909 31.9090909,13.9090909 L31.9090909,16.8181818 C31.9090909,17.2181818 32.2363636,17.5454545 32.6363636,17.5454545 L36.2727273,17.5454545 C36.6727273,17.5454545 37,17.2181818 37,16.8181818 L37,13.9090909 C37,13.5090909 36.6727273,13.1818182 36.2727273,13.1818182 L36.2727273,13.1818182 Z M35.6909091,13.1818182 L33.2181818,13.1818182 L33.2181818,12.8181818 C33.2181818,12.1345455 33.7709091,11.5818182 34.4545455,11.5818182 C35.1381818,11.5818182 35.6909091,12.1345455 35.6909091,12.8181818 L35.6909091,13.1818182 L35.6909091,13.1818182 Z M34.0327273,19 C34.0618182,19.24 34.0909091,19.48 34.0909091,19.7272727 C34.0909091,21.24 33.5090909,22.6145455 32.5636364,23.6472727 C32.3745455,23.0581818 31.8363636,22.6363636 31.1818182,22.6363636 L30.4545455,22.6363636 L30.4545455,20.4545455 C30.4545455,20.0545455 30.1272727,19.7272727 29.7272727,19.7272727 L25.3636364,19.7272727 L25.3636364,18.2727273 L26.8181818,18.2727273 C27.2181818,18.2727273 27.5454545,17.9454545 27.5454545,17.5454545 L27.5454545,16.0909091 L29,16.0909091 C29.8,16.0909091 30.4545455,15.4363636 30.4545455,14.6363636 L30.4545455,12.7890909 C29.7636364,12.5709091 29.0363636,12.4545455 28.2727273,12.4545455 C24.2581818,12.4545455 21,15.7127273 21,19.7272727 C21,23.7418182 24.2581818,27 28.2727273,27 C32.2872727,27 35.5454545,23.7418182 35.5454545,19.7272727 C35.5454545,19.48 35.5309091,19.24 35.5090909,19 L34.0327273,19 L34.0327273,19 Z M27.5454545,25.4945455 C24.6727273,25.1381818 22.4545455,22.6945455 22.4545455,19.7272727 C22.4545455,19.2763636 22.5127273,18.8472727 22.6072727,18.4254545 L26.0909091,21.9090909 L26.0909091,22.6363636 C26.0909091,23.4363636 26.7454545,24.0909091 27.5454545,24.0909091 L27.5454545,25.4945455 L27.5454545,25.4945455 Z', id: 'Shape' })
-												)
-											)
-										)
-									)
-								),
+								React.createElement('span', { className: 'icon-left', style: style.iconTerms }),
 								React.createElement(
 									'span',
 									{ className: 'icon-open-close' },
@@ -1107,7 +1126,7 @@ var Stage02 = React.createClass({
 								{ className: 'accordion-content' },
 								React.createElement(
 									'form',
-									null,
+									{ onSubmit: accordionCheckBoth.bind(this) },
 									React.createElement(
 										'div',
 										{ className: 'mui-checkbox' },
@@ -1250,7 +1269,14 @@ var Stage03 = React.createClass({
 			confirmed: false
 		};
 
-		return $('#main').data('stored_data') ? $.extend(true, st, JSON.parse($('#main').data('stored_data'))) : st;
+		var loaded_st = false;
+		if (localStorage.getItem('stored_date')) {
+			loaded_st = JSON.parse(localStorage.getItem('stored_date'));
+		} else {
+			loaded_st = $('#main').data('stored_data') ? $.extend(true, st, JSON.parse($('#main').data('stored_data'))) : st;
+		}
+
+		return loaded_st ? $.extend(true, st, loaded_st) : st;
 	},
 
 
@@ -1265,7 +1291,7 @@ var Stage03 = React.createClass({
 		document.getElementById("main-content").style.height = h + 'px';
 
 		if (this.state.email == null) {
-			clearInterval(timer);window.location.href = '/#/stage02';
+			clearInterval(timer);window.location.href = '/#/stage04';
 		}
 
 		var self = this;

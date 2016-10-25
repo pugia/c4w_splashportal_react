@@ -3,7 +3,7 @@
  
 /* VARIABLES */
 $appbar-height: 64px;
-$loading-bar-height: 3px;
+$loading-bar-height: 5px;
 $loading-bar-color: #9bbe6c;
 $divider-color: rgba(0,0,0,0.24);
 $menu-element-height: 60px;
@@ -170,7 +170,7 @@ $social-login-icon-size: 30px;
 
 							li {
 								&.selected {
-									font-weight: bold;
+									font-weight: 700;
 								}
 								label {
 									color: #000;
@@ -229,7 +229,7 @@ $social-login-icon-size: 30px;
 			position: relative;
 			background: $loading-bar-color;
 			left: 0;
-			@include transition(width .3s ease);
+			@include transition(width .7s ease);
 		}
 
 	}
@@ -253,6 +253,7 @@ $social-login-icon-size: 30px;
 				width: 100%;
 				left: 0;
 				top: 0;
+				font-weight: 300;
 			}
 
 			&.mui-btn--double {
@@ -275,7 +276,7 @@ $social-login-icon-size: 30px;
 		position: relative;
 		color: $divider-color;
 		text-align: center;
-		margin: 25px 0;
+		margin: 35px 0;
 		min-height: 3px;
 
 		&:before, &:after {
@@ -391,9 +392,10 @@ $social-login-icon-size: 30px;
 		span {
 			font-size: 12px;
 			line-height: 15px;
-			color: rgba(0, 0, 0, 0.26);
+			color: rgba(0, 0, 0, 0.5);
 			position: absolute;
 			opacity: 0;
+			margin-top: 5px;
 
 			&.info {
 				opacity: 1;
@@ -505,7 +507,7 @@ $social-login-icon-size: 30px;
 
 			& > label.accordion-title {
 
-				padding: 0 15px;
+				padding: 4px 15px;
 				display: block;
 				height: 34px;
 				line-height: 34px;
@@ -514,11 +516,23 @@ $social-login-icon-size: 30px;
 				cursor: pointer;
 
 				&.success {
-					background-image: linear-gradient(-90deg, #E7F9CE 16%, #CAF0A0 50%);					
+					background: lightgreen;					
 				}
 
 				&.error {
-					background-image: linear-gradient(-90deg, #FFD5DB 16%, #FFAAB5 50%);
+					background: lightcoral;
+					color: #fff;
+
+					& > span {
+						color: #fff !important;
+						&.icon-left {
+							background-position: -16px 0;
+						}
+						&.icon-open-close {
+							color: #fff;
+						}
+				}
+
 				}
 
 				& > span {
@@ -534,7 +548,13 @@ $social-login-icon-size: 30px;
 
 					&.icon-left {
 						left: 15px;
-						color: #4D8185;
+						width: 16px;
+						height: 16px;
+						top: 50%;
+						margin-top: -8px;
+						background-size: 32px 16px;
+						background-position: 0 0;
+						background-repeat: no-repeat;
 					}
 
 					&.title {
@@ -621,6 +641,7 @@ $social-login-icon-size: 30px;
 			.fa {
 				font-size: 70px;
 				line-height: 130px;
+				color: rgba(255,255,255,0.8);
 			}
 
 		}
@@ -636,7 +657,7 @@ $social-login-icon-size: 30px;
 		p {
 			font-size: 10px;
 			line-height: 16px;
-			font-weight: bold;
+			font-weight: 700;
 			margin: 0;
 			padding: 0;
 		}
@@ -762,7 +783,7 @@ $social-login-icon-size: 30px;
 
 					h4 {
 						font-family: 'Roboto', sans-serif;
-						font-weight: lighter;
+						font-weight: 300;
 						font-size: 12px;
 						color: rgba(0,0,0,0.87);
 						letter-spacing: 0.42px;
@@ -813,7 +834,7 @@ $social-login-icon-size: 30px;
 						padding: 0;
 						line-height: 15px;
 						font-family: 'Roboto', sans-serif;
-						font-weight: bold;
+						font-weight: 700;
 						font-size: 14px;
 						color: rgba(0,0,0,0.80);
 						letter-spacing: 0.5px;
@@ -822,7 +843,7 @@ $social-login-icon-size: 30px;
 
 					p {
 						font-family: 'Roboto', sans-serif;
-						font-weight: lighter;
+						font-weight: 300;
 						font-size: 14px;
 						color: rgba(0,0,0,0.80);
 						letter-spacing: 0.5px;						

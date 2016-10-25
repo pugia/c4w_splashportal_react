@@ -41,7 +41,14 @@ var Stage03 = React.createClass({
 			confirmed: false
 		}
 
-		return ($('#main').data('stored_data')) ? $.extend(true, st, JSON.parse($('#main').data('stored_data'))) : st;
+		var loaded_st = false;
+  	if (localStorage.getItem('stored_date')) {
+  		loaded_st = JSON.parse(localStorage.getItem('stored_date'));
+  	} else {
+			loaded_st = ($('#main').data('stored_data')) ? $.extend(true, st, JSON.parse($('#main').data('stored_data'))) : st;
+		}
+
+		return (loaded_st) ? $.extend(true, st, loaded_st) : st;
 
 	},
 
@@ -53,7 +60,7 @@ var Stage03 = React.createClass({
     for (var x in c) { h -= (c[x].nodeType == '1' && c[x].id != 'main-content') ? c[x].offsetHeight : 0; }
     document.getElementById("main-content").style.height = h+'px';
 
-		if (this.state.email == null) { clearInterval(timer); window.location.href = '/#/stage02'; }
+		if (this.state.email == null) { clearInterval(timer); window.location.href = '/#/stage04'; }
 
 		var self = this;
 		timer = setInterval(function() {
