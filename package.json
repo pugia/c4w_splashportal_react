@@ -30,7 +30,7 @@
     "watchify": "^3.7.0"
   },
   "scripts": {
-    "postinstall": "bower install -p",
+    "postinstall": "mkdir log",
     "prestart": "bower install",
     "start": "gulp"
   }  

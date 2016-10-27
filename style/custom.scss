@@ -585,7 +585,11 @@ $social-login-icon-size: 30px;
 				padding: 0 15px 0 45px;
 			}
 
-			& > input {
+			&.open > .accordion-content {
+				height: auto;
+			}
+
+/*			& > input {
 				display: none;
 
 				&:checked {
@@ -606,7 +610,7 @@ $social-login-icon-size: 30px;
 					}
 				}
 
-			}
+			}*/
 
 		}
 

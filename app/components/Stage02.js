@@ -32,7 +32,7 @@ var accordion1Check = function(self, first = true) {
 		.toggleClass('error', !re.test(email_field.value))
 		.toggleClass('success', re.test(email_field.value))
 
-	if (first) { self.refs.accordion1_a1.checked = !re.test(email_field.value); }
+	if (first) { self.refs.accordion1_a1.checked = true }
 
 	inputClassChange('email_field_acc');
 
@@ -109,12 +109,6 @@ var Stage02 = React.createClass({
 
 		localStorage.removeItem('login_time');
 
-    let m = document.getElementById("main");
-    let c = document.getElementById("real-container").childNodes;
-    var h = m.offsetHeight;
-    for (var x in c) { h -= (c[x].nodeType == '1' && c[x].id != 'main-content') ? c[x].offsetHeight : 0; }
-    document.getElementById("main-content").style.height = h+'px';
-
   	if (localStorage.getItem('stored_date')) {
   		this.state = JSON.parse(localStorage.getItem('stored_date'));
   	} else {
@@ -129,8 +123,6 @@ var Stage02 = React.createClass({
 
 		accordion1Check(this, true);
 		loadingBarStatus(this);
-
-		// this.checkAccordionStatus();
 
 	},
 
@@ -172,7 +164,7 @@ var Stage02 = React.createClass({
 
 	          <div className="accordion">
 
-	            <div className="section" id="access_data_section">
+	            <div className="section open" id="access_data_section">
 	              <input type="checkbox" id="accordion1_a1" ref="accordion1_a1" />
 	              <label className="accordion-title" htmlFor="accordion1_a1">
 	                <span className="icon-left" style={style.iconAccess}></span>
@@ -192,7 +184,7 @@ var Stage02 = React.createClass({
 	              </div>
 	            </div>
 
-	            <div className="section" id="terms_condition_section">
+	            <div className="section open" id="terms_condition_section">
 	              <input type="checkbox" id="accordion1_a2" ref="accordion1_a2" />
 	              <label className="accordion-title" htmlFor="accordion1_a2">
 	                <span className="icon-left" style={style.iconTerms}></span>

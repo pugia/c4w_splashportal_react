@@ -502,20 +502,6 @@ var Showcase = React.createClass({
 	displayName: 'Showcase',
 
 
-	componentDidMount: function componentDidMount() {
-
-		var m = document.getElementById("main");
-		var r = document.getElementById("real-container");
-		var c = r.childNodes;
-		var h = m.offsetHeight;
-
-		for (var x in c) {
-			h -= c[x].nodeType == '1' && c[x].id != 'main-content' ? c[x].offsetHeight : 0;
-		}
-
-		document.getElementById("main-content").style.height = h + 'px';
-	},
-
 	render: function render() {
 
 		var style = {
@@ -694,14 +680,6 @@ var Stage01 = React.createClass({
 
 		localStorage.removeItem('stored_date');
 		localStorage.removeItem('login_time');
-
-		var m = document.getElementById("main");
-		var c = document.getElementById("real-container").childNodes;
-		var h = m.offsetHeight;
-		for (var x in c) {
-			h -= c[x].nodeType == '1' && c[x].id != 'main-content' ? c[x].offsetHeight : 0;
-		}
-		document.getElementById("main-content").style.height = h + 'px';
 	},
 
 
@@ -899,7 +877,7 @@ var accordion1Check = function accordion1Check(self) {
 	$('#access_data_section > label').toggleClass('error', !re.test(email_field.value)).toggleClass('success', re.test(email_field.value));
 
 	if (first) {
-		self.refs.accordion1_a1.checked = !re.test(email_field.value);
+		self.refs.accordion1_a1.checked = true;
 	}
 
 	inputClassChange('email_field_acc');
@@ -980,14 +958,6 @@ var Stage02 = React.createClass({
 
 		localStorage.removeItem('login_time');
 
-		var m = document.getElementById("main");
-		var c = document.getElementById("real-container").childNodes;
-		var h = m.offsetHeight;
-		for (var x in c) {
-			h -= c[x].nodeType == '1' && c[x].id != 'main-content' ? c[x].offsetHeight : 0;
-		}
-		document.getElementById("main-content").style.height = h + 'px';
-
 		if (localStorage.getItem('stored_date')) {
 			this.state = JSON.parse(localStorage.getItem('stored_date'));
 		} else {
@@ -1002,8 +972,6 @@ var Stage02 = React.createClass({
 
 		accordion1Check(this, true);
 		loadingBarStatus(this);
-
-		// this.checkAccordionStatus();
 	},
 
 	render: function render() {
@@ -1061,7 +1029,7 @@ var Stage02 = React.createClass({
 						{ className: 'accordion' },
 						React.createElement(
 							'div',
-							{ className: 'section', id: 'access_data_section' },
+							{ className: 'section open', id: 'access_data_section' },
 							React.createElement('input', { type: 'checkbox', id: 'accordion1_a1', ref: 'accordion1_a1' }),
 							React.createElement(
 								'label',
@@ -1104,7 +1072,7 @@ var Stage02 = React.createClass({
 						),
 						React.createElement(
 							'div',
-							{ className: 'section', id: 'terms_condition_section' },
+							{ className: 'section open', id: 'terms_condition_section' },
 							React.createElement('input', { type: 'checkbox', id: 'accordion1_a2', ref: 'accordion1_a2' }),
 							React.createElement(
 								'label',
@@ -1282,18 +1250,6 @@ var Stage03 = React.createClass({
 
 	componentDidMount: function componentDidMount() {
 
-		var m = document.getElementById("main");
-		var c = document.getElementById("real-container").childNodes;
-		var h = m.offsetHeight;
-		for (var x in c) {
-			h -= c[x].nodeType == '1' && c[x].id != 'main-content' ? c[x].offsetHeight : 0;
-		}
-		document.getElementById("main-content").style.height = h + 'px';
-
-		if (this.state.email == null) {
-			clearInterval(timer);window.location.href = '/#/stage04';
-		}
-
 		var self = this;
 		timer = setInterval(function () {
 			if (!popolateLoadbar(self)) {
@@ -1469,14 +1425,6 @@ var Stage04 = React.createClass({
 
 	componentDidMount: function componentDidMount() {
 
-		var m = document.getElementById("main");
-		var c = document.getElementById("real-container").childNodes;
-		var h = m.offsetHeight;
-		for (var x in c) {
-			h -= c[x].nodeType == '1' && c[x].id != 'main-content' ? c[x].offsetHeight : 0;
-		}
-		document.getElementById("main-content").style.height = h + 'px';
-
 		timer = setTimeout(function () {
 			window.location.href = '/#/stage06';
 		}, 3000);
@@ -1601,17 +1549,6 @@ var Stage06 = React.createClass({
 	displayName: 'Stage06',
 
 
-	componentDidMount: function componentDidMount() {
-
-		var m = document.getElementById("main");
-		var c = document.getElementById("real-container").childNodes;
-		var h = m.offsetHeight;
-		for (var x in c) {
-			h -= c[x].nodeType == '1' && c[x].id != 'main-content' ? c[x].offsetHeight : 0;
-		}
-		document.getElementById("main-content").style.height = h + 'px';
-	},
-
 	render: function render() {
 
 		var style = {
@@ -1699,7 +1636,25 @@ var App = React.createClass({
         route: window.location.hash.substr(1)
       });
     });
+    window.addEventListener("resize", this.updateDimensions);
+    setTimeout(this.updateDimensions, 100);
   },
+
+
+  componentWillUnmount: function componentWillUnmount() {
+    window.removeEventListener("resize", this.updateDimensions);
+  },
+
+  updateDimensions: function updateDimensions() {
+    var m = document.getElementById("main");
+    var c = document.getElementById("real-container").childNodes;
+    var h = m.offsetHeight;
+    for (var x in c) {
+      h -= c[x].nodeType == '1' && c[x].id != 'main-content' ? c[x].offsetHeight : 0;
+    }
+    document.getElementById("main-content").style.height = h + 'px';
+  },
+
   render: function render() {
     var Child = void 0;
     switch (this.state.route) {

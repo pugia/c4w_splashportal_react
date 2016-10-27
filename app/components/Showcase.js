@@ -10,19 +10,6 @@ var resetMenu = function() {
 
 var Showcase = React.createClass({
 
-	componentDidMount: function () {
-
-    let m = document.getElementById("main");
-    let r = document.getElementById("real-container");
-    let c = r.childNodes;
-    var h = m.offsetHeight;
-
-    for (var x in c) { h -= (c[x].nodeType == '1' && c[x].id != 'main-content') ? c[x].offsetHeight : 0; }
-
-    document.getElementById("main-content").style.height = h+'px';
-
-	},
-
   render: function () {
 
 		var style = {

@@ -23,6 +23,20 @@ const App = React.createClass({
         route: window.location.hash.substr(1)
       })
     })
+    window.addEventListener("resize", this.updateDimensions);
+    setTimeout(this.updateDimensions, 100);
+  },
+
+  componentWillUnmount: function() {
+    window.removeEventListener("resize", this.updateDimensions);
+  },
+
+  updateDimensions: function() {
+    let m = document.getElementById("main");
+    let c = document.getElementById("real-container").childNodes;
+    var h = m.offsetHeight;
+    for (var x in c) { h -= (c[x].nodeType == '1' && c[x].id != 'main-content') ? c[x].offsetHeight : 0; }
+    document.getElementById("main-content").style.height = h+'px';
   },
 
   render() {
