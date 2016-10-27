@@ -55,11 +55,15 @@ var nextStage = function() {
 	} else {
 		self.refs.email_field.parentNode.className += ' error';
 		self.refs.email_field.focus();
-		centerVerticalElementInContainer(this.refs.email_field, document.getElementById('main-content'));
+		// centerVerticalElementInContainer(document.getElementById('email_field'), document.getElementById('main-content'));
 	}
 
 	return false;
 
+}
+
+var emailFieldFocus = function() {
+	centerVerticalElementInContainer(document.getElementById('email_field'), document.getElementById('main-content'));
 }
 
 var socialClick = function(social) {
@@ -74,7 +78,7 @@ var centerVerticalElementInContainer = function(el, cont) {
 		var contBox = cont.getBoundingClientRect();
 		var top = elBox.top + elBox.height - (contBox.height / 2) + cont.scrollTop;
 		cont.scrollTop = top;		
-	}, 500);
+	}, 100);
 }
 
 var Stage01 = React.createClass({
@@ -156,7 +160,7 @@ var Stage01 = React.createClass({
 	          <form className="mui-container" style={style.form} onSubmit={nextStage.bind(this)}>
 		          <p className="mui--text-center" style={style.socialTitle}>go online with your email</p>
 	            <div className="mui-textfield mui-textfield--float-label">
-	              <input type="email" id="email_field" name="email_field" ref="email_field" onBlur={checkMailBlur.bind(this)} onKeyUp={inputClassChange.bind(this,'email_field')} onChange={inputClassChange.bind(this,'email_field')} />
+	              <input type="email" id="email_field" name="email_field" ref="email_field" onBlur={checkMailBlur.bind(this)} onKeyUp={inputClassChange.bind(this,'email_field')} onChange={inputClassChange.bind(this,'email_field')} onFocus={emailFieldFocus.bind(this)} />
 	              <label>Email address</label>
 	              <span className="info">We will use it to send you the confirmation email</span>
 	              <span className="error">Incorrect format</span>

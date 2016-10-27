@@ -665,10 +665,14 @@ var nextStage = function nextStage() {
 	} else {
 		self.refs.email_field.parentNode.className += ' error';
 		self.refs.email_field.focus();
-		centerVerticalElementInContainer(this.refs.email_field, document.getElementById('main-content'));
+		// centerVerticalElementInContainer(document.getElementById('email_field'), document.getElementById('main-content'));
 	}
 
 	return false;
+};
+
+var emailFieldFocus = function emailFieldFocus() {
+	centerVerticalElementInContainer(document.getElementById('email_field'), document.getElementById('main-content'));
 };
 
 var socialClick = function socialClick(social) {
@@ -682,7 +686,7 @@ var centerVerticalElementInContainer = function centerVerticalElementInContainer
 		var contBox = cont.getBoundingClientRect();
 		var top = elBox.top + elBox.height - contBox.height / 2 + cont.scrollTop;
 		cont.scrollTop = top;
-	}, 500);
+	}, 100);
 };
 
 var Stage01 = React.createClass({
@@ -810,7 +814,7 @@ var Stage01 = React.createClass({
 						React.createElement(
 							'div',
 							{ className: 'mui-textfield mui-textfield--float-label' },
-							React.createElement('input', { type: 'email', id: 'email_field', name: 'email_field', ref: 'email_field', onBlur: checkMailBlur.bind(this), onKeyUp: inputClassChange.bind(this, 'email_field'), onChange: inputClassChange.bind(this, 'email_field') }),
+							React.createElement('input', { type: 'email', id: 'email_field', name: 'email_field', ref: 'email_field', onBlur: checkMailBlur.bind(this), onKeyUp: inputClassChange.bind(this, 'email_field'), onChange: inputClassChange.bind(this, 'email_field'), onFocus: emailFieldFocus.bind(this) }),
 							React.createElement(
 								'label',
 								null,
