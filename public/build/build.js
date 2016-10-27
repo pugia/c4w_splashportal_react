@@ -686,7 +686,7 @@ var centerVerticalElementInContainer = function centerVerticalElementInContainer
 		var contBox = cont.getBoundingClientRect();
 		var top = elBox.top + elBox.height - contBox.height / 2 + cont.scrollTop;
 		cont.scrollTop = top;
-	}, 100);
+	}, 300);
 };
 
 var Stage01 = React.createClass({
