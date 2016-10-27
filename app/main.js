@@ -31,6 +31,10 @@ const App = React.createClass({
     window.removeEventListener("resize", this.updateDimensions);
   },
 
+  componentDidUpdate(prevProps, prevState) {
+    this.updateDimensions();
+  },
+
   updateDimensions: function() {
     let m = document.getElementById("main");
     let c = document.getElementById("real-container").childNodes;
