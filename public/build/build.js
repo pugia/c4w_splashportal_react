@@ -677,11 +677,12 @@ var socialClick = function socialClick(social) {
 };
 
 var centerVerticalElementInContainer = function centerVerticalElementInContainer(el, cont) {
-
-	var elBox = el.getBoundingClientRect();
-	var contBox = cont.getBoundingClientRect();
-	var top = elBox.top + elBox.height - contBox.height / 2 + cont.scrollTop;
-	cont.scrollTop = top;
+	setTimeout(function () {
+		var elBox = el.getBoundingClientRect();
+		var contBox = cont.getBoundingClientRect();
+		var top = elBox.top + elBox.height - contBox.height / 2 + cont.scrollTop;
+		cont.scrollTop = top;
+	}, 500);
 };
 
 var Stage01 = React.createClass({
