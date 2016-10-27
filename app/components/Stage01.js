@@ -42,6 +42,7 @@ var inputClassChange = function(field) {
 
 var nextStage = function() {
 
+	var self = this;
 	var r = false;
 	var email_field = this.refs.email_field;
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -52,8 +53,9 @@ var nextStage = function() {
   	}));
   	window.location.href = '/#/stage02'
 	} else {
-		this.refs.email_field.parentNode.className += ' error';
-		this.refs.email_field.focus();
+		self.refs.email_field.parentNode.className += ' error';
+		self.refs.email_field.focus();
+		centerVerticalElementInContainer(this.refs.email_field, document.getElementById('main-content'));
 	}
 
 	return false;
@@ -62,8 +64,16 @@ var nextStage = function() {
 
 var socialClick = function(social) {
 
-  	window.location.href = '/#/stage02'
+	window.location.href = '/#/stage02'
 
+}
+
+var centerVerticalElementInContainer = function(el, cont) {
+
+	var elBox = el.getBoundingClientRect();
+	var contBox = cont.getBoundingClientRect();
+	var top = elBox.top + elBox.height - (contBox.height / 2) + cont.scrollTop;
+	cont.scrollTop = top;
 }
 
 var Stage01 = React.createClass({
@@ -118,7 +128,7 @@ var Stage01 = React.createClass({
 	          <a href="/#" className="appbar-action mui--appbar-height mui--appbar-line-height mui--pull-left">
 	            <img src="/img/arrow-back.svg" />
 	          </a>
-	          <h2 className="mui--appbar-height mui--appbar-line-height mui--text-center">Wifi account</h2>
+	          <h2 onClick={socialClick.bind(this)} className="mui--appbar-height mui--appbar-line-height mui--text-center">Wifi account</h2>
 	        </div>
 	      </nav>
 
@@ -145,7 +155,7 @@ var Stage01 = React.createClass({
 	          <form className="mui-container" style={style.form} onSubmit={nextStage.bind(this)}>
 		          <p className="mui--text-center" style={style.socialTitle}>go online with your email</p>
 	            <div className="mui-textfield mui-textfield--float-label">
-	              <input type="text" name="email_field" ref="email_field" onBlur={checkMailBlur.bind(this)} onKeyUp={inputClassChange.bind(this,'email_field')} onChange={inputClassChange.bind(this,'email_field')} />
+	              <input type="email" id="email_field" name="email_field" ref="email_field" onBlur={checkMailBlur.bind(this)} onKeyUp={inputClassChange.bind(this,'email_field')} onChange={inputClassChange.bind(this,'email_field')} />
 	              <label>Email address</label>
 	              <span className="info">We will use it to send you the confirmation email</span>
 	              <span className="error">Incorrect format</span>

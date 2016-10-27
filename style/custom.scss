@@ -413,8 +413,12 @@ $social-login-icon-size: 30px;
 				color: $mui-danger-color;
 			}
 
+			span {
+				opacity: 0;
+			}
+
 			span.error {
-				opacity: 1;
+				opacity: 1 !important;
 				color: $mui-danger-color;
 			}
 
