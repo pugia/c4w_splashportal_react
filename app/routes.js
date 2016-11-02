@@ -1,6 +1,10 @@
 global.React = require('react');
 global.ReactDOMServer = require('react-dom/server');
 
+global.rootRequire = function(name) {
+  return require(__dirname + '/' + name);
+}
+
 module.exports = function(app) {
 
 	app.get('/', function(req, res){
@@ -20,6 +24,12 @@ module.exports = function(app) {
 	//   var mainHtml = ReactDOMServer.renderToString(Child({}));
 	//   res.render('stages.ejs', { main: mainHtml });
 	// });
+
+	app.get('/test', function(req, res){
+		var Child = React.createFactory(require('./routes/Stage01test'));
+	  var mainHtml = ReactDOMServer.renderToString(Child({}));
+	  res.render('stages.ejs', { main: mainHtml, rand: Math.random().toString(36).substring(7) });
+	});
 
 	app.get('/full', function(req, res){
 	  res.render('index.ejs');

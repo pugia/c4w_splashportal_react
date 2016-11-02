@@ -1,0 +1,110 @@
+@import "../vars";
+
+.login {
+
+	margin-top: 30px;
+
+	& > .title {
+		font-family: 'Roboto', sans-serif;
+		font-size: 12px;
+		color: rgba(0,0,0,0.87);
+		text-transform: uppercase;
+		font-weight: 500;
+	}
+
+	& > .buttons {
+
+		text-align: center;
+		background: #C5DEE9;
+		position: relative;
+		padding: 13px;
+
+		&:before, &:after {
+			content: "";
+			width: 100%;
+			position: absolute;
+			height: 1px;
+			border-top: 1px dashed #0075AA;
+			left: 0;
+			top: -2px;
+		}
+
+		&:after {
+			top: auto;
+			bottom: -2px;
+		}
+
+		.mui-btn {
+			width: $social-login-button-size;
+			height: $social-login-button-size;
+			padding: 0;
+			margin: 0 3px;
+			border-radius: 0;
+
+			&:nth-child(n+5) {
+				display: none;
+			}
+
+			& i {
+				font-size: $social-login-icon-size;
+				line-height: $social-login-button-size;
+			}
+
+		}
+
+		.social-facebook {
+			color: #fff;
+			background: #4a90e2;
+		}
+		.social-twitter {
+			color: #fff;
+			background: #3db4f2;
+		}
+		.social-linkedin {
+			color: #fff;
+			background: #328eea;
+		}
+		.social-google-plus {
+			color: #fff;
+			background: #d34836;
+		}
+		.social-google {
+			color: #fff;
+			background: #4285f4;
+		}
+		.social-vk {
+			color: #fff;
+			background: #507299;
+		}
+		.social-instagram {
+			color: #fff;
+			background: #9b634d;
+		}
+		.social-foursquare {
+			color: #fff;
+			background: #fc4575;
+		}
+		.social-pinterest {
+			color: #fff;
+			background: #bd081c;
+		}
+		.social-weibo {
+			color: #fff;
+			background: #eb7350;
+		}
+		.social-baidu {
+			color: #fff;
+			background: #2529d8;
+		}
+		.social-qq {
+			color: #fff;
+			background: #3592d5;
+		}
+		.social-renren {
+			color: #fff;
+			background: #2eadf0;
+		}
+
+	}
+
+}

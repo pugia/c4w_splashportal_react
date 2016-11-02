@@ -4,8 +4,8 @@ var browserHistory = require('react-router').browserHistory
 var IndexRoute = require('react-router').IndexRoute
 
 var Showcase = require('./components/Showcase');
-var Stage01 = require('./components/Stage01');
-var Stage02 = require('./components/Stage02');
+var Stage01 = require('./routes/Stage01');
+var Stage02 = require('./routes/Stage02');
 var Stage03 = require('./components/Stage03');
 var Stage04 = require('./components/Stage04');
 var Stage06 = require('./components/Stage06');
@@ -36,18 +36,20 @@ const App = React.createClass({
   },
 
   updateDimensions: function() {
-    let m = document.getElementById("main");
-    let c = document.getElementById("real-container").childNodes;
-    var h = m.offsetHeight;
-    for (var x in c) { h -= (c[x].nodeType == '1' && c[x].id != 'main-content') ? c[x].offsetHeight : 0; }
-    document.getElementById("main-content").style.height = h+'px';
+    if (document.getElementById("main-content")) {
+      let m = document.getElementById("main");
+      let c = document.getElementById("real-container").childNodes;
+      var h = m.offsetHeight;
+      for (var x in c) { h -= (c[x].nodeType == '1' && c[x].id != 'main-content') ? c[x].offsetHeight : 0; }
+      document.getElementById("main-content").style.height = h+'px';
+    }
   },
 
   render() {
     let Child
     switch (this.state.route) {
       case '/stage01': 	Child = Stage01; break;
-      case '/stage02': 	Child = Stage02; break;
+      case '/stage02':  Child = Stage02; break;
       case '/stage03': 	Child = Stage03; break;
       case '/stage04': 	Child = Stage04; break;
       case '/stage06': 	Child = Stage06; break;
@@ -73,3 +75,6 @@ ReactDOM.render((
     </Route>
   </Router>
 ), document.getElementById('main') )
+// ReactDOM.render((
+//   <Stage01 />
+// ), document.getElementById('main') )

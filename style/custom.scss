@@ -1,15 +1,7 @@
 @import "scss/mui";
 @import "scss/mixins";
  
-/* VARIABLES */
-$appbar-height: 64px;
-$loading-bar-height: 5px;
-$loading-bar-color: #9bbe6c;
-$divider-color: rgba(0,0,0,0.24);
-$menu-element-height: 60px;
-
-$social-login-button-size: 55px;
-$social-login-icon-size: 30px;
+@import "vars";
 
 #main {
 	
@@ -45,7 +37,6 @@ $social-login-icon-size: 30px;
 				position: absolute;
 				color: #fff;
 				border: none;
-				left: 0;
 				top: 0;
 				width: $appbar-height;
 				height: 100%;
@@ -212,9 +203,6 @@ $social-login-icon-size: 30px;
 
 	}
 
-
-
-
 	.loading-bar {
 		height: $loading-bar-height;
 		background: #fff;
@@ -308,60 +296,13 @@ $social-login-icon-size: 30px;
 
 	}
 
-	.social-login {
+	@import "components/login";
 
-		text-align: center;
-		background: #C5DEE9;
-		position: relative;
-		padding: 13px;
-
-		&:before, &:after {
-			content: "";
-			width: 100%;
-			position: absolute;
-			height: 1px;
-			border-top: 1px dashed #0075AA;
-			left: 0;
-			top: -2px;
-		}
-
-		&:after {
-			top: auto;
-			bottom: -2px;
-		}
-
-		.mui-btn {
-			width: $social-login-button-size;
-			height: $social-login-button-size;
-			padding: 0;
-			margin: 0 3px;
-			border-radius: 0;
-
-			& i {
-				font-size: $social-login-icon-size;
-				line-height: $social-login-button-size;
-			}
-
-		}
-
-		.social-facebook {
-			color: #fff;
-			background: #4a90e2;
-		}
-		.social-twitter {
-			color: #fff;
-			background: #3db4f2;
-		}
-		.social-linkedin {
-			color: #fff;
-			background: #328eea;
-		}
-
-	}
 
 	.mui-textfield {
 
 		position: relative;
+		padding-bottom: 15px;
 
 		&.mui--is-not-empty > label {
 
@@ -434,8 +375,12 @@ $social-login-icon-size: 30px;
 				color: $mui-success-color;
 			}
 
+			span {
+				opacity: 0;
+			}
+
 			span.success {
-				opacity: 1;
+				opacity: 1 !important;
 				color: $mui-success-color;
 			}
 
@@ -455,8 +400,13 @@ $social-login-icon-size: 30px;
 				position: absolute;
 				left: 0;
 
+				rect {
+					stroke: $checkbox-color;
+				}
+
 				path.check {
 					opacity: 0;
+					fill: $checkbox-color;
 				}
 			}
 
@@ -556,26 +506,10 @@ $social-login-icon-size: 30px;
 						height: 16px;
 						top: 50%;
 						margin-top: -8px;
-						background-size: 32px 16px;
-						background-position: 0 0;
-						background-repeat: no-repeat;
 					}
 
 					&.title {
 						left: 45px;
-					}
-
-				}
-
-
-
-				& + input {
-					display: none;
-
-					& + 
-
-					&:checked + .accordion-content {
-						height: auto;
 					}
 
 				}
@@ -585,12 +519,15 @@ $social-login-icon-size: 30px;
 			& > .accordion-content {
 				display: block;
 				overflow: hidden;
-				height: 0;
-				padding: 0 15px 0 45px;
+				padding: 10px 15px 10px 45px;
+				background: #FBFBFB;
+				@include transition(all .5s ease);
 			}
 
-			&.open > .accordion-content {
-				height: auto;
+			&.close > .accordion-content {
+				padding-top: 0;
+				padding-bottom: 0;
+				height: 0 !important;
 			}
 
 /*			& > input {

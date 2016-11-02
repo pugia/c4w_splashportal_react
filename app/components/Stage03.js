@@ -42,8 +42,8 @@ var Stage03 = React.createClass({
 		}
 
 		var loaded_st = false;
-  	if (localStorage.getItem('stored_date')) {
-  		loaded_st = JSON.parse(localStorage.getItem('stored_date'));
+  	if (localStorage.getItem('stored_data')) {
+  		loaded_st = JSON.parse(localStorage.getItem('stored_data'));
   	} else {
 			loaded_st = ($('#main').data('stored_data')) ? $.extend(true, st, JSON.parse($('#main').data('stored_data'))) : st;
 		}
