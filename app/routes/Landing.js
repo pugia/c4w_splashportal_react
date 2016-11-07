@@ -1,9 +1,10 @@
+require('smoothscroll-polyfill').polyfill();
+
 var React = global.React;
 var General = require('./components/General');
 var TopNav = require('./components/TopNav');
 var MainContent = require('./components/MainContent');
 var Showcase = require('./components/Showcase');
-
 
 var Landing = React.createClass({
 
