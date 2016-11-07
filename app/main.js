@@ -3,12 +3,27 @@ var Route = require('react-router').Route
 var browserHistory = require('react-router').browserHistory
 var IndexRoute = require('react-router').IndexRoute
 
-var Showcase = require('./components/Showcase');
+var Landing = require('./routes/Landing');
 var Stage01 = require('./routes/Stage01');
 var Stage02 = require('./routes/Stage02');
 var Stage03 = require('./components/Stage03');
 var Stage04 = require('./components/Stage04');
 var Stage06 = require('./components/Stage06');
+
+var loadFont = function(url) {
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', url, true);
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+      var style = document.createElement('style');
+      style.innerHTML = xhr.responseText;
+      document.head.appendChild(style);
+    }
+  };
+  xhr.send();
+
+}
 
 const App = React.createClass({
   getInitialState() {
@@ -25,6 +40,9 @@ const App = React.createClass({
     })
     window.addEventListener("resize", this.updateDimensions);
     setTimeout(this.updateDimensions, 100);
+
+    loadFont('https://fonts.googleapis.com/css?family=Roboto:300,400,700');
+
   },
 
   componentWillUnmount: function() {
@@ -53,7 +71,7 @@ const App = React.createClass({
       case '/stage03': 	Child = Stage03; break;
       case '/stage04': 	Child = Stage04; break;
       case '/stage06': 	Child = Stage06; break;
-      default:      		Child = Showcase;
+      default:      		Child = Landing;
     }
 
     return (

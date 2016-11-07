@@ -6,11 +6,17 @@ var React = global.React;
 var TopNav = React.createClass({
 
 	render() {
+
+		var main = (this.props.mainMenu) ? <MainMenu /> : null;
+		var lang = (this.props.langMenu) ? <LangMenu /> : null;
+
 		return (
 			<nav>
-				<div className="topbar mui--appbar-height">
+				<div className="topbar">
 					{this.props.children}
 				</div>
+				{main}
+				{lang}
 			</nav>
 		)
 	}
@@ -21,20 +27,159 @@ var TopNavTitle = React.createClass({
 
 	render() {
 		return (
-			<h2 className="mui--appbar-height mui--appbar-line-height mui--text-center">{this.props.children || this.props.text}</h2>
+			<h2 className="mui--text-center">{this.props.children || this.props.text}</h2>
 		)
 	}
 
 });
+
+var TopNavLogo = React.createClass({
+
+	render() {
+
+		var className = 'logo';
+		if (this.props.align) {
+			className += ' '+this.props.align;
+		}
+
+		return (
+			<img className={className} src={this.props.img} />
+		)
+	}
+
+})
+
+var MainMenu = React.createClass({
+
+	getInitialState() {
+		return {
+			open: false
+		}
+	},
+
+	componentDidMount() {
+		
+		this.refs.ul.style.height = this.refs.ul.offsetHeight + 'px';
+		if (!this.state.open) {
+			this.refs.menu.className = this.refs.menu.className + ' close hide';
+		}
+
+	},
+
+	handleOpenClose() {
+
+		this.setState({
+			open: !this.state.open
+		})
+
+		this.refs.menu.className = (!this.state.open) ? this.refs.menu.className.replace(new RegExp('(?:^|\\s)'+ 'close' + '(?:\\s|$)'), ' ') : this.refs.menu.className + ' close';
+
+		if (!this.state.open) {
+			this.refs.menu.className = this.refs.menu.className.replace(new RegExp('(?:^|\\s)'+ 'hide' + '(?:\\s|$)'), ' ')
+		} else {
+			var self = this;
+			setTimeout(function() {
+				self.refs.menu.className += ' hide';
+			}, 1000);
+		}
+
+	},
+
+	render() {
+
+		var btnClass = "hamburger hamburger--slider ";
+		if (this.state.open) {
+			btnClass += 'is-active';
+		}
+
+		return (
+
+			<div ref="menu" className="main-menu">
+				<div className="button" onClick={this.handleOpenClose}>
+					<button ref="openClose" className={btnClass}>
+					  <span className="hamburger-box">
+					    <span className="hamburger-inner"></span>
+					  </span>
+					</button>
+				</div>
+
+				<ul ref="ul">
+					<li>My Profile</li>
+					<li>Internet Plans</li>
+					<li>Logout</li>
+				</ul>
+				<span className="overlay" onClick={this.handleOpenClose}></span>
+			</div>
+		)
+	}
+
+})
+
+var LangMenu = React.createClass({
+
+	getInitialState() {
+		return {
+			open: false
+		}
+	},
+
+	componentDidMount() {
+		
+		this.refs.ul.style.height = this.refs.ul.offsetHeight + 'px';
+		if (!this.state.open) {
+			this.refs.menu.className = this.refs.menu.className + ' close hide';
+		}
+
+	},
+
+	handleOpenClose() {
+
+		this.setState({
+			open: !this.state.open
+		})
+
+		this.refs.menu.className = (!this.state.open) ? this.refs.menu.className.replace(new RegExp('(?:^|\\s)'+ 'close' + '(?:\\s|$)'), ' ') : this.refs.menu.className + ' close';
+
+		if (!this.state.open) {
+			this.refs.menu.className = this.refs.menu.className.replace(new RegExp('(?:^|\\s)'+ 'hide' + '(?:\\s|$)'), ' ')
+		} else {
+			var self = this;
+			setTimeout(function() {
+				self.refs.menu.className += ' hide';
+			}, 1000);
+		}
+
+	},
+
+	render() {
+
+		return (
+
+			<div ref="menu" className="lang-menu">
+				<div className="button" onClick={this.handleOpenClose}>
+					<button ref="openClose">
+						<i className="fa fa-globe"></i>
+					  <span ref="selected">ENG</span>
+					</button>
+				</div>
+
+				<ul ref="ul">
+					<li>ENG</li>
+					<li>ITA</li>
+				</ul>
+				<span className="overlay" onClick={this.handleOpenClose}></span>
+			</div>
+		)
+	}
+
+})
 
 var TopNavButton = React.createClass({
 
 	render() {
 
 		var pr = {
-			style: {
-
-			}
+			style: {}
 		};
 
 		var className = 'appbar-action mui--appbar-height mui--appbar-line-height';
@@ -96,15 +241,16 @@ var LoadingBar = React.createClass({
   
 });
 
-
 exports.Bar = TopNav;
 exports.Title = TopNavTitle;
+exports.Logo = TopNavLogo;
 exports.Button = TopNavButton;
 exports.Loading = LoadingBar;
 
 module.exports = {
 	Bar: TopNav,
 	Title: TopNavTitle,
+	Logo: TopNavLogo,
 	Button: TopNavButton,
 	Loading: LoadingBar
 };

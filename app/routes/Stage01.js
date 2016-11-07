@@ -72,7 +72,7 @@ var Stage01 = React.createClass({
       		<TopNav.Button side="left" onClick={ () => window.location.href = '/#/' } >
       			<img src="/img/arrow-back.svg" />
       		</TopNav.Button>
-      		<TopNav.Title text="Wifi account" />
+      		<TopNav.Logo img="/img/fs@2x.png" />
       	</TopNav.Bar>
 
 	      <MainContent contentBackgroundStyle={style.contentBackground}>
