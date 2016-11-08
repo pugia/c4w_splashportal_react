@@ -19,13 +19,13 @@ var MainContent = React.createClass({
   },
 
   updateDimensions: function() {
-    if (this.refs.mainContent) {
-      let m = document.getElementById("main");
-      let c = document.getElementById("real-container").childNodes;
-      var h = m.offsetHeight;
-      for (var x in c) { h -= (c[x].nodeType == '1' && c[x].id != 'main-content') ? c[x].offsetHeight : 0; }
-      this.refs.mainContent.style.height = h+'px';
-    }
+    // if (this.refs.mainContent) {
+    //   let m = document.getElementById("main");
+    //   let c = document.getElementById("real-container").childNodes;
+    //   var h = m.offsetHeight;
+    //   for (var x in c) { h -= (c[x].nodeType == '1' && c[x].id != 'main-content') ? c[x].offsetHeight : 0; }
+    //   this.refs.mainContent.style.height = h+'px';
+    // }
   },
 
 	render() {

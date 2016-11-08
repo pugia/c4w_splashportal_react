@@ -116,7 +116,7 @@ var Stage02 = React.createClass({
     return (
       <div id="real-container">
 
-      	<TopNav.Bar>
+      	<TopNav.Bar fixed={true}>
       		<TopNav.Button side="left" onClick={ () => window.location.href = '/#/stage01' } >
       			<img src="/img/arrow-back.svg" />
       		</TopNav.Button>

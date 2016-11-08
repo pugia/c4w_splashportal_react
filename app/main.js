@@ -54,13 +54,13 @@ const App = React.createClass({
   },
 
   updateDimensions: function() {
-    if (document.getElementById("main-content")) {
-      let m = document.getElementById("main");
-      let c = document.getElementById("real-container").childNodes;
-      var h = m.offsetHeight;
-      for (var x in c) { h -= (c[x].nodeType == '1' && c[x].id != 'main-content') ? c[x].offsetHeight : 0; }
-      document.getElementById("main-content").style.height = h+'px';
-    }
+    // if (document.getElementById("main-content")) {
+    //   let m = document.getElementById("main");
+    //   let c = document.getElementById("real-container").childNodes;
+    //   var h = m.offsetHeight;
+    //   for (var x in c) { h -= (c[x].nodeType == '1' && c[x].id != 'main-content') ? c[x].offsetHeight : 0; }
+    //   document.getElementById("main-content").style.height = h+'px';
+    // }
   },
 
   render() {

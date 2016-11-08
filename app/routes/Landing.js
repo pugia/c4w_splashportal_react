@@ -49,7 +49,7 @@ var Landing = React.createClass({
     return (
       <div id="real-container">
 
-      	<TopNav.Bar mainMenu={true} langMenu={true}>
+      	<TopNav.Bar fixed={true} mainMenu={true} langMenu={true}>
 
       		<TopNav.Logo img="/img/fs@2x.png" />
 

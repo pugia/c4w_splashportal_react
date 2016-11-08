@@ -59,10 +59,15 @@ var FieldInput = React.createClass({
 	render() {
 
 		var inputProps = this.props.input || { type: 'text' }
+		var style = {};
+
+		if (this.props.msg != false) {
+			style.paddingBottom = '15px'
+		}
 
 		return(
 
-      <div className={'mui-textfield mui-textfield--float-label ' + this.state.status}>
+      <div className={'mui-textfield mui-textfield--float-label ' + this.state.status} style={style}>
         <input ref={this.refInput} {...inputProps} onChange={this.props.handleChange || null} />
         <label>{this.props.label}</label>
         <span className="info">{this.state.info}</span>
@@ -142,14 +147,45 @@ var Divider = React.createClass({
   
 });
 
+
+var ListButton = React.createClass({
+
+	render() {
+
+		var icon = null;
+		if (this.props.icon) {
+			icon = <span className="icon"><i className={"fa "+this.props.icon}></i></span>;
+		}
+
+		var className = 'listButton';
+		if (this.props.addClass) { className += ' '+this.props.addClass; }
+
+		return (
+
+			<button className={className} onClick={this.props.onClick || null} value={this.props.value || null}>
+				<span className="content">
+					{icon}
+					{this.props.children}
+				</span>
+				<i className="fa fa-angle-right"></i>
+			</button>
+
+		)
+	}
+
+})
+
+
 exports.FieldInput = FieldInput;
 exports.CheckboxInput = CheckboxInput;
 exports.Paragraph = Paragraph;
 exports.Divider = Divider;
+exports.ListButton = ListButton;
 
 module.exports = {
 	FieldInput: FieldInput,
 	CheckboxInput: CheckboxInput,
 	Paragraph: Paragraph,
-	Divider: Divider
+	Divider: Divider,
+	ListButton: ListButton
 };

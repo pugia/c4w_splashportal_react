@@ -4,10 +4,7 @@ var TopNav = require('./components/TopNav');
 var MainContent = require('./components/MainContent');
 var BottomNav = require('./components/BottomNav');
 var Login = require('./components/Login');
-
-var handleSocial = function(s) {
-	console.log('handle', s);
-}
+var Modal = require('./components/Modal');
 
 var nextStage = function() {
 
@@ -40,14 +37,20 @@ var Stage01 = React.createClass({
 		localStorage.removeItem('stored_data');
 	},
 
+	handleSocial(s) {
+		console.log('handle', s);
+	},
+
+	handlePartner(s) {
+		console.log('handle', s);
+	},
+
   render() {
 
   	var self = this;
 
 		var style = {
 			contentBackground: {
-				background: 'url(/img/cloud@2x.png) repeat-x top left / 391px 97px',
-				paddingTop: '100px',
 				paddingBottom: '60px'
 			},
 			title: {
@@ -68,7 +71,7 @@ var Stage01 = React.createClass({
     return (
       <div id="real-container">
 
-      	<TopNav.Bar>
+      	<TopNav.Bar fixed={true}>
       		<TopNav.Button side="left" onClick={ () => window.location.href = '/#/' } >
       			<img src="/img/arrow-back.svg" />
       		</TopNav.Button>
@@ -77,13 +80,22 @@ var Stage01 = React.createClass({
 
 	      <MainContent contentBackgroundStyle={style.contentBackground}>
 
-          <General.Paragraph align="center" style={style.title} text="Welcome on board!" />
-          <General.Paragraph align="center" style={style.subTitle} text="get your free wifi" />
-
           <Login.Social 
           	title="use your social account" 
           	socials={['facebook','twitter','linkedin','google-plus','google','vk','instagram','foursquare','pinterest','weibo','baidu','qq','renren']}
-          	handleSocial={handleSocial}
+          	handleSocial={this.handleSocial}
+          />
+
+          <General.Divider text="or" />
+
+          <Login.Partner 
+          	partners={{
+          		'frecciarossa': 'Frecciarossa',
+          		'cartafreccia': 'Cartafreccia',
+          		'unipi': 'University of Pisa',
+          		'freeitaliawifi': 'Free Italia Wi-fi'
+          	}}
+          	handlePartner={this.handlePartner}
           />
 
           <General.Divider text="or" />
@@ -108,12 +120,18 @@ var Stage01 = React.createClass({
 						}}
           />
 
+          <General.Divider text="or" />
+
+          <Login.Account
+          	ref="login_account"
+          	title="LOGIN WITH OUR ACCOUNT"
+          />
+
 	      </MainContent>
 
 	      <BottomNav.Bar>
 	      	<BottomNav.Button background="0075aa" iconRight="fa-chevron-right" iconRightType="fa" text="NEXT" onClick={nextStage.bind(this)} />
 	      </BottomNav.Bar>
-
 
       </div>
     )

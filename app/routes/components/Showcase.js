@@ -7,7 +7,7 @@ var Main = React.createClass({
 
   componentDidMount() {
     window.addEventListener("resize", this.updateDimensions);
-    setTimeout(this.updateDimensions, 100);
+    setTimeout(this.updateDimensions, 200);
   },
 
   componentWillUnmount: function() {
@@ -19,11 +19,16 @@ var Main = React.createClass({
   },
 
   updateDimensions: function() {
-    let m = document.getElementById("main");
-    let c = document.getElementById("real-container").childNodes;
-    var h = m.offsetHeight;
+
+    var w = window,
+        d = document,
+        e = d.documentElement,
+        g = d.getElementsByTagName('body')[0],
+        h = w.innerHeight|| e.clientHeight|| g.clientHeight,
+        c = document.getElementById("real-container").childNodes;
     for (var x in c) { h -= (c[x].nodeType == '1' && c[x].id != 'main-content') ? c[x].offsetHeight : 0; }
     this.refs.main.style.height = h+'px';
+
   },
 
   scrollDown: function() {
