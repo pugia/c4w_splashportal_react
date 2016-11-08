@@ -100,28 +100,6 @@ var Stage01 = React.createClass({
 
           <General.Divider text="or" />
 
-          <Login.ClickThrough
-          	ref="login_clickThrough"
-          	title="go online with your email"
-          	input={{
-							onBlur: function(e) {
-
-								if (checkValidEmail(e.target.value)) {
-									self.refs.login_clickThrough.setState({
-										status: "success"
-									})
-								} else {
-									self.refs.login_clickThrough.setState({
-										status: "error"
-									})					
-								}
-							}
-				
-						}}
-          />
-
-          <General.Divider text="or" />
-
           <Login.Account
           	ref="login_account"
           	title="LOGIN WITH OUR ACCOUNT"

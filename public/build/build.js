@@ -1212,26 +1212,6 @@ var Stage01 = React.createClass({
 					handlePartner: this.handlePartner
 				}),
 				React.createElement(General.Divider, { text: 'or' }),
-				React.createElement(Login.ClickThrough, {
-					ref: 'login_clickThrough',
-					title: 'go online with your email',
-					input: {
-						onBlur: function onBlur(e) {
-
-							if (checkValidEmail(e.target.value)) {
-								self.refs.login_clickThrough.setState({
-									status: "success"
-								});
-							} else {
-								self.refs.login_clickThrough.setState({
-									status: "error"
-								});
-							}
-						}
-
-					}
-				}),
-				React.createElement(General.Divider, { text: 'or' }),
 				React.createElement(Login.Account, {
 					ref: 'login_account',
 					title: 'LOGIN WITH OUR ACCOUNT'
