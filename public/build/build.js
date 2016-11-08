@@ -1122,108 +1122,100 @@ var Modal = require('./components/Modal');
 
 var nextStage = function nextStage() {
 
-	var self = this;
+  var self = this;
 
-	if (checkValidEmail(self.refs.login_clickThrough.getEmail())) {
-		$('#main').data('stored_data', JSON.stringify({
-			email: self.refs.login_clickThrough.getEmail()
-		}));
-		window.location.href = '/#/stage02';
-	} else {
-		self.refs.login_clickThrough.setState({
-			status: 'error'
-		});
-		self.refs.login_clickThrough.focus();
-	}
+  if (checkValidEmail(self.refs.login_clickThrough.getEmail())) {
+    $('#main').data('stored_data', JSON.stringify({
+      email: self.refs.login_clickThrough.getEmail()
+    }));
+    window.location.href = '/#/stage02';
+  } else {
+    self.refs.login_clickThrough.setState({
+      status: 'error'
+    });
+    self.refs.login_clickThrough.focus();
+  }
 
-	return false;
+  return false;
 };
 
 var checkValidEmail = function checkValidEmail(email) {
-	var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-	return re.test(email);
+  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(email);
 };
 
 var Stage01 = React.createClass({
-	displayName: 'Stage01',
-	componentDidMount: function componentDidMount() {
-		localStorage.removeItem('stored_data');
-	},
-	handleSocial: function handleSocial(s) {
-		console.log('handle', s);
-	},
-	handlePartner: function handlePartner(s) {
-		console.log('handle', s);
-	},
-	render: function render() {
+  displayName: 'Stage01',
+  componentDidMount: function componentDidMount() {
+    localStorage.removeItem('stored_data');
+  },
+  handleSocial: function handleSocial(s) {
+    console.log('handle', s);
+  },
+  handlePartner: function handlePartner(s) {
+    console.log('handle', s);
+  },
+  render: function render() {
 
-		var self = this;
+    var self = this;
 
-		var style = {
-			contentBackground: {
-				paddingBottom: '60px'
-			},
-			title: {
-				fontFamily: 'Roboto',
-				fontSize: '35px',
-				color: '#63747F',
-				marginBottom: '0'
-			},
-			subTitle: {
-				fontFamily: 'Roboto',
-				fontSize: '16px',
-				color: '#0075AA',
-				textTransform: 'uppercase',
-				marginBottom: '20px'
-			}
-		};
+    var style = {
+      title: {
+        fontFamily: 'Roboto',
+        fontSize: '35px',
+        color: '#63747F',
+        marginBottom: '0'
+      },
+      subTitle: {
+        fontFamily: 'Roboto',
+        fontSize: '16px',
+        color: '#0075AA',
+        textTransform: 'uppercase',
+        marginBottom: '20px'
+      }
+    };
 
-		return React.createElement(
-			'div',
-			{ id: 'real-container' },
-			React.createElement(
-				TopNav.Bar,
-				{ fixed: true },
-				React.createElement(
-					TopNav.Button,
-					{ side: 'left', onClick: function onClick() {
-							return window.location.href = '/#/';
-						} },
-					React.createElement('img', { src: '/img/arrow-back.svg' })
-				),
-				React.createElement(TopNav.Logo, { img: '/img/fs@2x.png' })
-			),
-			React.createElement(
-				MainContent,
-				{ contentBackgroundStyle: style.contentBackground },
-				React.createElement(Login.Social, {
-					title: 'use your social account',
-					socials: ['facebook', 'twitter', 'linkedin', 'google-plus', 'google', 'vk', 'instagram', 'foursquare', 'pinterest', 'weibo', 'baidu', 'qq', 'renren'],
-					handleSocial: this.handleSocial
-				}),
-				React.createElement(General.Divider, { text: 'or' }),
-				React.createElement(Login.Partner, {
-					partners: {
-						'frecciarossa': 'Frecciarossa',
-						'cartafreccia': 'Cartafreccia',
-						'unipi': 'University of Pisa',
-						'freeitaliawifi': 'Free Italia Wi-fi'
-					},
-					handlePartner: this.handlePartner
-				}),
-				React.createElement(General.Divider, { text: 'or' }),
-				React.createElement(Login.Account, {
-					ref: 'login_account',
-					title: 'LOGIN WITH OUR ACCOUNT'
-				})
-			),
-			React.createElement(
-				BottomNav.Bar,
-				null,
-				React.createElement(BottomNav.Button, { background: '0075aa', iconRight: 'fa-chevron-right', iconRightType: 'fa', text: 'NEXT', onClick: nextStage.bind(this) })
-			)
-		);
-	}
+    return React.createElement(
+      'div',
+      { id: 'real-container' },
+      React.createElement(
+        TopNav.Bar,
+        { fixed: true },
+        React.createElement(
+          TopNav.Button,
+          { side: 'left', onClick: function onClick() {
+              return window.location.href = '/#/';
+            } },
+          React.createElement('img', { src: '/img/arrow-back.svg' })
+        ),
+        React.createElement(TopNav.Logo, { img: '/img/fs@2x.png' })
+      ),
+      React.createElement(
+        MainContent,
+        null,
+        React.createElement(Login.Social, {
+          title: 'use your social account',
+          socials: ['facebook', 'twitter', 'linkedin', 'google-plus', 'google', 'vk', 'instagram', 'foursquare', 'pinterest', 'weibo', 'baidu', 'qq', 'renren'],
+          handleSocial: this.handleSocial
+        }),
+        React.createElement(General.Divider, { text: 'or' }),
+        React.createElement(Login.Partner, {
+          partners: {
+            'frecciarossa': 'Frecciarossa',
+            'cartafreccia': 'Cartafreccia',
+            'unipi': 'University of Pisa',
+            'freeitaliawifi': 'Free Italia Wi-fi'
+          },
+          handlePartner: this.handlePartner
+        }),
+        React.createElement(General.Divider, { text: 'or' }),
+        React.createElement(Login.Account, {
+          ref: 'login_account',
+          title: 'LOGIN WITH OUR ACCOUNT'
+        })
+      )
+    );
+  }
 });
 
 /* Module.exports instead of normal dom mounting */
@@ -1578,6 +1570,8 @@ module.exports = {
 (function (global){
 'use strict';
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 exports.__esModule = true;
 
 var React = global.React;
@@ -1587,7 +1581,7 @@ var BottomNav = React.createClass({
   render: function render() {
     return React.createElement(
       "div",
-      { className: "bottombar" },
+      { className: "bottombar", style: this.props.style || null },
       this.props.children
     );
   }
@@ -1610,9 +1604,15 @@ var BottomNavButton = React.createClass({
       iconRight = this.props.iconRightType && this.props.iconRightType == 'fa' ? React.createElement("i", { className: 'fa ' + this.props.iconRight + ' mui--pull-right' }) : React.createElement("img", { src: this.props.iconRight });
     }
 
+    var props = {};
+
+    if (this.props.onClick) {
+      props.onClick = this.props.onClick.bind(this);
+    }
+
     return React.createElement(
       "button",
-      { className: className, onClick: this.props.onClick.bind(this) },
+      _extends({ className: className }, props),
       iconRight,
       React.createElement(
         "span",
@@ -1873,6 +1873,7 @@ exports.__esModule = true;
 var React = global.React;
 var General = require('./General');
 var Modal = require('./Modal');
+var BottomNav = require('./BottomNav');
 
 var LoginSocial = React.createClass({
 	displayName: 'LoginSocial',
@@ -2029,6 +2030,18 @@ var LoginPartner = React.createClass({
 var LoginAccount = React.createClass({
 	displayName: 'LoginAccount',
 	render: function render() {
+
+		var style = {
+			bottomBar: {
+				marginLeft: '-15px',
+				marginRight: '-15px',
+				width: 'auto'
+			},
+			pararaph: {
+				marginBottom: '50px'
+			}
+		};
+
 		return React.createElement(
 			'div',
 			{ className: 'login login-account mui-container' },
@@ -2046,7 +2059,28 @@ var LoginAccount = React.createClass({
 				},
 				ref: 'password',
 				label: 'Password',
-				msg: false })
+				msg: false }),
+			React.createElement(
+				General.Paragraph,
+				{ style: style.pararaph },
+				React.createElement(
+					'a',
+					{ className: 'mui--pull-right' },
+					'Forgot password?'
+				),
+				React.createElement(
+					'label',
+					{ htmlFor: 'remember_me' },
+					React.createElement('input', { id: 'remember_me', type: 'checkbox', value: '1' }),
+					' Remember me'
+				)
+			),
+			React.createElement(
+				BottomNav.Bar,
+				{ style: style.bottomBar },
+				React.createElement(BottomNav.Button, { background: '006c68', text: 'LOGIN' }),
+				React.createElement(BottomNav.Button, { background: 'db0015', iconRight: 'fa-chevron-right', iconRightType: 'fa', text: 'NEW USER? REGISTER' })
+			)
 		);
 	}
 });
@@ -2071,7 +2105,7 @@ module.exports = {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./General":16,"./Modal":19}],18:[function(require,module,exports){
+},{"./BottomNav":15,"./General":16,"./Modal":19}],18:[function(require,module,exports){
 (function (global){
 'use strict';
 

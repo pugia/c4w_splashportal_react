@@ -329,10 +329,13 @@
 	
 	.bottombar {
 
-		position: fixed;
 		width: 100%;
 		bottom: 0;
 		background: none;
+
+		&.fixed {
+			position: fixed;
+		}
 
 		button {
 			width: 100%;
@@ -762,6 +765,24 @@
 	    $mui-btn-flat-bg-color-hover);
 	}
 
+	.mui-btn--006c68 {
+	  @include button-variant(
+	    #fff,
+	    #006c68);
+	  @include button-flat-variant(
+	    #006c68,
+	    $mui-btn-flat-bg-color-hover);
+	}
+
+	.mui-btn--db0015 {
+	  @include button-variant(
+	    #fff,
+	    #db0015);
+	  @include button-flat-variant(
+	    #db0015,
+	    $mui-btn-flat-bg-color-hover);
+	}
+		
 	.mui-btn.mui-btn--double {
 
 		line-height: 16px;

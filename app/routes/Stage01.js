@@ -50,9 +50,6 @@ var Stage01 = React.createClass({
   	var self = this;
 
 		var style = {
-			contentBackground: {
-				paddingBottom: '60px'
-			},
 			title: {
 				fontFamily: 'Roboto',
 				fontSize: '35px',
@@ -78,7 +75,7 @@ var Stage01 = React.createClass({
       		<TopNav.Logo img="/img/fs@2x.png" />
       	</TopNav.Bar>
 
-	      <MainContent contentBackgroundStyle={style.contentBackground}>
+	      <MainContent>
 
           <Login.Social 
           	title="use your social account" 
@@ -106,10 +103,6 @@ var Stage01 = React.createClass({
           />
 
 	      </MainContent>
-
-	      <BottomNav.Bar>
-	      	<BottomNav.Button background="0075aa" iconRight="fa-chevron-right" iconRightType="fa" text="NEXT" onClick={nextStage.bind(this)} />
-	      </BottomNav.Bar>
 
       </div>
     )

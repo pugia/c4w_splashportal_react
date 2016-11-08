@@ -4,6 +4,7 @@ exports.__esModule = true;
 var React = global.React;
 var General = require('./General');
 var Modal = require('./Modal');
+var BottomNav = require('./BottomNav');
 
 var LoginSocial = React.createClass({
 
@@ -148,6 +149,18 @@ var LoginPartner = React.createClass({
 var LoginAccount = React.createClass({
 
 	render() {
+
+		var style = {
+			bottomBar: {
+				marginLeft: '-15px',
+				marginRight: '-15px',
+				width: 'auto'
+			},
+			pararaph: {
+				marginBottom: '50px'
+			}
+		}
+
 		return(
 
       <div className="login login-account mui-container">
@@ -167,6 +180,16 @@ var LoginAccount = React.createClass({
       		ref="password" 
       		label="Password"
       		msg={false} />
+
+      	<General.Paragraph style={style.pararaph}>
+      		<a className="mui--pull-right">Forgot password?</a>
+      		<label htmlFor="remember_me"><input id="remember_me" type="checkbox" value="1" /> Remember me</label>
+      	</General.Paragraph>
+
+	      <BottomNav.Bar style={style.bottomBar}>
+	      	<BottomNav.Button background="006c68" text="LOGIN" />
+	      	<BottomNav.Button background="db0015" iconRight="fa-chevron-right" iconRightType="fa" text="NEW USER? REGISTER" />
+	      </BottomNav.Bar>      		
 
       </div>
 

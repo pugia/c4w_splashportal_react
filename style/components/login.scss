@@ -6,6 +6,10 @@
 	margin-top: 30px;
 	margin-bottom: 30px;
 
+	&:last-child {
+		margin-bottom: 0;
+	}
+
 	& > .title {
 		font-family: 'Roboto', sans-serif;
 		font-size: 12px;

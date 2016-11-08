@@ -7,7 +7,7 @@ var BottomNav = React.createClass({
 
 	render() {
 		return (
-			<div className="bottombar">
+			<div className="bottombar" style={this.props.style || null}>
 				{this.props.children}
 			</div>
 		)
@@ -31,8 +31,14 @@ var BottomNavButton = React.createClass({
       iconRight = (this.props.iconRightType && this.props.iconRightType == 'fa') ? <i className={'fa ' + this.props.iconRight +' mui--pull-right'}></i> : <img src={this.props.iconRight} />
     }
 
+    var props = {}
+
+    if (this.props.onClick) {
+      props.onClick = this.props.onClick.bind(this)
+    }
+
     return (
-      <button className={className} onClick={this.props.onClick.bind(this)}>
+      <button className={className} {...props}>
         {iconRight}
         <span>{this.props.text || this.props.children}</span>
       </button>
