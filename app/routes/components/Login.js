@@ -148,8 +148,47 @@ var LoginPartner = React.createClass({
 
 var LoginAccount = React.createClass({
 
+	checkAccount() {
+		if (!this.refs.account.isValid()) {
+			this.refs.account.setState({
+				'status': 'error'
+			})
+		} else {
+			this.refs.account.setState({
+				'status': 'success'
+			})			
+		}
+	},
+
+	checkPassword() {
+		if (!this.refs.password.isValid()) {
+			this.refs.password.setState({
+				'status': 'error'
+			})
+		} else {
+			this.refs.password.setState({
+				'status': 'success'
+			})			
+		}
+	},
+
+	doLogin() {
+
+		var r = true
+		if (!this.refs.account.isValid()) { r = false; }
+		if (!this.refs.password.isValid()) { r = false; }
+
+		if (r) {
+			window.location.href = '/#/stage06';
+		} else {
+			this.refs.account.focus();
+		}
+
+	},
+
 	render() {
 
+		var self = this;
 		var style = {
 			bottomBar: {
 				marginLeft: '-15px',
@@ -170,16 +209,26 @@ var LoginAccount = React.createClass({
       			type: 'tel'
       		}} 
       		ref="account" 
+      		handleChange={this.checkAccount}
       		label="Mobile"
-      		msg={false} />
-
-      	<General.FieldInput 
-      		input={{
-      			type: 'password'
-      		}} 
+      		validation={(v) => {
+      			var re = /^\d+$/;
+      			return re.test(v) && v.length > 6;
+      		}}
+      		msg={{
+      			error: 'Format not valid'
+      		}} />
+      	
+      	<General.FieldPassword 
       		ref="password" 
       		label="Password"
-      		msg={false} />
+      		validation={(v) => {
+      			return v.length >= 5;
+      		}}
+      		handleChange={this.checkPassword}
+      		msg={{
+      			error: 'Password must be at least 5 characters'
+      		}} />
 
       	<General.Paragraph style={style.pararaph}>
       		<a className="mui--pull-right">Forgot password?</a>
@@ -187,8 +236,8 @@ var LoginAccount = React.createClass({
       	</General.Paragraph>
 
 	      <BottomNav.Bar style={style.bottomBar}>
-	      	<BottomNav.Button background="006c68" text="LOGIN" />
-	      	<BottomNav.Button background="db0015" iconRight="fa-chevron-right" iconRightType="fa" text="NEW USER? REGISTER" />
+	      	<BottomNav.Button background="006c68" text="LOGIN" onClick={this.doLogin} />
+	      	<BottomNav.Button background="db0015" iconRight="fa-chevron-right" iconRightType="fa" text="NEW USER? REGISTER" onClick={() => window.location.href = '/#/stage02'} />
 	      </BottomNav.Bar>      		
 
       </div>

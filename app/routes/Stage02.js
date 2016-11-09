@@ -14,9 +14,8 @@ var checkValidEmail = function(email) {
 
 var accordion1Check = function(self) {
 
-	var email_field = self.refs.email_address;
-	self.state.email = email_field.getValue();
-  var r = checkValidEmail(email_field.getValue())
+	var r = self.refs.account.isValid();
+	self.state.account = self.refs.account.getValue();
 
   self.refs.access_data.setState({
   	status: r ? 'success' : 'error'
@@ -45,16 +44,28 @@ var accordion2Check = function(self) {
 
 }
 
+var accordion3Check = function(self) {
+
+	var r = self.refs.name.isValid() && self.refs.birth.isValid();
+	self.state.name = self.refs.name.getValue();
+	self.state.birth = self.refs.birth.getValue();
+
+  self.refs.personal_data.setState({
+  	status: r ? 'success' : 'error'
+  })
+
+	loadingBarStatus(self);
+	return r;
+
+}
+
+
 var loadingBarStatus = function(self) {
 
-	var email_field = self.refs.email_address;
-	self.state.email = email_field.getValue();
-  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-	self.state.completed = (re.test(email_field.getValue())) ? 50 : 0;
-
-	if (self.refs.terms_privacy_flag.getValue()) {
-		self.state.completed += 50;
-	}
+	self.state.completed = self.refs.account.isValid() ? 25 : 0;
+	if (self.refs.name.isValid()) { self.state.completed += 25; }
+	if (self.refs.birth.isValid()) { self.state.completed += 25; }
+	if (self.refs.terms_privacy_flag.getValue()) { self.state.completed += 25; }
 
 	self.refs.loadingBar.handleCompleted(self.state.completed);
 
@@ -65,6 +76,7 @@ var accordionCheckBoth = function() {
 	var r = true;
 	if (!accordion1Check(this)) { r = false; }
 	if (!accordion2Check(this)) { r = false; }
+	if (!accordion3Check(this)) { r = false; }
 
 	if (r) {
 		$('#main').data('stored_data', JSON.stringify(this.state));
@@ -83,7 +95,9 @@ var Stage02 = React.createClass({
 
 		return {
 			completed: 0,
-			email: null,
+			account: null,
+			name: null,
+			birth: null,
 			terms_privacy_flag: false,
 			marketing_flag: false
 		}
@@ -100,11 +114,13 @@ var Stage02 = React.createClass({
 			this.state = ($('#main').data('stored_data')) ? $.extend(true, this.state, JSON.parse($('#main').data('stored_data'))) : this.state;
 		}
 
-		this.refs.email_address.setValue(this.state.email);
+		this.refs.account.setValue(this.state.account);
+		this.refs.name.setValue(this.state.name);
+		this.refs.birth.setValue(this.state.birth);
 		this.refs.terms_privacy_flag.setState({checked: this.state.terms_privacy_flag});
 		this.refs.marketing_flag.setState({checked: this.state.marketing_flag});
 
-		accordion1Check(this);
+		// accordion1Check(this);
 		// accordion2Check(this);
 
 	},
@@ -124,39 +140,54 @@ var Stage02 = React.createClass({
       	</TopNav.Bar>
     		<TopNav.Loading ref="loadingBar" />
 
-	      <MainContent>
+	      <MainContent contentBackgroundStyle={{ paddingBottom: '60px' }}>
 
 	      	<Accordion.Main>
-	      		<Accordion.Section ref="access_data" open={true} title="Access data">
-      				
+	      		<Accordion.Section ref="access_data" open={true} title="Access data" iconLeft="fa fa-unlock-alt">
+			      				
+			      	<General.FieldInput 
+			      		input={{
+			      			type: 'tel'
+			      		}}
+			      		handleChange={accordion1Check.bind(self,self)}
+			      		ref="account"
+			      		label="Mobile"
+			      		validation={(v) => {
+			      			var re = /^\d+$/;
+			      			return re.test(v) && v.length > 6;
+			      		}}
+			      		msg={{
+			      			info: 'It will be your username'
+			      		}} />
+
+	      		</Accordion.Section>
+
+	      		<Accordion.Section ref="personal_data" open={true} title="Personal Data" iconLeft="fa fa-user-o">
+
 	      			<General.FieldInput
-	      				ref="email_address"
-	      				type="email" 
-	      				label="Email address"
-		          	input={{
+	      				ref="name"
+	      				label="Name"
+	      				handleChange={accordion3Check.bind(self,self)}
+								msg={null}
+			      		validation={(v) => {
+			      			return v.length > 0;
+			      		}}
+	      			/>
 
-									onBlur: function(e) {
-
-										if (checkValidEmail(e.target.value)) {
-											self.refs.email_address.setState({
-												status: "success"
-											})
-										} else {
-											self.refs.email_address.setState({
-												status: "error"
-											})					
-										}
-
-										accordion1Check(self);
-
-									}
-						
-								}}
+	      			<General.FieldInput
+	      				ref="birth"
+	      				label="Date of birth"
+	      				handleChange={accordion3Check.bind(self,self)}
+								msg={null}
+			      		validation={(v) => {
+			      			var re = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
+			      			return re.test(v)
+			      		}}								
 	      			/>
 
 	      		</Accordion.Section>
 
-	      		<Accordion.Section ref="terms_privacy_marketing" open={true} title="Terms and condition">
+	      		<Accordion.Section ref="terms_privacy_marketing" open={true} title="Terms and condition" iconLeft="fa fa-globe">
       				
 	      			<General.CheckboxInput
 	      				ref="terms_privacy_flag" 
@@ -175,7 +206,7 @@ var Stage02 = React.createClass({
 
 	      </MainContent>
 
-	      <BottomNav.Bar>
+	      <BottomNav.Bar fixed={true}>
 	      	<BottomNav.Button background="0075aa" iconRight="fa-chevron-right" iconRightType="fa" text="NEXT" onClick={accordionCheckBoth.bind(this)} />
 	      </BottomNav.Bar>
 

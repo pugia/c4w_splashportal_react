@@ -47,7 +47,7 @@ var AccordionSection = React.createClass({
 		return (
 
         <div className={className}>
-        	<AccordionHeader ref="header" title={this.props.title} open={this.state.open} status={this.state.status} openCloseHandler={this.openCloseHandler} />
+        	<AccordionHeader ref="header" title={this.props.title} open={this.state.open} status={this.state.status} openCloseHandler={this.openCloseHandler} iconLeft={this.props.iconLeft || null} />
         	<AccordionContent ref="content">
         		{this.props.children}
         	</AccordionContent>
@@ -71,11 +71,12 @@ var AccordionHeader = React.createClass({
 	render() {
 
 		var iconClass = (this.state.open) ? "fa fa-minus" : "fa fa-plus";
+		var iconLeft = (this.props.iconLeft) ? <i className={this.props.iconLeft} /> : null;
 
 		return (
 
       <label className={"accordion-title " + this.state.status} onClick={this.props.openCloseHandler}>
-        <span className="icon-left"></span>
+        <span className="icon-left">{iconLeft}</span>
         <span className="icon-open-close"><i className={iconClass} aria-hidden="true"></i></span>
         <span className="title">{this.props.title}</span>
       </label>

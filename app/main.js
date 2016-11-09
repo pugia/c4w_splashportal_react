@@ -8,7 +8,7 @@ var Stage01 = require('./routes/Stage01');
 var Stage02 = require('./routes/Stage02');
 var Stage03 = require('./components/Stage03');
 var Stage04 = require('./components/Stage04');
-var Stage06 = require('./components/Stage06');
+var Stage06 = require('./routes/Stage06');
 
 var loadFont = function(url) {
 

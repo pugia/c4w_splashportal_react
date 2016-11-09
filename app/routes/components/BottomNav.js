@@ -6,8 +6,12 @@ var React = global.React;
 var BottomNav = React.createClass({
 
 	render() {
+
+    var classname = "bottombar";
+    if (this.props.fixed) { classname += ' fixed'; }
+
 		return (
-			<div className="bottombar" style={this.props.style || null}>
+			<div className={classname} style={this.props.style || null}>
 				{this.props.children}
 			</div>
 		)
@@ -31,14 +35,8 @@ var BottomNavButton = React.createClass({
       iconRight = (this.props.iconRightType && this.props.iconRightType == 'fa') ? <i className={'fa ' + this.props.iconRight +' mui--pull-right'}></i> : <img src={this.props.iconRight} />
     }
 
-    var props = {}
-
-    if (this.props.onClick) {
-      props.onClick = this.props.onClick.bind(this)
-    }
-
     return (
-      <button className={className} {...props}>
+      <button className={className} onClick={this.props.onClick || null}>
         {iconRight}
         <span>{this.props.text || this.props.children}</span>
       </button>

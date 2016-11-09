@@ -48,12 +48,18 @@ var FieldInput = React.createClass({
 	},
 
 	setValue(v) {
-		this.refs[this.refInput].value = v;
+		if (v) { this.refs[this.refInput].value = v; }
 	},
 
 	focus() {
 		this.refs[this.refInput].focus();
 		centerVerticalElement(this.refs[this.refInput]);
+	},
+
+	isValid() {
+		if (typeof this.props.validation == 'function') {
+			return this.props.validation(this.getValue());
+		}
 	},
 
 	render() {
@@ -69,6 +75,87 @@ var FieldInput = React.createClass({
 
       <div className={'mui-textfield mui-textfield--float-label ' + this.state.status} style={style}>
         <input ref={this.refInput} {...inputProps} onChange={this.props.handleChange || null} />
+        <label>{this.props.label}</label>
+        <span className="info">{this.state.info}</span>
+        <span className="error">{this.state.error}</span>
+        <span className="success">{this.state.success}</span>
+      </div>
+
+		)
+	}
+
+})
+
+var FieldPassword = React.createClass({
+
+	refInput: Math.random().toString(36).substring(7),
+
+	getInitialState() {
+		var st = this.props.msg || {
+			status: 'info',
+			hide: true,
+			info: '',
+			error: '',
+			success: ''
+		}
+		return st;
+	},
+
+	getValue() {
+		return this.refs[this.refInput].value;
+	},
+
+	setValue(v) {
+		this.refs[this.refInput].value = v;
+	},
+
+	focus() {
+		this.refs[this.refInput].focus();
+		centerVerticalElement(this.refs[this.refInput]);
+	},
+
+	handleChange(e) {
+		var dest_ref = (this.state.hide) ? this.refInput : 'ghost';
+		this.refs[dest_ref].value = e.target.value;
+		if (this.props.handleChange) { this.props.handleChange() }
+	},
+
+	isValid() {
+		if (typeof this.props.validation == 'function') {
+			return this.props.validation(this.getValue());
+		}
+	},
+
+	toggleChange() {
+		var self = this;
+		self.setState({
+			hide: !self.state.hide
+		});
+		setTimeout(function() {
+			var dest_ref = (!self.state.hide) ? self.refInput : 'ghost';
+			self.refs[dest_ref].focus();
+		},100);
+	},
+
+	render() {
+
+		var inputProps = this.props.input || { type: 'text' }
+		var style = {};
+
+		if (this.props.msg != false) {
+			style.paddingBottom = '15px'
+		}
+
+		var classname = 'mui-textfield password mui-textfield--float-label ' + this.state.status;
+		if (!this.state.hide) { classname += ' showPassword' }
+		var iClass = (!this.state.hide) ? 'fa fa-eye' : 'fa fa-eye-slash';
+
+		return(
+
+      <div className={classname} style={style}>
+        <input className="ghost" type="password" ref="ghost" onKeyUp={this.handleChange} onKeyDown={this.handleChange} />
+      	<i className={iClass} onClick={this.toggleChange} />
+        <input className="real" id="inputReal" ref={this.refInput} type="text" onKeyUp={this.handleChange} onKeyDown={this.handleChange} />
         <label>{this.props.label}</label>
         <span className="info">{this.state.info}</span>
         <span className="error">{this.state.error}</span>
@@ -177,6 +264,7 @@ var ListButton = React.createClass({
 
 
 exports.FieldInput = FieldInput;
+exports.FieldPassword = FieldPassword;
 exports.CheckboxInput = CheckboxInput;
 exports.Paragraph = Paragraph;
 exports.Divider = Divider;
@@ -184,6 +272,7 @@ exports.ListButton = ListButton;
 
 module.exports = {
 	FieldInput: FieldInput,
+	FieldPassword: FieldPassword,
 	CheckboxInput: CheckboxInput,
 	Paragraph: Paragraph,
 	Divider: Divider,

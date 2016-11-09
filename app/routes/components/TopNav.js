@@ -184,7 +184,7 @@ var MainMenu = React.createClass({
 				<ul ref="ul">
 					<li>My Profile</li>
 					<li>Internet Plans</li>
-					<li>Logout</li>
+					<li onClick={() => window.location.href = '/#/'}>Logout</li>
 				</ul>
 				<span className="overlay" onClick={this.handleOpenClose}></span>
 			</div>
@@ -218,11 +218,13 @@ var LangMenu = React.createClass({
 
 	},
 
-	handleOpenClose() {
+	handleOpenClose(e) {
 
 		this.setState({
 			open: !this.state.open
 		})
+
+		e.target.blur();
 
 		this.refs.menu.className = (!this.state.open) ? this.refs.menu.className.replace(new RegExp('(?:^|\\s)'+ 'close' + '(?:\\s|$)'), ' ') : this.refs.menu.className + ' close';
 
