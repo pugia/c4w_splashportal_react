@@ -6,7 +6,7 @@ var IndexRoute = require('react-router').IndexRoute
 var Landing = require('./routes/Landing');
 var Stage01 = require('./routes/Stage01');
 var Stage02 = require('./routes/Stage02');
-var Stage03 = require('./components/Stage03');
+var Stage03 = require('./routes/Stage03');
 var Stage04 = require('./components/Stage04');
 var Stage06 = require('./routes/Stage06');
 
@@ -71,7 +71,7 @@ const App = React.createClass({
       case '/stage03': 	Child = Stage03; break;
       case '/stage04': 	Child = Stage04; break;
       case '/stage06': 	Child = Stage06; break;
-      default:      		Child = Landing;
+      default:      		window.location.href = '/landing';  // Child = Landing;
     }
 
     return (

@@ -65,6 +65,18 @@
 
 	}
 
+	.buttonBar {
+		margin: 0 -15px;
+		width: auto;
+
+		button {
+			width: 100%;
+			border: none;
+			cursor: pointer;
+		}
+
+	}
+
 	&.login-partner {
 
 		a {

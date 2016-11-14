@@ -6,6 +6,8 @@ var BottomNav = require('./components/BottomNav');
 var Login = require('./components/Login');
 var Modal = require('./components/Modal');
 
+var config = require('../config');
+
 var nextStage = function() {
 
 	var self = this;
@@ -26,14 +28,10 @@ var nextStage = function() {
 
 }
 
-var checkValidEmail = function(email) {
-  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(email);
-}
-
 var Stage01 = React.createClass({
 
 	componentDidMount() {
+    document.getElementById('main').scrollTop = 0;
 		localStorage.removeItem('stored_data');
 	},
 
@@ -41,9 +39,9 @@ var Stage01 = React.createClass({
 		console.log('handle', s);
 	},
 
-	handlePartner(s) {
-		console.log('handle', s);
-	},
+  accountDoLogin() {
+    console.log(this.refs.login_account.getValues());
+  },
 
   render() {
 
@@ -69,30 +67,18 @@ var Stage01 = React.createClass({
       <div id="real-container">
 
       	<TopNav.Bar fixed={true}>
-      		<TopNav.Button side="left" onClick={ () => window.location.href = '/#/' } >
+      		<TopNav.Button side="left" onClick={ () => window.location.href = '/landing' } >
       			<img src="/img/arrow-back.svg" />
       		</TopNav.Button>
-      		<TopNav.Logo img="/img/fs@2x.png" />
+      		<TopNav.Title align="center" text="Wifi access" />
       	</TopNav.Bar>
 
 	      <MainContent>
 
-          <Login.Social 
+          <Login.Social
           	title="use your social account" 
-          	socials={['facebook','twitter','linkedin','google-plus','google','vk','instagram','foursquare','pinterest','weibo','baidu','qq','renren']}
+          	socials={config.Login.social.list}
           	handleSocial={this.handleSocial}
-          />
-
-          <General.Divider text="or" />
-
-          <Login.Partner 
-          	partners={{
-          		'frecciarossa': 'Frecciarossa',
-          		'cartafreccia': 'Cartafreccia',
-          		'unipi': 'University of Pisa',
-          		'freeitaliawifi': 'Free Italia Wi-fi'
-          	}}
-          	handlePartner={this.handlePartner}
           />
 
           <General.Divider text="or" />
@@ -100,6 +86,9 @@ var Stage01 = React.createClass({
           <Login.Account
           	ref="login_account"
           	title="LOGIN WITH OUR ACCOUNT"
+            config={config.Login.account.access}
+            doLogin={this.accountDoLogin}
+            doRegister={() => window.location.href = '/#/stage02' }
           />
 
 	      </MainContent>

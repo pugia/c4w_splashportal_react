@@ -6,6 +6,7 @@ var React = global.React;
 var MainContent = React.createClass({
 
   componentDidMount() {
+    var self = this;
     window.addEventListener("resize", this.updateDimensions);
     document.body.style.overflow = 'auto';    
     setTimeout(this.updateDimensions, 100);
@@ -19,17 +20,21 @@ var MainContent = React.createClass({
     this.updateDimensions();
   },
 
+  getFullHeight: function() {
+    var w = window,
+        d = document,
+        e = d.documentElement,
+        g = d.getElementsByTagName('body')[0],
+        h = w.innerHeight|| e.clientHeight|| g.clientHeight,
+        c = document.getElementById("real-container").childNodes;
+    for (var x in c) { h -= (c[x].nodeType == '1' && c[x].id != 'main-content') ? c[x].offsetHeight : 0; }
+    return h;
+  },
+
   updateDimensions: function() {
 
     if (this.props.full) {
-      var w = window,
-          d = document,
-          e = d.documentElement,
-          g = d.getElementsByTagName('body')[0],
-          h = w.innerHeight|| e.clientHeight|| g.clientHeight,
-          c = document.getElementById("real-container").childNodes;
-      for (var x in c) { h -= (c[x].nodeType == '1' && c[x].id != 'main-content') ? c[x].offsetHeight : 0; }
-      this.refs.contentBackground.style.minHeight = h+'px';
+      this.refs.contentBackground.style.minHeight = this.getFullHeight()+'px';
     }
   },
 

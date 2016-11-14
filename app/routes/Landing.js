@@ -1,21 +1,16 @@
-require('smoothscroll-polyfill').polyfill();
-
 var React = global.React;
 var General = require('./components/General');
-var TopNav = require('./components/TopNav');
+var TopNav = require('./elements/TopNav');
 var MainContent = require('./components/MainContent');
-var Showcase = require('./components/Showcase');
+
+var config = require('../config');
 
 var Landing = React.createClass({
 
 	componentDidMount() {
 		localStorage.removeItem('stored_data');
-	},
-
-	scrollDown() {
-
-		ReactDOM.findDOMNode(this.refs.asdf).scrollIntoView({ behavior: 'smooth' });
-
+    this.refs.sliderContainer.style.height = ( this.refs.content.getFullHeight() - getAbsoluteHeight(this.refs.goOnlineBtn) ) + 'px';
+    document.getElementById('main').style.opacity = 1;
 	},
 
   render() {
@@ -24,60 +19,39 @@ var Landing = React.createClass({
 
 		var style = {
 			contentBackground: {
-				background: 'url(/img/bkg@2x.png) no-repeat top center / cover',
+				backgroundRepeat: 'no-repeat',
+				backgroundPosition: 'top center',
+				backgroundSize: 'cover',
+        backgroundImage: "url("+ config.Content.background +")"
 			},
-			showcase: {
-				main: {
-					go_online_button: {
-						display: 'block',
-						background: '#006d68',
-						fontFamily: '"Roboto", sans-serif',
-						width: '90%',
-						height: '47px',
-						lineHeight: '47px',
-						textAlign: 'center',
-						color: '#fff'
-					}
-				},
-				other: {
-					padding: '60px 30px 80px 30px',
-					textAlign: 'center'
-				}
-			}
+      sliderContainer: {
+        position: 'absolute',
+        width: '100%'
+      }
 		}
 
     return (
       <div id="real-container">
 
-      	<TopNav.Bar fixed={true} mainMenu={true} langMenu={true}>
+      	<TopNav config={config.TopNav} />
 
-      		<TopNav.Logo img="/img/fs@2x.png" />
+	      <MainContent ref="content" full contentBackgroundStyle={style.contentBackground}>
 
-      	</TopNav.Bar>
+          <div ref="sliderContainer" className="sliderContainer" style={style.sliderContainer}>
+            <div className="slide">
+              <div className="image"></div>
+              <div className="details">
+                <h3 className="headline">Welcome to our new Portal</h3>
+                <p className="description"></p>
+                <p className="action"></p>
+              </div>
+            </div>
+          </div>
 
-	      <MainContent contentBackgroundStyle={style.contentBackground}>
-
-	      	<Showcase.Main scrollDown={this.scrollDown}>
-
-	          <General.Paragraph align="center" text="Welcome on board!" />
-	          <General.Paragraph align="center" text="custom html" />
-
-	          <General.Paragraph align="center">
-	          	<a href="/#/stage01" style={style.showcase.main.go_online_button}>
-	          		<span>CONNECT TO OUR WIFI</span>
-	          		<i className="fa fa-angle-right"></i>
-	          	</a>
-	          </General.Paragraph>
-
-          </Showcase.Main>
-
-          <Showcase.Other ref="asdf">
-
-	          <General.Paragraph style={style.showcase.other} align="center">
-	          	<img src="/img/FSNWES.png" />
-	          </General.Paragraph>
-
-          </Showcase.Other>
+        	<a href="/#/stage01" ref="goOnlineBtn" className="go-online-button main-button-background">
+        		<span>CONNECT TO OUR WIFI</span>
+        		<i className="fa fa-angle-right"></i>
+        	</a>
 
 	      </MainContent>
 
@@ -86,6 +60,17 @@ var Landing = React.createClass({
   }
 
 });
+
+function getAbsoluteHeight(el) {
+  // Get the DOM Node if you pass in a string
+  el = (typeof el === 'string') ? document.querySelector(el) : el; 
+
+  var styles = window.getComputedStyle(el);
+  var margin = parseFloat(styles['marginTop']) +
+               parseFloat(styles['marginBottom']);
+
+  return Math.ceil(el.offsetHeight + margin);
+}
 
 /* Module.exports instead of normal dom mounting */
 module.exports = Landing;

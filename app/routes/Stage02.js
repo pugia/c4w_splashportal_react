@@ -6,6 +6,7 @@ var BottomNav = require('./components/BottomNav');
 var Accordion = require('./components/Accordion');
 
 var moment = require('moment');
+var config = require('../config');
 
 var checkValidEmail = function(email) {
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -14,8 +15,18 @@ var checkValidEmail = function(email) {
 
 var accordion1Check = function(self) {
 
-	var r = self.refs.account.isValid();
-	self.state.account = self.refs.account.getValue();
+	var r = true;
+	config.Login.account.access.map((c,i) => {
+		var ref = c.type+'_'+i;
+		if (c.validation) {
+			if (!self.refs[ref].isValid()) { r = false; }
+		}
+		var fields = self.state.fields;
+		fields[ref] = self.refs[ref].getValue()
+		self.setState({
+			fields: fields
+		})
+	})
 
   self.refs.access_data.setState({
   	status: r ? 'success' : 'error'
@@ -46,9 +57,18 @@ var accordion2Check = function(self) {
 
 var accordion3Check = function(self) {
 
-	var r = self.refs.name.isValid() && self.refs.birth.isValid();
-	self.state.name = self.refs.name.getValue();
-	self.state.birth = self.refs.birth.getValue();
+	var r = true;
+	config.Login.account.custom.map((c,i) => {
+		var ref = c.type+'_'+i;
+		if (c.validation) {
+			if (!self.refs[ref].isValid()) { r = false; }
+		}
+		var fields = self.state.fields;
+		fields[ref] = self.refs[ref].getValue()
+		self.setState({
+			fields: fields
+		})
+	})
 
   self.refs.personal_data.setState({
   	status: r ? 'success' : 'error'
@@ -59,15 +79,29 @@ var accordion3Check = function(self) {
 
 }
 
-
 var loadingBarStatus = function(self) {
 
-	self.state.completed = self.refs.account.isValid() ? 25 : 0;
-	if (self.refs.name.isValid()) { self.state.completed += 25; }
-	if (self.refs.birth.isValid()) { self.state.completed += 25; }
-	if (self.refs.terms_privacy_flag.getValue()) { self.state.completed += 25; }
+	var toCheck = 1;
+	var completed = 0
+	config.Login.account.access.map( (c,i) => { if (c.validation) { toCheck++ }	})
+	config.Login.account.custom.map( (c,i) => { if (c.validation) { toCheck++ }	})
 
-	self.refs.loadingBar.handleCompleted(self.state.completed);
+	var step = 100 / toCheck;
+
+	config.Login.account.access.map( (c,i) => { 
+		var ref = c.type+'_'+i;
+		if (self.refs[ref].isValid()) { completed += step }
+	})
+
+	config.Login.account.custom.map( (d,j) => { 
+		var ref = d.type+'_'+j;
+		if (self.refs[ref].isValid()) { completed += step }
+	})
+
+	if (self.refs.terms_privacy_flag.getValue()) { completed += step; }
+
+	self.refs.loadingBar.handleCompleted(completed);
+	self.setState({ completed: completed })
 
 }
 
@@ -95,9 +129,7 @@ var Stage02 = React.createClass({
 
 		return {
 			completed: 0,
-			account: null,
-			name: null,
-			birth: null,
+			fields: {},
 			terms_privacy_flag: false,
 			marketing_flag: false
 		}
@@ -105,7 +137,7 @@ var Stage02 = React.createClass({
 	},
 
 	componentDidMount: function() {
-
+		document.getElementById('main').scrollTop = 0;
 		localStorage.removeItem('login_time');
 
   	if (localStorage.getItem('stored_data')) {
@@ -114,20 +146,82 @@ var Stage02 = React.createClass({
 			this.state = ($('#main').data('stored_data')) ? $.extend(true, this.state, JSON.parse($('#main').data('stored_data'))) : this.state;
 		}
 
-		this.refs.account.setValue(this.state.account);
-		this.refs.name.setValue(this.state.name);
-		this.refs.birth.setValue(this.state.birth);
-		this.refs.terms_privacy_flag.setState({checked: this.state.terms_privacy_flag});
-		this.refs.marketing_flag.setState({checked: this.state.marketing_flag});
-
-		// accordion1Check(this);
-		// accordion2Check(this);
-
 	},
+
+	checkField(ref,accordion) {
+		if (!this.refs[ref].isValid()) {
+			this.refs[ref].setState({
+				'status': 'error'
+			})
+		} else {
+			this.refs[ref].setState({
+				'status': 'success'
+			})			
+		}
+		if (accordion == 1) { accordion1Check(this); }
+		if (accordion == 3) { accordion3Check(this); }
+	},	
 
   render() {
 
   	var self = this;
+
+		// generate fields
+		var generateField = function(conf, index, accordion) {
+			var r = null,
+					ref = conf.type+'_'+index;
+
+			switch (conf.type) {
+			// start switch
+				// email
+				case 'email':
+					r = <General.FieldInput
+						key={ref} 
+	      		label={conf.label || ''}
+	      		validation={conf.validation}
+						ref={ref}
+	      		handleChange={self.checkField.bind(self,ref,accordion)}
+	      		/>
+					break;
+
+				// password
+				case 'password':
+					r = <General.FieldPassword
+						key={ref} 
+	      		label={conf.label || ''}
+	      		validation={conf.validation}
+						ref={ref}
+	      		handleChange={self.checkField.bind(self,ref,accordion)}
+	      		/>
+					break;
+
+				case 'select':
+					r = <General.FieldSelect
+						key={ref} 
+	      		label={conf.label || ''}
+	      		validation={conf.validation}
+						ref={ref}
+	      		handleChange={self.checkField.bind(self,ref,accordion)}
+	      		options={conf.options}
+	      		/>
+					break;
+
+				default: 
+					r = <General.FieldInput 
+						key={'text'+'_'+index} 
+	      		label={conf.label || ''}
+	      		validation={conf.validation}
+						ref={ref}
+	      		handleChange={self.checkField.bind(self,ref,accordion)}
+						/>
+			
+			// end switch
+			}
+
+			return r;
+
+		}
+
 
     return (
       <div id="real-container">
@@ -136,7 +230,7 @@ var Stage02 = React.createClass({
       		<TopNav.Button side="left" onClick={ () => window.location.href = '/#/stage01' } >
       			<img src="/img/arrow-back.svg" />
       		</TopNav.Button>
-      		<TopNav.Logo img="/img/fs@2x.png" />
+      		<TopNav.Title align="center" text="Registration" />
       	</TopNav.Bar>
     		<TopNav.Loading ref="loadingBar" />
 
@@ -144,46 +238,14 @@ var Stage02 = React.createClass({
 
 	      	<Accordion.Main>
 	      		<Accordion.Section ref="access_data" open={true} title="Access data" iconLeft="fa fa-unlock-alt">
-			      				
-			      	<General.FieldInput 
-			      		input={{
-			      			type: 'tel'
-			      		}}
-			      		handleChange={accordion1Check.bind(self,self)}
-			      		ref="account"
-			      		label="Mobile"
-			      		validation={(v) => {
-			      			var re = /^\d+$/;
-			      			return re.test(v) && v.length > 6;
-			      		}}
-			      		msg={{
-			      			info: 'It will be your username'
-			      		}} />
+			      	
+	      			{config.Login.account.access.map( (c,i) => generateField(c,i,1) )}
 
 	      		</Accordion.Section>
 
 	      		<Accordion.Section ref="personal_data" open={true} title="Personal Data" iconLeft="fa fa-user-o">
 
-	      			<General.FieldInput
-	      				ref="name"
-	      				label="Name"
-	      				handleChange={accordion3Check.bind(self,self)}
-								msg={null}
-			      		validation={(v) => {
-			      			return v.length > 0;
-			      		}}
-	      			/>
-
-	      			<General.FieldInput
-	      				ref="birth"
-	      				label="Date of birth"
-	      				handleChange={accordion3Check.bind(self,self)}
-								msg={null}
-			      		validation={(v) => {
-			      			var re = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
-			      			return re.test(v)
-			      		}}								
-	      			/>
+	      			{config.Login.account.custom.map( (c,i) => generateField(c,i,3) )}
 
 	      		</Accordion.Section>
 
@@ -207,7 +269,7 @@ var Stage02 = React.createClass({
 	      </MainContent>
 
 	      <BottomNav.Bar fixed={true}>
-	      	<BottomNav.Button background="0075aa" iconRight="fa-chevron-right" iconRightType="fa" text="NEXT" onClick={accordionCheckBoth.bind(this)} />
+	      	<button className="main-button main-button-height" onClick={accordionCheckBoth.bind(this)}>NEXT</button>
 	      </BottomNav.Bar>
 
 
@@ -216,6 +278,7 @@ var Stage02 = React.createClass({
   }
 
 });
+// 	      	<BottomNav.Button background="0075aa" iconRight="fa-chevron-right" iconRightType="fa" text="NEXT" />
 
 /* Module.exports instead of normal dom mounting */
 module.exports = Stage02;

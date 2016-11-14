@@ -25,6 +25,12 @@ module.exports = function(app) {
 	//   res.render('stages.ejs', { main: mainHtml });
 	// });
 
+	app.get('/landing', function(req, res){
+		var Child = React.createFactory(require('./routes/Landing'));
+	  var mainHtml = ReactDOMServer.renderToString(Child({}));
+	  res.render('landing.ejs', { main: mainHtml });
+	});
+
 	app.get('/test', function(req, res){
 		var Child = React.createFactory(require('./routes/Stage01test'));
 	  var mainHtml = ReactDOMServer.renderToString(Child({}));

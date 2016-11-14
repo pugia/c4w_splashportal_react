@@ -59,6 +59,8 @@ var FieldInput = React.createClass({
 	isValid() {
 		if (typeof this.props.validation == 'function') {
 			return this.props.validation(this.getValue());
+		} else {
+			return true;
 		}
 	},
 
@@ -75,7 +77,7 @@ var FieldInput = React.createClass({
 
       <div className={'mui-textfield mui-textfield--float-label ' + this.state.status} style={style}>
         <input ref={this.refInput} {...inputProps} onChange={this.props.handleChange || null} />
-        <label>{this.props.label}</label>
+        <label>{this.props.label || 'Field'}</label>
         <span className="info">{this.state.info}</span>
         <span className="error">{this.state.error}</span>
         <span className="success">{this.state.success}</span>
@@ -123,6 +125,8 @@ var FieldPassword = React.createClass({
 	isValid() {
 		if (typeof this.props.validation == 'function') {
 			return this.props.validation(this.getValue());
+		} else {
+			return true;
 		}
 	},
 
@@ -221,6 +225,76 @@ var CheckboxInput = React.createClass({
 
 })
 
+var FieldSelect = React.createClass({
+
+	refInput: Math.random().toString(36).substring(7),
+
+	getInitialState() {
+		var st = this.props.msg || {
+			status: 'info',
+			info: '',
+			error: '',
+			success: ''
+		}
+		return st;
+	},
+
+	getValue() {
+		return this.refs[this.refInput].value;
+	},
+
+	setValue(v) {
+		if (v) { this.refs[this.refInput].value = v; }
+	},
+
+	focus() {
+		this.refs[this.refInput].focus();
+		centerVerticalElement(this.refs[this.refInput]);
+	},
+
+	isValid() {
+		if (typeof this.props.validation == 'function') {
+			return this.props.validation(this.getValue());
+		} else {
+			return true;
+		}
+	},
+
+	render() {
+
+		var style = {};
+
+		if (this.props.msg != false) {
+			style.paddingBottom = '15px'
+		}
+
+		var generateOption = function(data,index) {
+			var opts = {
+				key: Math.random().toString(36).substring(7)
+			};
+
+			if (data.value) { opts.value = data.value }
+
+			return <option {...opts}>{data.text}</option>
+		}
+
+		return(
+
+      <div className={'mui-select ' + this.state.status} style={style}>
+        <label>{this.props.label || 'Field'}</label>
+        <select ref={this.refInput} onChange={this.props.handleChange || null}>
+        	{this.props.options.map( (op,i) => generateOption(op,i) )}
+        </select>
+        <span className="info">{this.state.info}</span>
+        <span className="error">{this.state.error}</span>
+        <span className="success">{this.state.success}</span>
+      </div>
+
+		)
+	}
+
+})
+
 var Divider = React.createClass({
 
   render: function () {
@@ -265,6 +339,7 @@ var ListButton = React.createClass({
 
 exports.FieldInput = FieldInput;
 exports.FieldPassword = FieldPassword;
+exports.FieldSelect = FieldSelect;
 exports.CheckboxInput = CheckboxInput;
 exports.Paragraph = Paragraph;
 exports.Divider = Divider;
@@ -273,6 +348,7 @@ exports.ListButton = ListButton;
 module.exports = {
 	FieldInput: FieldInput,
 	FieldPassword: FieldPassword,
+	FieldSelect: FieldSelect,
 	CheckboxInput: CheckboxInput,
 	Paragraph: Paragraph,
 	Divider: Divider,

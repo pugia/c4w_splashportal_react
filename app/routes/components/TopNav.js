@@ -5,15 +5,34 @@ var React = global.React;
 
 var TopNav = React.createClass({
 
+	getInitialState() {
+		return {
+			menuOpen: false
+		}
+	},
+
+	menuToggle(status) {
+		this.setState({
+			menuOpen: Boolean(status)
+		})
+	},
+
 	render() {
 
-		var main = (this.props.mainMenu) ? <MainMenu /> : null;
-		var lang = (this.props.langMenu) ? <LangMenu /> : null;
+		var height = null;
+		var sty = {};
+		if (this.props.height) { height = this.props.height +'px'; sty.height = height; }
+		if (this.props.background) { sty.background = this.props.background; }
+
+		var main = (this.props.mainMenu) ? <MainMenu height={height} list={this.props.mainMenu} onMenuToggle={this.menuToggle} /> : null;
+		var lang = (this.props.langMenu) ? <LangMenu height={height} list={this.props.langMenu.list} current={this.props.langMenu.current} onMenuToggle={this.menuToggle} /> : null;
 		var className = (this.props.fixed) ? 'fixed' : '';
+		var divClassname = "navigation-background topbar";
+		if (this.state.menuOpen) { divClassname += ' menu-opened' }
 
 		return (
-			<nav className={className}>
-				<div className="topbar">
+			<nav id="mainNav" className={className}>
+				<div className={divClassname} style={sty}>
 					{this.props.children}
 				</div>
 				{main}
@@ -27,8 +46,15 @@ var TopNav = React.createClass({
 var TopNavTitle = React.createClass({
 
 	render() {
+
+		if (this.props.height) {
+			var sty = {
+				lineHeight: this.props.height+'px'
+			}
+		}
+
 		return (
-			<h2 className="mui--text-center">{this.props.children || this.props.text}</h2>
+			<h2 className="mui--text-center" style={sty || null}>{this.props.children || this.props.text}</h2>
 		)
 	}
 
@@ -43,8 +69,15 @@ var TopNavLogo = React.createClass({
 			className += ' '+this.props.align;
 		}
 
+		if (this.props.height) {
+			var sty = {
+				height: this.props.height+'px',
+				marginTop: '-' + parseInt(this.props.height/2) + 'px'
+			}
+		}
+
 		return (
-			<img className={className} src={this.props.img} />
+			<img className={className} src={this.props.img} style={sty || null} />
 		)
 	}
 
@@ -161,6 +194,35 @@ var MainMenu = React.createClass({
 			}, 1000);
 		}
 
+		if (this.props.onMenuToggle) {
+			this.props.onMenuToggle(!this.state.open);
+		}
+
+	},
+
+	renderElement(key, value) {
+
+		// TODO TRANSLATE
+		var labels = {
+			myProfile: 'My Profile',
+			internetProfile: 'Internt Profile',
+			apps: 'Apps',
+			logout: 'Logout'
+		}
+
+		var element;
+		switch(key) {
+			case 'logout':
+				element = <li key={key} onClick={() => window.location.href = '/#/'}>{labels[key]}</li> 
+				break;
+			default: 
+				if (value) {
+					element = <li key={key}>{labels[key]}</li>
+				}
+		}
+
+		return element;
+
 	},
 
 	render() {
@@ -170,11 +232,24 @@ var MainMenu = React.createClass({
 			btnClass += 'is-active';
 		}
 
+		var sty = {
+			div: {},
+			button: {}
+		}
+
+		if (this.props.height) {
+			var h = this.props.height
+			sty.div.height = h;
+			sty.div.top = '-'+h;
+			sty.button.height = h;
+			sty.button.lineHeight = h;
+		}
+
 		return (
 
 			<div ref="menu" className="main-menu">
-				<div className="button" onClick={this.handleOpenClose}>
-					<button ref="openClose" className={btnClass}>
+				<div className="button" style={sty.div} onClick={this.handleOpenClose}>
+					<button ref="openClose" style={sty.button} className={btnClass}>
 					  <span className="hamburger-box">
 					    <span className="hamburger-inner"></span>
 					  </span>
@@ -182,9 +257,9 @@ var MainMenu = React.createClass({
 				</div>
 
 				<ul ref="ul">
-					<li>My Profile</li>
-					<li>Internet Plans</li>
-					<li onClick={() => window.location.href = '/#/'}>Logout</li>
+					{mapObject(this.props.list, (k,v) => {
+						return this.renderElement(k,v);
+					})}
 				</ul>
 				<span className="overlay" onClick={this.handleOpenClose}></span>
 			</div>
@@ -237,25 +312,51 @@ var LangMenu = React.createClass({
 				self.refs.menu.className += ' hide';
 				document.body.style.overflow = 'auto';
 			}, 1000);
+
+		}
+
+		if (this.props.onMenuToggle) {
+			this.props.onMenuToggle(!this.state.open);
 		}
 
 	},
 
+	handleChangeLanguage(e) {
+		if (this.props.handleChangeLanguage) {
+			this.props.handleChangeLanguage(e.target.lang);
+		}
+	},
+
 	render() {
+
+		var self = this;
+		var sty = {
+			div: {},
+			button: {}
+		}
+
+		if (this.props.height) {
+			var h = this.props.height
+			sty.div.height = h;
+			sty.div.top = '-'+h;
+			sty.button.height = h;
+			sty.button.lineHeight = h;
+		}
 
 		return (
 
 			<div ref="menu" className="lang-menu">
-				<div className="button" onClick={this.handleOpenClose}>
-					<button ref="openClose">
+				<div className="button" style={sty.div} onClick={this.handleOpenClose}>
+					<button ref="openClose" style={sty.button}>
 						<i className="fa fa-globe"></i>
-					  <span ref="selected">ENG</span>
+					  <span ref="selected">{this.props.current}</span>
 					</button>
 				</div>
 
 				<ul ref="ul">
-					<li>ENG</li>
-					<li>ITA</li>
+					{this.props.list.map((lang) => {
+						return <li key={lang} lang={lang} onClick={self.handleChangeLanguage}>{lang}</li>
+					})}
 				</ul>
 				<span className="overlay" onClick={this.handleOpenClose}></span>
 			</div>
@@ -263,6 +364,12 @@ var LangMenu = React.createClass({
 	}
 
 })
+
+function mapObject(object, callback) {
+  return Object.keys(object).map(function (key) {
+    return callback(key, object[key]);
+  });
+}
 
 exports.Bar = TopNav;
 exports.Title = TopNavTitle;

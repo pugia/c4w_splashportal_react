@@ -48,6 +48,11 @@ var LoginSocial = React.createClass({
 			}
 		}
 
+		var showmore = null;
+		if (this.props.socials.length > 4) {
+			showmore = <button className="social show-more" onClick={this.showMore}><i className="fa fa-plus"></i></button>
+		}
+
 		return (
 
       <div className="login login-social">
@@ -55,7 +60,7 @@ var LoginSocial = React.createClass({
 
         <div className="buttons">
         	{this.props.socials.map(createButton)}
-        	<button className="social show-more" onClick={this.showMore}><i className="fa fa-plus"></i></button>
+        	{showmore}
         </div>
 	      <Modal ref="modal" title="CHOOSE A SOCIAL ACCOUNT">
 	      	{this.props.socials.map(createButtonModal)}
@@ -148,42 +153,56 @@ var LoginPartner = React.createClass({
 
 var LoginAccount = React.createClass({
 
-	checkAccount() {
-		if (!this.refs.account.isValid()) {
-			this.refs.account.setState({
-				'status': 'error'
-			})
-		} else {
-			this.refs.account.setState({
-				'status': 'success'
-			})			
-		}
-	},
-
-	checkPassword() {
-		if (!this.refs.password.isValid()) {
-			this.refs.password.setState({
-				'status': 'error'
-			})
-		} else {
-			this.refs.password.setState({
-				'status': 'success'
-			})			
-		}
-	},
-
 	doLogin() {
 
 		var r = true
-		if (!this.refs.account.isValid()) { r = false; }
-		if (!this.refs.password.isValid()) { r = false; }
-
-		if (r) {
-			window.location.href = '/#/stage06';
-		} else {
-			this.refs.account.focus();
+		var toFocus = null;
+		for (var k in this.props.config) {
+			if (r) {
+				var c = this.props.config[k];
+				toFocus = c.type + '_' + k;
+				if (!this.refs[toFocus].isValid()) { r = false; }
+			}
 		}
 
+		if (!r) {
+			this.refs[toFocus].focus();
+		} else {
+			if (this.props.doLogin) {
+				this.props.doLogin()
+			}
+		}
+
+	},
+
+	doRegister() {
+		if (this.props.doRegister) {
+			this.props.doRegister();
+		}
+	},
+
+	getValues() {
+
+		var values = [];
+		for (var k in this.props.config) {
+			var c = this.props.config[k];
+			var r = c.type + '_' + k;
+			values.push(this.refs[r].getValue());
+		}
+		return values;
+
+	},
+
+	checkField(ref) {
+		if (!this.refs[ref].isValid()) {
+			this.refs[ref].setState({
+				'status': 'error'
+			})
+		} else {
+			this.refs[ref].setState({
+				'status': 'success'
+			})			
+		}
 	},
 
 	render() {
@@ -191,54 +210,67 @@ var LoginAccount = React.createClass({
 		var self = this;
 		var style = {
 			bottomBar: {
-				marginLeft: '-15px',
-				marginRight: '-15px',
-				width: 'auto'
+
 			},
 			pararaph: {
 				marginBottom: '50px'
 			}
 		}
 
+		// generate fields
+		var generateField = function(conf, index) {
+			var r = null,
+					ref = conf.type+'_'+index;
+
+			switch (conf.type) {
+			// start switch
+				// email
+				case ('email'):
+					r = <General.FieldInput
+						key={ref} 
+	      		label={conf.label || ''}
+	      		validation={conf.validation}
+						ref={ref}
+	      		handleChange={self.checkField.bind(self,ref)}
+	      		/>
+					break;
+
+				// password
+				case ('password'):
+					r = <General.FieldPassword
+						key={ref} 
+	      		label={conf.label || ''}
+	      		validation={conf.validation}
+						ref={ref}
+	      		handleChange={self.checkField.bind(self,ref)}
+	      		/>
+					break;
+
+				default: 
+					r = <General.FieldInput key={'text'+'_'+index} />
+			
+			// end switch
+			}
+
+			return r;
+
+		}
+
 		return(
 
       <div className="login login-account mui-container">
       	<General.Paragraph customClass="title" align="center" text={this.props.title} />
-      	<General.FieldInput 
-      		input={{
-      			type: 'tel'
-      		}} 
-      		ref="account" 
-      		handleChange={this.checkAccount}
-      		label="Mobile"
-      		validation={(v) => {
-      			var re = /^\d+$/;
-      			return re.test(v) && v.length > 6;
-      		}}
-      		msg={{
-      			error: 'Format not valid'
-      		}} />
-      	
-      	<General.FieldPassword 
-      		ref="password" 
-      		label="Password"
-      		validation={(v) => {
-      			return v.length >= 5;
-      		}}
-      		handleChange={this.checkPassword}
-      		msg={{
-      			error: 'Password must be at least 5 characters'
-      		}} />
+      	{this.props.config.map( (c,i) => generateField(c,i) )}
 
       	<General.Paragraph style={style.pararaph}>
       		<a className="mui--pull-right">Forgot password?</a>
       		<label htmlFor="remember_me"><input id="remember_me" type="checkbox" value="1" /> Remember me</label>
       	</General.Paragraph>
 
-	      <BottomNav.Bar style={style.bottomBar}>
-	      	<BottomNav.Button background="006c68" text="LOGIN" onClick={this.doLogin} />
-	      	<BottomNav.Button background="db0015" iconRight="fa-chevron-right" iconRightType="fa" text="NEW USER? REGISTER" onClick={() => window.location.href = '/#/stage02'} />
-	      </BottomNav.Bar>      		
+	      <div className="buttonBar">
+	      	<button className="main-button-background main-button-height" onClick={this.doLogin}>LOGIN</button>
+	      	<button className="navigation-background main-button-height" onClick={this.doRegister}>NEW USER? REGISTER</button>
+	      </div>      		
 
       </div>
 

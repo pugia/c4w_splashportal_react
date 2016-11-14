@@ -42,8 +42,43 @@ function compile(watch) {
   rebundle();
 }
 
+function compile_landing(watch) {
+  var bundler = watchify(
+    browserify('./app/landing.js', { debug: true }).transform(babel)
+  );
+
+  function rebundle() {
+    bundler.bundle()
+      .on('error', function(err) { console.error(err); this.emit('end'); })
+      .pipe(source('landing.js'))
+      .pipe(buffer())
+      .pipe(sourcemaps.init({ loadMaps: true }))
+      .pipe(sourcemaps.write('./'))
+      .pipe(minify({
+        ext:{
+          min:'.min.js'
+        }
+      }))
+      .pipe(gulp.dest('./public/build'))
+  }
+
+  if (watch) {
+    bundler.on('update', function() {
+      console.log('-> bundling landing...');
+      rebundle();
+    })
+    .on('end', function() {
+      console.log('-> end');
+    })
+  }
+
+  rebundle();
+}
+
+
 function watch() {
   compile(true);
+  compile_landing(true);
   sass_task();
 };
 
