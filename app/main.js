@@ -7,7 +7,7 @@ var Landing = require('./routes/Landing');
 var Stage01 = require('./routes/Stage01');
 var Stage02 = require('./routes/Stage02');
 var Stage03 = require('./routes/Stage03');
-var Stage04 = require('./components/Stage04');
+var Stage04 = require('./routes/Stage04');
 var Stage06 = require('./routes/Stage06');
 
 var loadFont = function(url) {
@@ -71,7 +71,7 @@ const App = React.createClass({
       case '/stage03': 	Child = Stage03; break;
       case '/stage04': 	Child = Stage04; break;
       case '/stage06': 	Child = Stage06; break;
-      default:      		window.location.href = '/landing';  // Child = Landing;
+      default: Child = Landing;
     }
 
     return (
@@ -93,6 +93,3 @@ ReactDOM.render((
     </Route>
   </Router>
 ), document.getElementById('main') )
-// ReactDOM.render((
-//   <Stage01 />
-// ), document.getElementById('main') )

@@ -213,7 +213,7 @@ var MainMenu = React.createClass({
 		var element;
 		switch(key) {
 			case 'logout':
-				element = <li key={key} onClick={() => window.location.href = '/#/'}>{labels[key]}</li> 
+				element = <li key={key} onClick={() => window.location.href = '/landing'}>{labels[key]}</li> 
 				break;
 			default: 
 				if (value) {

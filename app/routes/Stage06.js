@@ -1,8 +1,10 @@
 var React = global.React;
 var General = require('./components/General');
-var TopNav = require('./components/TopNav');
+var TopNav = require('./elements/TopNav');
 var MainContent = require('./components/MainContent');
-var BottomNav = require('./components/BottomNav');
+var AppMenu = require('./components/AppMenu');
+
+var config = require('../config');
 
 var Stage06 = React.createClass({
 
@@ -30,15 +32,11 @@ var Stage06 = React.createClass({
     return (
       <div id="real-container">
 
-        <TopNav.Bar fixed={true} mainMenu={true} langMenu={true}>
-
-          <TopNav.Logo img="/img/fs@2x.png" />
-
-        </TopNav.Bar>
+        <TopNav config={config.TopNav} />
 
 	      <MainContent full contentBackgroundStyle={style.contentBackground}>
 
-          <div className="mui-panel" style={style.panel} />
+          <AppMenu list={config.Apps} />
 
 	      </MainContent>
 

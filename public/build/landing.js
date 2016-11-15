@@ -86,6 +86,29 @@ var config = {
 				}]
 			}]
 		}
+	},
+
+	Apps: {
+		weather: {
+			icon: '/img/apps/weather@2x.png',
+			title: 'Weather',
+			subtitle: 'Check the weather around of you'
+		},
+		info: {
+			icon: '/img/apps/info@2x.png',
+			title: 'Info',
+			subtitle: 'Information about us'
+		},
+		nearby: {
+			icon: '/img/apps/nearby@2x.png',
+			title: 'Nearby',
+			subtitle: 'Check the POI around of you'
+		},
+		shop: {
+			icon: '/img/apps/shop@2x.png',
+			title: 'Shop',
+			subtitle: 'Check the shops around of you'
+		}
 	}
 
 };
@@ -196,7 +219,11 @@ module.exports = Landing;
 (function (global){
 'use strict';
 
+var _React$createClass;
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 exports.__esModule = true;
 
@@ -266,6 +293,11 @@ var FieldInput = React.createClass({
 			return true;
 		}
 	},
+	componentDidMount: function componentDidMount() {
+		if (this.props.value) {
+			this.setValue(this.props.value);
+		}
+	},
 	render: function render() {
 
 		var inputProps = this.props.input || { type: 'text' };
@@ -324,6 +356,7 @@ var FieldPassword = React.createClass({
 	},
 	setValue: function setValue(v) {
 		this.refs[this.refInput].value = v;
+		this.refs['ghost'].value = v;
 	},
 	focus: function focus() {
 		this.refs[this.refInput].focus();
@@ -352,6 +385,11 @@ var FieldPassword = React.createClass({
 			var dest_ref = !self.state.hide ? self.refInput : 'ghost';
 			self.refs[dest_ref].focus();
 		}, 100);
+	},
+	componentDidMount: function componentDidMount() {
+		if (this.props.value) {
+			this.setValue(this.props.value);
+		}
 	},
 	render: function render() {
 
@@ -398,7 +436,7 @@ var FieldPassword = React.createClass({
 	}
 });
 
-var CheckboxInput = React.createClass({
+var CheckboxInput = React.createClass((_React$createClass = {
 	displayName: 'CheckboxInput',
 
 
@@ -427,39 +465,49 @@ var CheckboxInput = React.createClass({
 	getValue: function getValue() {
 		return this.state.checked;
 	},
-	render: function render() {
+	setValue: function setValue(v) {
+		if (v) {
+			this.setState({
+				checked: !!v
+			});
+		}
+	}
+}, _defineProperty(_React$createClass, 'componentDidMount', function componentDidMount() {
+	if (this.props.value) {
+		this.setValue(this.props.value);
+	}
+}), _defineProperty(_React$createClass, 'render', function render() {
 
-		return React.createElement(
-			'div',
-			{ className: 'mui-checkbox' },
-			React.createElement('input', { id: "id_" + this.refInput, ref: this.refInput, type: 'checkbox', value: '1', checked: this.state.checked }),
+	return React.createElement(
+		'div',
+		{ className: 'mui-checkbox' },
+		React.createElement('input', { id: "id_" + this.refInput, ref: this.refInput, type: 'checkbox', value: '1', checked: this.state.checked }),
+		React.createElement(
+			'label',
+			{ htmlFor: "id_" + this.refInput, onClick: this.toggleChange },
 			React.createElement(
-				'label',
-				{ htmlFor: "id_" + this.refInput, onClick: this.toggleChange },
+				'svg',
+				{ width: '18px', height: '18px', viewBox: '0 0 18 18' },
 				React.createElement(
-					'svg',
-					{ width: '18px', height: '18px', viewBox: '0 0 18 18' },
-					React.createElement(
-						'g',
-						{ stroke: 'none', strokeWidth: '1', fill: 'none', fillRule: 'evenodd' },
-						React.createElement('rect', { className: 'rect', stroke: '#000', x: '1', y: '1', width: '16', height: '16', rx: '3' }),
-						React.createElement('path', { className: 'check', fill: '#000', d: 'M13.2174912,5.16790677 C13.0797465,5.02576416 12.912278,4.95473958 12.7154482,4.95473958 C12.5185277,4.95473958 12.3510593,5.02576416 12.2133146,5.16790677 L7.36995945,10.17028 L5.19930334,7.92412768 C5.06146808,7.78198507 4.89409023,7.71096049 4.69726039,7.71096049 C4.50033993,7.71096049 4.33296207,7.78198507 4.19512682,7.92412768 L3.19104091,8.95959127 C3.05320565,9.10173388 2.98433333,9.2743423 2.98433333,9.47741652 C2.98433333,9.68039729 3.05320565,9.85309916 3.19104091,9.99514831 L5.86373997,12.7513692 L6.8679165,13.7868328 C7.00566114,13.9289754 7.17303899,14 7.36995945,14 C7.56678929,14 7.73416715,13.928882 7.8720024,13.7868328 L8.87617893,12.7513692 L14.2215771,7.23892741 C14.3593217,7.0967848 14.4282846,6.92417638 14.4282846,6.72110216 C14.4283753,6.51812139 14.3593217,6.34551297 14.2215771,6.20337036 L13.2174912,5.16790677 Z' })
-					)
-				),
-				React.createElement(
-					'span',
-					null,
-					this.props.label
+					'g',
+					{ stroke: 'none', strokeWidth: '1', fill: 'none', fillRule: 'evenodd' },
+					React.createElement('rect', { className: 'rect', stroke: '#000', x: '1', y: '1', width: '16', height: '16', rx: '3' }),
+					React.createElement('path', { className: 'check', fill: '#000', d: 'M13.2174912,5.16790677 C13.0797465,5.02576416 12.912278,4.95473958 12.7154482,4.95473958 C12.5185277,4.95473958 12.3510593,5.02576416 12.2133146,5.16790677 L7.36995945,10.17028 L5.19930334,7.92412768 C5.06146808,7.78198507 4.89409023,7.71096049 4.69726039,7.71096049 C4.50033993,7.71096049 4.33296207,7.78198507 4.19512682,7.92412768 L3.19104091,8.95959127 C3.05320565,9.10173388 2.98433333,9.2743423 2.98433333,9.47741652 C2.98433333,9.68039729 3.05320565,9.85309916 3.19104091,9.99514831 L5.86373997,12.7513692 L6.8679165,13.7868328 C7.00566114,13.9289754 7.17303899,14 7.36995945,14 C7.56678929,14 7.73416715,13.928882 7.8720024,13.7868328 L8.87617893,12.7513692 L14.2215771,7.23892741 C14.3593217,7.0967848 14.4282846,6.92417638 14.4282846,6.72110216 C14.4283753,6.51812139 14.3593217,6.34551297 14.2215771,6.20337036 L13.2174912,5.16790677 Z' })
 				)
 			),
 			React.createElement(
 				'span',
-				{ className: 'error' },
-				'You must accept these terms'
+				null,
+				this.props.label
 			)
-		);
-	}
-});
+		),
+		React.createElement(
+			'span',
+			{ className: 'error' },
+			'You must accept these terms'
+		)
+	);
+}), _React$createClass));
 
 var FieldSelect = React.createClass({
 	displayName: 'FieldSelect',
@@ -493,6 +541,11 @@ var FieldSelect = React.createClass({
 			return this.props.validation(this.getValue());
 		} else {
 			return true;
+		}
+	},
+	componentDidMount: function componentDidMount() {
+		if (this.props.value) {
+			this.setValue(this.props.value);
 		}
 	},
 	render: function render() {
@@ -918,7 +971,7 @@ var MainMenu = React.createClass({
 				element = React.createElement(
 					'li',
 					{ key: key, onClick: function onClick() {
-							return window.location.href = '/#/';
+							return window.location.href = '/landing';
 						} },
 					labels[key]
 				);

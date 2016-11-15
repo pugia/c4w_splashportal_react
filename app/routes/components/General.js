@@ -64,6 +64,12 @@ var FieldInput = React.createClass({
 		}
 	},
 
+	componentDidMount() {
+		if (this.props.value) {
+			this.setValue(this.props.value);
+		}
+	},
+
 	render() {
 
 		var inputProps = this.props.input || { type: 'text' }
@@ -109,6 +115,7 @@ var FieldPassword = React.createClass({
 
 	setValue(v) {
 		this.refs[this.refInput].value = v;
+		this.refs['ghost'].value = v;
 	},
 
 	focus() {
@@ -140,6 +147,12 @@ var FieldPassword = React.createClass({
 			self.refs[dest_ref].focus();
 		},100);
 	},
+
+	componentDidMount() {
+		if (this.props.value) {
+			this.setValue(this.props.value);
+		}
+	},	
 
 	render() {
 
@@ -198,6 +211,20 @@ var CheckboxInput = React.createClass({
   getValue() {
   	return this.state.checked
   },
+
+  setValue(v) {
+  	if (v) { 
+  		this.setState({
+  			checked: !!v
+  		}) 
+  	}
+  },
+
+	componentDidMount() {
+		if (this.props.value) {
+			this.setValue(this.props.value);
+		}
+	},	
 
 	render() {
 
@@ -259,6 +286,12 @@ var FieldSelect = React.createClass({
 			return true;
 		}
 	},
+
+	componentDidMount() {
+		if (this.props.value) {
+			this.setValue(this.props.value);
+		}
+	},	
 
 	render() {
 

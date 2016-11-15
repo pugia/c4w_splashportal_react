@@ -97,6 +97,29 @@ var config = {
 				}
 			]
 		}
+	},
+
+	Apps: {
+		weather: {
+			icon: '/img/apps/weather@2x.png',
+			title: 'Weather',
+			subtitle: 'Check the weather around of you'
+		},
+		info: {
+			icon: '/img/apps/info@2x.png',
+			title: 'Info',
+			subtitle: 'Information about us'
+		},
+		nearby: {
+			icon: '/img/apps/nearby@2x.png',
+			title: 'Nearby',
+			subtitle: 'Check the POI around of you'
+		},
+		shop: {
+			icon: '/img/apps/shop@2x.png',
+			title: 'Shop',
+			subtitle: 'Check the shops around of you'
+		},
 	}
 
 };
