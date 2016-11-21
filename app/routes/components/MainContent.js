@@ -34,6 +34,7 @@ var MainContent = React.createClass({
   updateDimensions: function() {
 
     if (this.props.full) {
+      this.refs.mainContent.style.height = this.getFullHeight()+'px';
       this.refs.contentBackground.style.minHeight = this.getFullHeight()+'px';
     }
   },

@@ -69,6 +69,8 @@ var AppMenu = React.createClass({
           </ul>
         </div>
 
+        <div className="overflow" onClick={this.openClose}></div>
+
       </div>
     )
   }

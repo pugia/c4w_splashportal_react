@@ -119,8 +119,10 @@ var FieldPassword = React.createClass({
 	},
 
 	focus() {
-		this.refs[this.refInput].focus();
-		centerVerticalElement(this.refs[this.refInput]);
+
+		var dest_ref = (this.state.hide) ? this.refInput : 'ghost';
+		this.refs[dest_ref].focus();
+		centerVerticalElement(this.refs[dest_ref]);
 	},
 
 	handleChange(e) {
@@ -172,7 +174,7 @@ var FieldPassword = React.createClass({
       <div className={classname} style={style}>
         <input className="ghost" type="password" ref="ghost" onKeyUp={this.handleChange} onKeyDown={this.handleChange} />
       	<i className={iClass} onClick={this.toggleChange} />
-        <input className="real" id="inputReal" ref={this.refInput} type="text" onKeyUp={this.handleChange} onKeyDown={this.handleChange} />
+        <input className="real" tabIndex="-1" id="inputReal" ref={this.refInput} type="text" onKeyUp={this.handleChange} onKeyDown={this.handleChange} />
         <label>{this.props.label}</label>
         <span className="info">{this.state.info}</span>
         <span className="error">{this.state.error}</span>

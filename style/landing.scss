@@ -1,493 +1,77 @@
 @import "scss/mui";
-@import "scss/mixins";
-@import "components/hamburgers/hamburgers";
 @import "vars";
+@import "scss/mixins";
 
 /* general classes */
 .navigation-background { background-color: $navigation-color; color: #fff; &:hover { color: #fff; } }
 .navigation-color { color: $navigation-color; }
 .navigation-border { border-color: $navigation-color; }
+.navigation-button {
+  @include button-variant(
+    #fff,
+    $navigation-color);
+  @include button-flat-variant(
+    $navigation-color,
+    darken($navigation-color,10%));
+}
 
 .main-button-background { background-color: $main-button-color; color: #fff; &:hover { color: #fff; } }
 .main-button-color { color: $main-button-color; }
 .main-button-border { border-color: $main-button-color; }
+.main-button-height { height: $main-button-height; line-height: $main-button-height; }
+.main-button {
+  @include button-variant(
+    #fff,
+    $main-button-color);
+  @include button-flat-variant(
+    $main-button-color,
+    darken($main-button-color,20%));
+}
+
+.secondary-button-background { background-color: $secondary-button-color; color: #fff; &:hover { color: #fff; } }
+.secondary-button {
+  @include button-variant(
+    #fff,
+    $secondary-button-color);
+  @include button-flat-variant(
+    $secondary-button-color,
+    darken($secondary-button-color,20%));
+}
+
+.mui-btn.mui-btn--double {
+
+	line-height: 16px;
+	padding-height: 16px;
+	text-align: left;
+
+}
+
 
 body {
 	background: #ECECEC;
 }
 
 #main {
-	
+
 	font-family: 'Roboto', sans-serif;
-	@include transition(opacity .5s ease);
+	font-weight: 300;
 
-	.main-content {
-		position: relative;
-
-		&.overlay {
-			.main-menu .overlay {
-				display: block;
-			}
-		}
-
-		.content-background {
-			position: relative;
-			overflow: hidden;
-		}
-
-	}
-
-	nav {
-
-		&.fixed {
-			position: fixed;
-			top: 0;
-			width: 100%;
-			z-index: 10000;
-		}
-
-		div.topbar {
-
-			position: relative;
-			z-index: 200;
-			height: $appbar-height;
-
-			.appbar-action {
-				background: none;
-				position: absolute;
-				color: #fff;
-				border: none;
-				top: 0;
-				width: $appbar-height;
-				line-height: $appbar-height;
-				height: 100%;
-				margin: 0;
-				padding: 0;
-				text-align: center;
-				cursor: pointer;
-			}
-
-			h2 {
-				margin: 0;
-				padding: 0 $appbar-height;
-				height: 100%;
-				line-height: $appbar-height;
-				color: #fff;
-				font-family: Roboto;
-				font-size: 14px;
-				text-transform: uppercase;
-			}
-
-			img.logo {
-				height: 20px;
-				position: absolute;
-				top: 50%;
-				margin-top: -10px;
-				left: $appbar-height;
-
-				&.center {
-					left: 0;
-					right: 0;
-					margin-left: auto;
-					margin-right: auto;
-					/*top: calc((#{$appbar-height} / 2) - 10px);*/
-				}
-
-			}
-
-		}
-
-		div.main-menu {
-			position: absolute;
-			width: 100%;
-			height: 100%;
-			z-index: 300;
-			/*transition-delay: .5s;*/
-
-			&.hide {
-				height: 0 !important;
-			}
-
-			div.button {
-				position: absolute;
-				width: 100%;
-				z-index: 3;				
-				top: - $appbar-height;
-				height: $appbar-height;
+	@import "components/main-structure";
 	
-				button.hamburger {
-					width: $appbar-height;
-					height: $appbar-height;
-					line-height: $appbar-height;
-				}
-	
-			}
+	.sliderContainer {
 
-			& > ul {
-				background: #1E1E1E;
-				list-style: none;
-				margin: 0;
-				padding: 0;
-				position: absolute;
-				width: 100%;
-				z-index: 2;
-				overflow: hidden;
-				@include transition(all .5s ease);
-
-				& > li {
-					line-height: 60px;
-					height: 60px;
-					border-bottom: 1px solid #575757;
-					padding-left: $appbar-height;
-					text-transform: uppercase;
-					font-family: 'Roboto', sans-serif;
-					font-size: 14px;
-					cursor: pointer;
-					color: #fff;
-
-					&:hover, &.selected {
-						font-weight: 700;
-					}
-
-				}
-			}
-			
-			&.close {
-
-				z-index: 299;
-
-				div.button {
-					width: $appbar-height;
-				}
-
-				& > ul {
-					height: 0 !important;
-				}
-				& > span.overlay {
-					opacity: 0;
-					transition-delay: .5s;
-				}
-			}
-
-			& > span.overlay {
-				position: absolute;
-				display: block;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				opacity: 0.69;
-				background: #000000;
-				z-index: 1;
-				@include transition(all .5s ease);
-			}
-
-		}
-
-		div.lang-menu {
-			position: absolute;
-			width: 100%;
-			height: 100%;
-			z-index: 300;
-			/*transition-delay: .5s;*/
-
-			&.hide {
-				height: 0 !important;
-			}
-
-			div.button {
-				position: absolute;
-				width: 100%;
-				z-index: 3;				
-				top: - $appbar-height;
-				height: $appbar-height;
-				overflow: hidden;
-
-				button {
-					padding: 0 16px;
-					height: $appbar-height;
-					line-height: $appbar-height;
-					float: right;
-					background: none;
-					border: none;
-					color: #fff;
-					cursor: pointer;
-
-					i.fa {
-						float: left;
-						font-size: 16px;
-						height: 16px;
-						line-height: 16px;
-					}
-
-					span {
-						float: left;
-						height: 16px;
-						line-height: 17px;
-						font-size: 10px;
-						font-weight: 700;
-						width: 30px;
-						text-transform: uppercase;
-					}
-
-				}
-
-				&:after {
-					content: "";
-					position: absolute;
-					width: 0;
-					height: 0;
-					border-style: solid;
-					border-width: 0 7px 8px 7px;
-					border-color: transparent transparent #d6d6d6 transparent;
-					top: calc(100% - 7px);
-					right: 46px;
-					@include transition(all .5s ease);
-				}
-
-			}
-
-			& > ul {
-				background: #D6D6D6;
-				list-style: none;
-				margin: 0;
-				padding: 0;
-				position: absolute;
-				width: 100%;
-				z-index: 2;
-				overflow: hidden;									
-				@include transition(all .5s ease);
-
-				& > li {
-					line-height: 60px;
-					height: 60px;
-					border-bottom: 1px solid #fff;
-					padding-left: $appbar-height;
-					text-transform: uppercase;
-					font-family: 'Roboto', sans-serif;
-					font-size: 14px;
-					cursor: pointer;
-
-					&:hover, &.selected {
-						font-weight: 700;
-					}
-
-				}
-			}
-			
-			&.close {
-
-				z-index: 299;
-
-				div.button {
-					right: 0;
-					width: auto;
-					&:after {
-						height: 0;
-						top: 100%;
-					}
-				}
-
-				& > ul {
-					height: 0 !important;
-				}
-				& > span.overlay {
-					opacity: 0;
-					transition-delay: .5s;
-				}
-			}
-
-			& > span.overlay {
-				position: absolute;
-				display: block;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				opacity: 0.69;
-				background: #000000;
-				z-index: 1;
-				@include transition(all .5s ease);
-			}
-
-		}
-
-
-	}
-
-	.app-menu {
-
-		position: absolute;
-		z-index: 1900;
-		background-image: linear-gradient(-180deg, #ECECED 0%, #D5D5D6 100%);
-		border-bottom: 1px solid #979797;
-		min-height: 37px;
-		width: 100%;
-
-		& > span.icon-open-close {
-			cursor: pointer;
-			position: absolute;
-			right: 17px;
-			top: 0;
-			font-size: 14px;
-			color: #4D8185;
-			line-height: 38px;
-			margin: 0;
-			@include transition(all .5s ease);			
-		}
-
-		&.close > span.icon-open-close {
-	    -webkit-transform: rotate(180deg);
-	    -moz-transform: rotate(180deg);
-	    -ms-transform: rotate(180deg);
-	    -o-transform: rotate(180deg);
-			transform: rotate(180deg);
-		}
-
-		&.close > .list {
-			
-			overflow-x: scroll;
-			width: calc(100% - 46px);
-
-			h3 {
-
-				margin-top: -38px;
-
-			}
-
-			ul {
-
-				white-space: nowrap;
-
-				li {
-
-					background: none;
-					border: none;
-					display: inline-block;
-					height: 38px;
-					padding-left: 43px;
-					padding-right: 0;
-
-					&:nth-child(n+4) {
-						display: none;
-					}					
-
-					h4 {
-						font-family: 'Roboto', sans-serif;
-						font-weight: 300;
-						font-size: 12px;
-						color: rgba(0,0,0,0.87);
-						letter-spacing: 0.42px;
-						text-transform: none;
-					}
-
-					p {
-						display: none;
-					}
-
-				}
-			}
-
-		}
-
-		& > .list {
-
-			h3 {
-				height: 38px;
-				background-image: linear-gradient(-180deg, #F2F2F4 0%, #E0E0E5 100%);
-				width: 100%;
-				text-align: center;
-				text-transform: uppercase;
-				color: #000;
-				font-family: 'Roboto', sans-serif;
-				font-size: 16px;
-				font-weight: 500;
-				line-height: 38px;
-				margin: 0;
-				padding: 0;
-			}
-
-			ul {
-				list-style: none;
-				margin: 0;
-				padding: 0;
-
-				li {
-					margin: 0;
-					background-image: linear-gradient(-180deg, #F9F9FB 0%, #DADAE1 100%);
-					border: 1px solid #D5D5D6;
-					position: relative;
-					padding: 11px 15px 11px 50px;
-					cursor: pointer;
-
-					h4 {
-						margin: 0;
-						padding: 0;
-						line-height: 15px;
-						font-family: 'Roboto', sans-serif;
-						font-weight: 700;
-						font-size: 14px;
-						color: rgba(0,0,0,0.80);
-						letter-spacing: 0.5px;
-						text-transform: uppercase;
-					}
-
-					p {
-						font-family: 'Roboto', sans-serif;
-						font-weight: 300;
-						font-size: 14px;
-						color: rgba(0,0,0,0.80);
-						letter-spacing: 0.5px;						
-						margin: 0;
-						padding: 0;
-						line-height: 15px;
-					}
-
-					span.icon {
-						box-sizing: border-box;
-						position: absolute;
-						background-color: #fff;
-						border: 1px solid #4D8185;
-						border-radius: 100%;
-						height: 24px;
-						width: 24px;
-						top: 50%;
-						left: 11px;
-						margin-top: -12px;
-						overflow: hidden;
-						background-position: -24px -1px;
-						background-size: 48px 24px;
-						background-repeat: no-repeat;
-					}
-
-				}	
-
-			}
-
-		}
-
-
-	}
-
-	.modal {
-		position: fixed;
-		top: 100%;
-		left: 0;
-		width: 100%;
-		height: 0;
-		background: #DDDDDD;
-		z-index: 10001;
+		color: #fff;
 		overflow: hidden;
-		@include transition(all .5s ease);
 
-		&.open {
-			top: 0;
-			height: 100%;
-		}
-
-		& > .modal-content {
-			height: calc(100% - #{$appbar-height});
-			overflow: scroll;
+		h3.headline {
+			color: #fff;
+			position: absolute;
+			bottom: 0;
+			font-size: 24px;
+			font-weight: normal;
+			text-align: center;
+			width: 70%;
+			left: 15%;
 		}
 
 	}
@@ -495,7 +79,6 @@ body {
 	.go-online-button {
 		position: absolute;
 		bottom: 0;
-		font-family: "Roboto", sans-serif;
 		height: 63px;
 		margin: 30px;
 		width: calc(100% - 60px);
@@ -519,26 +102,9 @@ body {
 
 	}
 
-
 }
 
-.sliderContainer {
 
-	color: #fff;
-	overflow: hidden;
-
-	h3.headline {
-		color: #fff;
-		position: absolute;
-		bottom: 0;
-		font-size: 24px;
-		font-weight: normal;
-		text-align: center;
-		width: 70%;
-		left: 15%;
-	}
-
-}
 
 
 

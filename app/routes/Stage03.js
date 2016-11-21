@@ -10,13 +10,13 @@ var timer = null;
 
 var goBack = function() {
 	clearInterval(timer);
-	window.location.href = '/#/stage02';
+	window.location.href = '/stage/#/02';
 }
 
 var goNext = function() {
 	clearInterval(timer);
 	localStorage.setItem('email', this.state.email);
-	window.location.href = '/#/stage04';
+	window.location.href = '/stage/#/04';
 }
 
 var popolateLoadbar = function(self) {
@@ -37,18 +37,16 @@ var Stage03 = React.createClass({
 			completed: 0,
 			fields: {},
 			terms_privacy_flag: false,
-			marketing_flag: false,
-			confirmed: false
+			marketing_flag: false
 		}
 
-		var loaded_st = false;
   	if (localStorage.getItem('stored_data')) {
-  		loaded_st = JSON.parse(localStorage.getItem('stored_data'));
+  		st = JSON.parse(localStorage.getItem('stored_data'));
   	} else {
-			loaded_st = ($('#main').data('stored_data')) ? $.extend(true, st, JSON.parse($('#main').data('stored_data'))) : st;
+			st = ($('#main').data('stored_data')) ? $.extend(true, st, JSON.parse($('#main').data('stored_data'))) : st;
 		}
 
-		return (loaded_st) ? $.extend(true, st, loaded_st) : st;
+		return st;
 
 	},
 
@@ -63,9 +61,27 @@ var Stage03 = React.createClass({
 			}
 		}, 1000);
 
+		setTimeout(function() { self.centerVertically('verticalCentered')	}, 200);
+		
+
+	},
+
+	centerVertically(ref) {
+
+		var el = this.refs[ref];
+		var hCont = parseInt(ReactDOM.findDOMNode(el).parentNode.style.minHeight || ReactDOM.findDOMNode(el).parentNode.clientHeight);
+		var h = ReactDOM.findDOMNode(el).clientHeight;
+
+		if (h < hCont) {
+			var mTop = parseInt((hCont - h) / 2);
+			el.style.marginTop = mTop + 'px';
+		}
+
 	},
 
   render: function () {
+
+  	var access_field_ref = 'access_email_0';
 
     return (
 
@@ -81,19 +97,24 @@ var Stage03 = React.createClass({
 
 	      <MainContent full>
 
-          <div className="action-component">
-            <div className="validation-icon">
-              <i className="fa fa-envelope-o" aria-hidden="true"></i>
-            </div>
+	      	<div className="verticalCentered" ref="verticalCentered">
 
-            <div className="validation-detail">
-              <p>We have sent an email to<br /><strong ref="email_value">{this.state.email}</strong></p>
-            </div>
+	          <div className="action-component">
+	            <div className="validation-icon">
+	              <i className="fa fa-envelope-o" aria-hidden="true"></i>
+	            </div>
 
-          </div>
+	            <div className="validation-detail">
+	              <p>We have sent an email to<br /><strong ref="email_value">{this.state.fields[access_field_ref]}</strong></p>
+	              <p><a href="/stage/#/02">Email wrong? Change it.</a></p>
+	            </div>
 
-          <div className="suggestion">
-            <p>Confirm your account<br />otherwise you will be disconnected in {minutes} minutes</p>
+	          </div>
+
+	          <div className="suggestion">
+	            <p>Confirm your account<br />otherwise you will be disconnected in {minutes} minutes</p>
+	          </div>
+
           </div>
 
 	      </MainContent>

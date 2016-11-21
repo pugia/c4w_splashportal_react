@@ -10,21 +10,60 @@ var timer = null;
 
 var goNext = function() {
 	clearTimeout(timer);
-	window.location.href = '/#/stage06';
+	window.location.href = '/stage/#/success';
 }
 
 
 var Stage03 = React.createClass({
 
-	componentDidMount: function() {
+	getInitialState() {
 
-		timer = setTimeout(function() {
-			window.location.href = '/#/stage06';
-		}, 3000);
+		var st = {
+			completed: 0,
+			fields: {},
+			terms_privacy_flag: false,
+			marketing_flag: false
+		}
+
+  	if (localStorage.getItem('stored_data')) {
+  		st = JSON.parse(localStorage.getItem('stored_data'));
+  	} else {
+			st = ($('#main').data('stored_data')) ? $.extend(true, st, JSON.parse($('#main').data('stored_data'))) : st;
+		}
+
+		return st;
 
 	},
 
+	componentDidMount: function() {
+
+		var self = this;
+		// timer = setTimeout(function() {
+		// 	window.location.href = '/stage/#/success';
+		// }, 3000);
+
+		setTimeout(function() { self.centerVertically('verticalCentered')	}, 200);
+		
+
+	},
+
+	centerVertically(ref) {
+
+		var el = this.refs[ref];
+		var hCont = parseInt(ReactDOM.findDOMNode(el).parentNode.style.minHeight || ReactDOM.findDOMNode(el).parentNode.clientHeight);
+		var h = ReactDOM.findDOMNode(el).clientHeight;
+
+		if (h < hCont) {
+			var mTop = parseInt((hCont - h) / 2);
+			el.style.marginTop = mTop + 'px';
+		}
+
+	},
+
+
   render: function () {
+
+  	var access_field_ref = 'access_email_0';  	
 
     return (
 
@@ -36,27 +75,26 @@ var Stage03 = React.createClass({
 
 	      <MainContent full>
 
-          <div className="action-component">
-            <div className="validation-icon">
-              <i className="fa fa-check" aria-hidden="true"></i>
-            </div>
+	      	<div className="verticalCentered" ref="verticalCentered">
 
-            <div className="validation-detail">
-              <p>Thanks for confirming your email<br /><strong ref="email_value"></strong></p>
-            </div>
+	          <div className="action-component">
+	            <div className="validation-icon">
+	              <i className="fa fa-check" aria-hidden="true"></i>
+	            </div>
 
-          </div>
+	            <div className="validation-detail">
+	              <p>Thanks for confirming your email<br /><strong ref="email_value">{this.state.fields[access_field_ref]}</strong></p>
+	            </div>
 
-          <div className="suggestion">
-          	<p>You will be automatically redirect to our page in 3 seconds...<br />Enjoy our free Wi-Fi</p>
+	          </div>
+
           </div>
 
 	      </MainContent>
 
 	      <BottomNav.Bar fixed={true}>
-	      	<button className="mui-btn mui-btn--large main-button main-button-height mui-btn--double" onClick={goNext.bind(this)}>
-	          <i className="fa fa-chevron-right mui--pull-right"></i>
-	          <span><strong>I DON’T WANT TO WAIT FURTHER</strong><br />GO ONLINE</span>
+	      	<button className="mui-btn mui-btn--large main-button main-button-height" onClick={goNext.bind(this)}>
+	          <span><strong>GO ONLINE</strong></span>
 	      	</button>
 	      </BottomNav.Bar>
 

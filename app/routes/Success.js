@@ -6,7 +6,7 @@ var AppMenu = require('./components/AppMenu');
 
 var config = require('../config');
 
-var Stage06 = React.createClass({
+var Success = React.createClass({
 
 	componentDidMount() {
 		localStorage.removeItem('stored_data');
@@ -36,9 +36,9 @@ var Stage06 = React.createClass({
 
 	      <MainContent full contentBackgroundStyle={style.contentBackground}>
 
-          <AppMenu list={config.Apps} />
-
 	      </MainContent>
+
+        <AppMenu list={config.Apps} />        
 
       </div>
     )
@@ -47,4 +47,4 @@ var Stage06 = React.createClass({
 });
 
 /* Module.exports instead of normal dom mounting */
-module.exports = Stage06;
+module.exports = Success;

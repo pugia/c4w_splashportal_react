@@ -136,10 +136,24 @@ var config = require('../config');
 
 var Landing = React.createClass({
   displayName: 'Landing',
+  updateSliderContainerHeight: function updateSliderContainerHeight() {
+    this.refs.sliderContainer.style.height = this.refs.content.getFullHeight() - getAbsoluteHeight(this.refs.goOnlineBtn) + 'px';
+  },
   componentDidMount: function componentDidMount() {
     localStorage.removeItem('stored_data');
-    this.refs.sliderContainer.style.height = this.refs.content.getFullHeight() - getAbsoluteHeight(this.refs.goOnlineBtn) + 'px';
     document.getElementById('main').style.opacity = 1;
+
+    window.addEventListener("resize", this.updateSliderContainerHeight);
+    setTimeout(this.updateSliderContainerHeight, 100);
+  },
+
+
+  componentWillUnmount: function componentWillUnmount() {
+    window.removeEventListener("resize", this.updateSliderContainerHeight);
+  },
+
+  componentDidUpdate: function componentDidUpdate(prevProps, prevState) {
+    this.updateSliderContainerHeight();
   },
   render: function render() {
 
@@ -186,8 +200,10 @@ var Landing = React.createClass({
           )
         ),
         React.createElement(
-          'a',
-          { href: '/#/stage01', ref: 'goOnlineBtn', className: 'go-online-button main-button-background' },
+          'button',
+          { onClick: function onClick() {
+              return window.location.href = '/stage/#/01';
+            }, ref: 'goOnlineBtn', className: 'go-online-button main-button' },
           React.createElement(
             'span',
             null,
@@ -359,8 +375,10 @@ var FieldPassword = React.createClass({
 		this.refs['ghost'].value = v;
 	},
 	focus: function focus() {
-		this.refs[this.refInput].focus();
-		centerVerticalElement(this.refs[this.refInput]);
+
+		var dest_ref = this.state.hide ? this.refInput : 'ghost';
+		this.refs[dest_ref].focus();
+		centerVerticalElement(this.refs[dest_ref]);
 	},
 	handleChange: function handleChange(e) {
 		var dest_ref = this.state.hide ? this.refInput : 'ghost';
@@ -411,7 +429,7 @@ var FieldPassword = React.createClass({
 			{ className: classname, style: style },
 			React.createElement('input', { className: 'ghost', type: 'password', ref: 'ghost', onKeyUp: this.handleChange, onKeyDown: this.handleChange }),
 			React.createElement('i', { className: iClass, onClick: this.toggleChange }),
-			React.createElement('input', { className: 'real', id: 'inputReal', ref: this.refInput, type: 'text', onKeyUp: this.handleChange, onKeyDown: this.handleChange }),
+			React.createElement('input', { className: 'real', tabIndex: '-1', id: 'inputReal', ref: this.refInput, type: 'text', onKeyUp: this.handleChange, onKeyDown: this.handleChange }),
 			React.createElement(
 				'label',
 				null,
@@ -718,6 +736,7 @@ var MainContent = React.createClass({
   updateDimensions: function updateDimensions() {
 
     if (this.props.full) {
+      this.refs.mainContent.style.height = this.getFullHeight() + 'px';
       this.refs.contentBackground.style.minHeight = this.getFullHeight() + 'px';
     }
   },
@@ -971,7 +990,7 @@ var MainMenu = React.createClass({
 				element = React.createElement(
 					'li',
 					{ key: key, onClick: function onClick() {
-							return window.location.href = '/landing';
+							return window.location.href = '/';
 						} },
 					labels[key]
 				);

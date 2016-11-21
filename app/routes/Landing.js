@@ -7,11 +7,25 @@ var config = require('../config');
 
 var Landing = React.createClass({
 
+  updateSliderContainerHeight() {
+    this.refs.sliderContainer.style.height = ( this.refs.content.getFullHeight() - getAbsoluteHeight(this.refs.goOnlineBtn) ) + 'px';
+  },
+
 	componentDidMount() {
 		localStorage.removeItem('stored_data');
-    this.refs.sliderContainer.style.height = ( this.refs.content.getFullHeight() - getAbsoluteHeight(this.refs.goOnlineBtn) ) + 'px';
     document.getElementById('main').style.opacity = 1;
-	},
+    
+    window.addEventListener("resize", this.updateSliderContainerHeight);
+    setTimeout(this.updateSliderContainerHeight, 100);
+  },
+
+  componentWillUnmount: function() {
+    window.removeEventListener("resize", this.updateSliderContainerHeight);
+  },
+
+  componentDidUpdate(prevProps, prevState) {
+    this.updateSliderContainerHeight();
+  },
 
   render() {
 
@@ -48,10 +62,10 @@ var Landing = React.createClass({
             </div>
           </div>
 
-        	<a href="/#/stage01" ref="goOnlineBtn" className="go-online-button main-button-background">
+        	<button onClick={() => window.location.href = '/stage/#/01'} ref="goOnlineBtn" className="go-online-button main-button">
         		<span>CONNECT TO OUR WIFI</span>
         		<i className="fa fa-angle-right"></i>
-        	</a>
+        	</button>
 
 	      </MainContent>
 

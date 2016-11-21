@@ -129,7 +129,7 @@ var Stage01 = require('./routes/Stage01');
 var Stage02 = require('./routes/Stage02');
 var Stage03 = require('./routes/Stage03');
 var Stage04 = require('./routes/Stage04');
-var Stage06 = require('./routes/Stage06');
+var Success = require('./routes/Success');
 
 var loadFont = function loadFont(url) {
 
@@ -189,16 +189,16 @@ var App = React.createClass({
   render: function render() {
     var Child = void 0;
     switch (this.state.route) {
-      case '/stage01':
+      case '/01':
         Child = Stage01;break;
-      case '/stage02':
+      case '/02':
         Child = Stage02;break;
-      case '/stage03':
+      case '/03':
         Child = Stage03;break;
-      case '/stage04':
+      case '/04':
         Child = Stage04;break;
-      case '/stage06':
-        Child = Stage06;break;
+      case '/success':
+        Child = Success;break;
       default:
         Child = Landing;
     }
@@ -216,16 +216,16 @@ ReactDOM.render(React.createElement(
   { history: browserHistory },
   React.createElement(
     Route,
-    { path: '/', component: App },
-    React.createElement(Route, { path: 'stage01', component: Stage01 }),
-    React.createElement(Route, { path: 'stage02', component: Stage02 }),
-    React.createElement(Route, { path: 'stage03', component: Stage03 }),
-    React.createElement(Route, { path: 'stage04', component: Stage04 }),
-    React.createElement(Route, { path: 'stage06', component: Stage06 })
+    { path: '/stage/', component: App },
+    React.createElement(Route, { path: '01', component: Stage01 }),
+    React.createElement(Route, { path: '02', component: Stage02 }),
+    React.createElement(Route, { path: '03', component: Stage03 }),
+    React.createElement(Route, { path: '04', component: Stage04 }),
+    React.createElement(Route, { path: 'success', component: Success })
   )
 ), document.getElementById('main'));
 
-},{"./routes/Landing":3,"./routes/Stage01":4,"./routes/Stage02":5,"./routes/Stage03":6,"./routes/Stage04":7,"./routes/Stage06":8,"react-router":49}],3:[function(require,module,exports){
+},{"./routes/Landing":3,"./routes/Stage01":4,"./routes/Stage02":5,"./routes/Stage03":6,"./routes/Stage04":7,"./routes/Success":8,"react-router":49}],3:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -238,10 +238,24 @@ var config = require('../config');
 
 var Landing = React.createClass({
   displayName: 'Landing',
+  updateSliderContainerHeight: function updateSliderContainerHeight() {
+    this.refs.sliderContainer.style.height = this.refs.content.getFullHeight() - getAbsoluteHeight(this.refs.goOnlineBtn) + 'px';
+  },
   componentDidMount: function componentDidMount() {
     localStorage.removeItem('stored_data');
-    this.refs.sliderContainer.style.height = this.refs.content.getFullHeight() - getAbsoluteHeight(this.refs.goOnlineBtn) + 'px';
     document.getElementById('main').style.opacity = 1;
+
+    window.addEventListener("resize", this.updateSliderContainerHeight);
+    setTimeout(this.updateSliderContainerHeight, 100);
+  },
+
+
+  componentWillUnmount: function componentWillUnmount() {
+    window.removeEventListener("resize", this.updateSliderContainerHeight);
+  },
+
+  componentDidUpdate: function componentDidUpdate(prevProps, prevState) {
+    this.updateSliderContainerHeight();
   },
   render: function render() {
 
@@ -288,8 +302,10 @@ var Landing = React.createClass({
           )
         ),
         React.createElement(
-          'a',
-          { href: '/#/stage01', ref: 'goOnlineBtn', className: 'go-online-button main-button-background' },
+          'button',
+          { onClick: function onClick() {
+              return window.location.href = '/stage/#/01';
+            }, ref: 'goOnlineBtn', className: 'go-online-button main-button' },
           React.createElement(
             'span',
             null,
@@ -339,7 +355,7 @@ var nextStage = function nextStage() {
     $('#main').data('stored_data', JSON.stringify({
       email: self.refs.login_clickThrough.getEmail()
     }));
-    window.location.href = '/#/stage02';
+    window.location.href = '/stage/#/02';
   } else {
     self.refs.login_clickThrough.setState({
       status: 'error'
@@ -391,7 +407,7 @@ var Stage01 = React.createClass({
         React.createElement(
           TopNav.Button,
           { side: 'left', onClick: function onClick() {
-              return window.location.href = '/landing';
+              return window.location.href = '/';
             } },
           React.createElement('img', { src: '/img/arrow-back.svg' })
         ),
@@ -412,7 +428,7 @@ var Stage01 = React.createClass({
           config: config.Login.account.access,
           doLogin: this.accountDoLogin,
           doRegister: function doRegister() {
-            return window.location.href = '/#/stage02';
+            return window.location.href = '/stage/#/02';
           }
         })
       )
@@ -440,13 +456,19 @@ var moment = require('moment');
 var config = require('../config');
 
 var accordion1Check = function accordion1Check(self) {
+	var focus = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
+
+	var toFocus = null;
 	var r = true;
 	config.Login.account.access.map(function (c, i) {
 		var ref = 'access_' + c.type + '_' + i;
 		if (c.validation) {
 			if (!self.refs[ref].isValid()) {
 				r = false;
+				if (!toFocus) {
+					toFocus = ref;
+				}
 			}
 		}
 		var fields = self.state.fields;
@@ -459,6 +481,10 @@ var accordion1Check = function accordion1Check(self) {
 	self.refs.access_data.setState({
 		status: r ? 'success' : 'error'
 	});
+
+	if (!r && focus) {
+		self.refs[toFocus].focus();
+	}
 
 	loadingBarStatus(self);
 	return r;
@@ -484,13 +510,19 @@ var accordion2Check = function accordion2Check(self) {
 };
 
 var accordion3Check = function accordion3Check(self) {
+	var focus = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
+
+	var toFocus = null;
 	var r = true;
 	config.Login.account.custom.map(function (c, i) {
 		var ref = 'custom_' + c.type + '_' + i;
 		if (c.validation) {
 			if (!self.refs[ref].isValid()) {
 				r = false;
+				if (!toFocus) {
+					toFocus = ref;
+				}
 			}
 		}
 		var fields = self.state.fields;
@@ -503,6 +535,10 @@ var accordion3Check = function accordion3Check(self) {
 	self.refs.personal_data.setState({
 		status: r ? 'success' : 'error'
 	});
+
+	if (!r && focus) {
+		self.refs[toFocus].focus();
+	}
 
 	loadingBarStatus(self);
 	return r;
@@ -550,13 +586,13 @@ var loadingBarStatus = function loadingBarStatus(self) {
 var accordionCheckBoth = function accordionCheckBoth() {
 
 	var r = true;
-	if (!accordion1Check(this)) {
+	if (r && !accordion1Check(this)) {
 		r = false;
 	}
-	if (!accordion2Check(this)) {
+	if (r && !accordion3Check(this)) {
 		r = false;
 	}
-	if (!accordion3Check(this)) {
+	if (r && !accordion2Check(this)) {
 		r = false;
 	}
 
@@ -564,7 +600,7 @@ var accordionCheckBoth = function accordionCheckBoth() {
 		$('#main').data('stored_data', JSON.stringify(this.state));
 		localStorage.setItem('stored_data', JSON.stringify(this.state));
 		localStorage.setItem('login_time', moment().format());
-		window.location.href = '/#/stage03';
+		window.location.href = '/stage/#/03';
 	}
 
 	return false;
@@ -677,7 +713,7 @@ var Stage02 = React.createClass({
 				React.createElement(
 					TopNav.Button,
 					{ side: 'left', onClick: function onClick() {
-							return window.location.href = '/#/stage01';
+							return window.location.href = '/stage/#/01';
 						} },
 					React.createElement('img', { src: '/img/arrow-back.svg' })
 				),
@@ -787,13 +823,13 @@ var timer = null;
 
 var goBack = function goBack() {
 	clearInterval(timer);
-	window.location.href = '/#/stage02';
+	window.location.href = '/stage/#/02';
 };
 
 var goNext = function goNext() {
 	clearInterval(timer);
 	localStorage.setItem('email', this.state.email);
-	window.location.href = '/#/stage04';
+	window.location.href = '/stage/#/04';
 };
 
 var popolateLoadbar = function popolateLoadbar(self) {
@@ -813,18 +849,16 @@ var Stage03 = React.createClass({
 			completed: 0,
 			fields: {},
 			terms_privacy_flag: false,
-			marketing_flag: false,
-			confirmed: false
+			marketing_flag: false
 		};
 
-		var loaded_st = false;
 		if (localStorage.getItem('stored_data')) {
-			loaded_st = JSON.parse(localStorage.getItem('stored_data'));
+			st = JSON.parse(localStorage.getItem('stored_data'));
 		} else {
-			loaded_st = $('#main').data('stored_data') ? $.extend(true, st, JSON.parse($('#main').data('stored_data'))) : st;
+			st = $('#main').data('stored_data') ? $.extend(true, st, JSON.parse($('#main').data('stored_data'))) : st;
 		}
 
-		return loaded_st ? $.extend(true, st, loaded_st) : st;
+		return st;
 	},
 
 
@@ -838,9 +872,28 @@ var Stage03 = React.createClass({
 				clearInterval(timer);
 			}
 		}, 1000);
+
+		setTimeout(function () {
+			self.centerVertically('verticalCentered');
+		}, 200);
 	},
 
+	centerVertically: function centerVertically(ref) {
+
+		var el = this.refs[ref];
+		var hCont = parseInt(ReactDOM.findDOMNode(el).parentNode.style.minHeight || ReactDOM.findDOMNode(el).parentNode.clientHeight);
+		var h = ReactDOM.findDOMNode(el).clientHeight;
+
+		if (h < hCont) {
+			var mTop = parseInt((hCont - h) / 2);
+			el.style.marginTop = mTop + 'px';
+		}
+	},
+
+
 	render: function render() {
+
+		var access_field_ref = 'access_email_0';
 
 		return React.createElement(
 			'div',
@@ -861,39 +914,52 @@ var Stage03 = React.createClass({
 				{ full: true },
 				React.createElement(
 					'div',
-					{ className: 'action-component' },
+					{ className: 'verticalCentered', ref: 'verticalCentered' },
 					React.createElement(
 						'div',
-						{ className: 'validation-icon' },
-						React.createElement('i', { className: 'fa fa-envelope-o', 'aria-hidden': 'true' })
+						{ className: 'action-component' },
+						React.createElement(
+							'div',
+							{ className: 'validation-icon' },
+							React.createElement('i', { className: 'fa fa-envelope-o', 'aria-hidden': 'true' })
+						),
+						React.createElement(
+							'div',
+							{ className: 'validation-detail' },
+							React.createElement(
+								'p',
+								null,
+								'We have sent an email to',
+								React.createElement('br', null),
+								React.createElement(
+									'strong',
+									{ ref: 'email_value' },
+									this.state.fields[access_field_ref]
+								)
+							),
+							React.createElement(
+								'p',
+								null,
+								React.createElement(
+									'a',
+									{ href: '/stage/#/02' },
+									'Email wrong? Change it.'
+								)
+							)
+						)
 					),
 					React.createElement(
 						'div',
-						{ className: 'validation-detail' },
+						{ className: 'suggestion' },
 						React.createElement(
 							'p',
 							null,
-							'We have sent an email to',
+							'Confirm your account',
 							React.createElement('br', null),
-							React.createElement(
-								'strong',
-								{ ref: 'email_value' },
-								this.state.email
-							)
+							'otherwise you will be disconnected in ',
+							minutes,
+							' minutes'
 						)
-					)
-				),
-				React.createElement(
-					'div',
-					{ className: 'suggestion' },
-					React.createElement(
-						'p',
-						null,
-						'Confirm your account',
-						React.createElement('br', null),
-						'otherwise you will be disconnected in ',
-						minutes,
-						' minutes'
 					)
 				)
 			),
@@ -977,88 +1043,119 @@ var minutes = 5;
 var timer = null;
 
 var goNext = function goNext() {
-		clearTimeout(timer);
-		window.location.href = '/#/stage06';
+	clearTimeout(timer);
+	window.location.href = '/stage/#/success';
 };
 
 var Stage03 = React.createClass({
-		displayName: 'Stage03',
+	displayName: 'Stage03',
+	getInitialState: function getInitialState() {
 
+		var st = {
+			completed: 0,
+			fields: {},
+			terms_privacy_flag: false,
+			marketing_flag: false
+		};
 
-		componentDidMount: function componentDidMount() {
-
-				timer = setTimeout(function () {
-						window.location.href = '/#/stage06';
-				}, 3000);
-		},
-
-		render: function render() {
-
-				return React.createElement(
-						'div',
-						{ id: 'real-container' },
-						React.createElement(
-								TopNav.Bar,
-								{ fixed: true },
-								React.createElement(TopNav.Title, { align: 'center', text: 'Email confirmed' })
-						),
-						React.createElement(
-								MainContent,
-								{ full: true },
-								React.createElement(
-										'div',
-										{ className: 'action-component' },
-										React.createElement(
-												'div',
-												{ className: 'validation-icon' },
-												React.createElement('i', { className: 'fa fa-check', 'aria-hidden': 'true' })
-										),
-										React.createElement(
-												'div',
-												{ className: 'validation-detail' },
-												React.createElement(
-														'p',
-														null,
-														'Thanks for confirming your email',
-														React.createElement('br', null),
-														React.createElement('strong', { ref: 'email_value' })
-												)
-										)
-								),
-								React.createElement(
-										'div',
-										{ className: 'suggestion' },
-										React.createElement(
-												'p',
-												null,
-												'You will be automatically redirect to our page in 3 seconds...',
-												React.createElement('br', null),
-												'Enjoy our free Wi-Fi'
-										)
-								)
-						),
-						React.createElement(
-								BottomNav.Bar,
-								{ fixed: true },
-								React.createElement(
-										'button',
-										{ className: 'mui-btn mui-btn--large main-button main-button-height mui-btn--double', onClick: goNext.bind(this) },
-										React.createElement('i', { className: 'fa fa-chevron-right mui--pull-right' }),
-										React.createElement(
-												'span',
-												null,
-												React.createElement(
-														'strong',
-														null,
-														'I DON\u2019T WANT TO WAIT FURTHER'
-												),
-												React.createElement('br', null),
-												'GO ONLINE'
-										)
-								)
-						)
-				);
+		if (localStorage.getItem('stored_data')) {
+			st = JSON.parse(localStorage.getItem('stored_data'));
+		} else {
+			st = $('#main').data('stored_data') ? $.extend(true, st, JSON.parse($('#main').data('stored_data'))) : st;
 		}
+
+		return st;
+	},
+
+
+	componentDidMount: function componentDidMount() {
+
+		var self = this;
+		// timer = setTimeout(function() {
+		// 	window.location.href = '/stage/#/success';
+		// }, 3000);
+
+		setTimeout(function () {
+			self.centerVertically('verticalCentered');
+		}, 200);
+	},
+
+	centerVertically: function centerVertically(ref) {
+
+		var el = this.refs[ref];
+		var hCont = parseInt(ReactDOM.findDOMNode(el).parentNode.style.minHeight || ReactDOM.findDOMNode(el).parentNode.clientHeight);
+		var h = ReactDOM.findDOMNode(el).clientHeight;
+
+		if (h < hCont) {
+			var mTop = parseInt((hCont - h) / 2);
+			el.style.marginTop = mTop + 'px';
+		}
+	},
+
+
+	render: function render() {
+
+		var access_field_ref = 'access_email_0';
+
+		return React.createElement(
+			'div',
+			{ id: 'real-container' },
+			React.createElement(
+				TopNav.Bar,
+				{ fixed: true },
+				React.createElement(TopNav.Title, { align: 'center', text: 'Email confirmed' })
+			),
+			React.createElement(
+				MainContent,
+				{ full: true },
+				React.createElement(
+					'div',
+					{ className: 'verticalCentered', ref: 'verticalCentered' },
+					React.createElement(
+						'div',
+						{ className: 'action-component' },
+						React.createElement(
+							'div',
+							{ className: 'validation-icon' },
+							React.createElement('i', { className: 'fa fa-check', 'aria-hidden': 'true' })
+						),
+						React.createElement(
+							'div',
+							{ className: 'validation-detail' },
+							React.createElement(
+								'p',
+								null,
+								'Thanks for confirming your email',
+								React.createElement('br', null),
+								React.createElement(
+									'strong',
+									{ ref: 'email_value' },
+									this.state.fields[access_field_ref]
+								)
+							)
+						)
+					)
+				)
+			),
+			React.createElement(
+				BottomNav.Bar,
+				{ fixed: true },
+				React.createElement(
+					'button',
+					{ className: 'mui-btn mui-btn--large main-button main-button-height', onClick: goNext.bind(this) },
+					React.createElement(
+						'span',
+						null,
+						React.createElement(
+							'strong',
+							null,
+							'GO ONLINE'
+						)
+					)
+				)
+			)
+		);
+	}
 
 });
 
@@ -1098,8 +1195,8 @@ var AppMenu = require('./components/AppMenu');
 
 var config = require('../config');
 
-var Stage06 = React.createClass({
-  displayName: 'Stage06',
+var Success = React.createClass({
+  displayName: 'Success',
   componentDidMount: function componentDidMount() {
     localStorage.removeItem('stored_data');
   },
@@ -1124,17 +1221,14 @@ var Stage06 = React.createClass({
       'div',
       { id: 'real-container' },
       React.createElement(TopNav, { config: config.TopNav }),
-      React.createElement(
-        MainContent,
-        { full: true, contentBackgroundStyle: style.contentBackground },
-        React.createElement(AppMenu, { list: config.Apps })
-      )
+      React.createElement(MainContent, { full: true, contentBackgroundStyle: style.contentBackground }),
+      React.createElement(AppMenu, { list: config.Apps })
     );
   }
 });
 
 /* Module.exports instead of normal dom mounting */
-module.exports = Stage06;
+module.exports = Success;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
@@ -1347,7 +1441,8 @@ var AppMenu = React.createClass({
             );
           })
         )
-      )
+      ),
+      React.createElement('div', { className: 'overflow', onClick: this.openClose })
     );
   }
 
@@ -1575,8 +1670,10 @@ var FieldPassword = React.createClass({
 		this.refs['ghost'].value = v;
 	},
 	focus: function focus() {
-		this.refs[this.refInput].focus();
-		centerVerticalElement(this.refs[this.refInput]);
+
+		var dest_ref = this.state.hide ? this.refInput : 'ghost';
+		this.refs[dest_ref].focus();
+		centerVerticalElement(this.refs[dest_ref]);
 	},
 	handleChange: function handleChange(e) {
 		var dest_ref = this.state.hide ? this.refInput : 'ghost';
@@ -1627,7 +1724,7 @@ var FieldPassword = React.createClass({
 			{ className: classname, style: style },
 			React.createElement('input', { className: 'ghost', type: 'password', ref: 'ghost', onKeyUp: this.handleChange, onKeyDown: this.handleChange }),
 			React.createElement('i', { className: iClass, onClick: this.toggleChange }),
-			React.createElement('input', { className: 'real', id: 'inputReal', ref: this.refInput, type: 'text', onKeyUp: this.handleChange, onKeyDown: this.handleChange }),
+			React.createElement('input', { className: 'real', tabIndex: '-1', id: 'inputReal', ref: this.refInput, type: 'text', onKeyUp: this.handleChange, onKeyDown: this.handleChange }),
 			React.createElement(
 				'label',
 				null,
@@ -2260,6 +2357,7 @@ var MainContent = React.createClass({
   updateDimensions: function updateDimensions() {
 
     if (this.props.full) {
+      this.refs.mainContent.style.height = this.getFullHeight() + 'px';
       this.refs.contentBackground.style.minHeight = this.getFullHeight() + 'px';
     }
   },
@@ -2591,7 +2689,7 @@ var MainMenu = React.createClass({
 				element = React.createElement(
 					'li',
 					{ key: key, onClick: function onClick() {
-							return window.location.href = '/landing';
+							return window.location.href = '/';
 						} },
 					labels[key]
 				);

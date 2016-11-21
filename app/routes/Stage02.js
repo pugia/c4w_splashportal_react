@@ -8,13 +8,17 @@ var Accordion = require('./components/Accordion');
 var moment = require('moment');
 var config = require('../config');
 
-var accordion1Check = function(self) {
+var accordion1Check = function(self, focus = false) {
 
+	var toFocus = null;
 	var r = true;
 	config.Login.account.access.map((c,i) => {
 		var ref = 'access_'+c.type+'_'+i;
 		if (c.validation) {
-			if (!self.refs[ref].isValid()) { r = false; }
+			if (!self.refs[ref].isValid()) { 
+				r = false; 
+				if (!toFocus) { toFocus = ref; }
+			}
 		}
 		var fields = self.state.fields;
 		fields[ref] = self.refs[ref].getValue()
@@ -26,6 +30,8 @@ var accordion1Check = function(self) {
   self.refs.access_data.setState({
   	status: r ? 'success' : 'error'
   })
+
+  if (!r && focus) { self.refs[toFocus].focus() }
 
 	loadingBarStatus(self);
 	return r;
@@ -50,13 +56,17 @@ var accordion2Check = function(self) {
 
 }
 
-var accordion3Check = function(self) {
+var accordion3Check = function(self, focus = false) {
 
+	var toFocus = null;
 	var r = true;
 	config.Login.account.custom.map((c,i) => {
 		var ref = 'custom_'+c.type+'_'+i;
 		if (c.validation) {
-			if (!self.refs[ref].isValid()) { r = false; }
+			if (!self.refs[ref].isValid()) { 
+				r = false; 
+				if (!toFocus) { toFocus = ref; }
+			}
 		}
 		var fields = self.state.fields;
 		fields[ref] = self.refs[ref].getValue()
@@ -68,6 +78,8 @@ var accordion3Check = function(self) {
   self.refs.personal_data.setState({
   	status: r ? 'success' : 'error'
   })
+
+  if (!r && focus) { self.refs[toFocus].focus() }
 
 	loadingBarStatus(self);
 	return r;
@@ -103,15 +115,15 @@ var loadingBarStatus = function(self) {
 var accordionCheckBoth = function() {
 
 	var r = true;
-	if (!accordion1Check(this)) { r = false; }
-	if (!accordion2Check(this)) { r = false; }
-	if (!accordion3Check(this)) { r = false; }
+	if (r && !accordion1Check(this)) { r = false; }
+	if (r && !accordion3Check(this)) { r = false; }
+	if (r && !accordion2Check(this)) { r = false; }
 
 	if (r) {
 		$('#main').data('stored_data', JSON.stringify(this.state));
 		localStorage.setItem('stored_data', JSON.stringify(this.state));
 		localStorage.setItem('login_time', moment().format());
-		window.location.href = '/#/stage03';
+		window.location.href = '/stage/#/03';
 	}
 
 	return false;
@@ -211,7 +223,7 @@ var Stage02 = React.createClass({
       <div id="real-container">
 
       	<TopNav.Bar fixed={true}>
-      		<TopNav.Button side="left" onClick={ () => window.location.href = '/#/stage01' } >
+      		<TopNav.Button side="left" onClick={ () => window.location.href = '/stage/#/01' } >
       			<img src="/img/arrow-back.svg" />
       		</TopNav.Button>
       		<TopNav.Title align="center" text="Registration" />

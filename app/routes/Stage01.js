@@ -16,7 +16,7 @@ var nextStage = function() {
   	$('#main').data('stored_data', JSON.stringify({
   		email: self.refs.login_clickThrough.getEmail()
   	}));
-  	window.location.href = '/#/stage02'
+  	window.location.href = '/stage/#/02'
 	} else {
 		self.refs.login_clickThrough.setState({
 			status: 'error'
@@ -67,7 +67,7 @@ var Stage01 = React.createClass({
       <div id="real-container">
 
       	<TopNav.Bar fixed={true}>
-      		<TopNav.Button side="left" onClick={ () => window.location.href = '/landing' } >
+      		<TopNav.Button side="left" onClick={ () => window.location.href = '/' } >
       			<img src="/img/arrow-back.svg" />
       		</TopNav.Button>
       		<TopNav.Title align="center" text="Wifi access" />
@@ -88,7 +88,7 @@ var Stage01 = React.createClass({
           	title="LOGIN WITH OUR ACCOUNT"
             config={config.Login.account.access}
             doLogin={this.accountDoLogin}
-            doRegister={() => window.location.href = '/#/stage02' }
+            doRegister={() => window.location.href = '/stage/#/02' }
           />
 
 	      </MainContent>

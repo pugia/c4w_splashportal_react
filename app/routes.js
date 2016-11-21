@@ -7,7 +7,7 @@ global.rootRequire = function(name) {
 
 module.exports = function(app) {
 
-	app.get('/', function(req, res){
+	app.get('/stage', function(req, res){
 		// var Child = React.createFactory(require('./components/Showcase'));
 	  var mainHtml = ''; //ReactDOMServer.renderToString(Child({}));
 	  res.render('stages.ejs', { main: mainHtml, rand: Math.random().toString(36).substring(7) });
@@ -25,8 +25,14 @@ module.exports = function(app) {
 	//   res.render('stages.ejs', { main: mainHtml });
 	// });
 
-	app.get('/landing', function(req, res){
+	app.get('/', function(req, res){
 		var Child = React.createFactory(require('./routes/Landing'));
+	  var mainHtml = ReactDOMServer.renderToString(Child({}));
+	  res.render('landing.ejs', { main: mainHtml });
+	});
+
+	app.get('/success', function(req, res){
+		var Child = React.createFactory(require('./routes/Success'));
 	  var mainHtml = ReactDOMServer.renderToString(Child({}));
 	  res.render('landing.ejs', { main: mainHtml });
 	});

@@ -8,7 +8,7 @@ var Stage01 = require('./routes/Stage01');
 var Stage02 = require('./routes/Stage02');
 var Stage03 = require('./routes/Stage03');
 var Stage04 = require('./routes/Stage04');
-var Stage06 = require('./routes/Stage06');
+var Success = require('./routes/Success');
 
 var loadFont = function(url) {
 
@@ -66,11 +66,11 @@ const App = React.createClass({
   render() {
     let Child
     switch (this.state.route) {
-      case '/stage01': 	Child = Stage01; break;
-      case '/stage02':  Child = Stage02; break;
-      case '/stage03': 	Child = Stage03; break;
-      case '/stage04': 	Child = Stage04; break;
-      case '/stage06': 	Child = Stage06; break;
+      case '/01': Child = Stage01; break;
+      case '/02': Child = Stage02; break;
+      case '/03': Child = Stage03; break;
+      case '/04': Child = Stage04; break;
+      case '/success': 	Child = Success; break;
       default: Child = Landing;
     }
 
@@ -84,12 +84,12 @@ const App = React.createClass({
 
 ReactDOM.render((
   <Router history={browserHistory}>
-    <Route path="/" component={App}>
-      <Route path="stage01" component={Stage01} />
-      <Route path="stage02" component={Stage02} />
-      <Route path="stage03" component={Stage03} />
-      <Route path="stage04" component={Stage04} />
-      <Route path="stage06" component={Stage06} />
+    <Route path="/stage/" component={App}>
+      <Route path="01" component={Stage01} />
+      <Route path="02" component={Stage02} />
+      <Route path="03" component={Stage03} />
+      <Route path="04" component={Stage04} />
+      <Route path="success" component={Success} />
     </Route>
   </Router>
 ), document.getElementById('main') )

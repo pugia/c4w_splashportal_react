@@ -1,0 +1,360 @@
+@import "../vars";
+@import "../scss/mixins";
+
+.divider {
+
+	display: block;
+	overflow: hidden;
+	position: relative;
+	color: $divider-color;
+	text-align: center;
+	margin: 15px 0;
+	min-height: 3px;
+
+	&:before, &:after {
+		content: "";
+		display: block;
+		border-bottom: 1px solid $divider-color;
+		height: 1px;
+		width: 50%;
+		position: absolute;
+		top: 50%;
+	}
+
+	&:before {
+		right: 50%;
+	}
+
+	&:after {
+		left: 50%;
+	}
+
+	&.with-text {
+		&:before {
+			right: 60%;
+		}
+		&:after {
+			left: 60%;
+		}
+	}
+}
+
+.listButton {
+	position: relative;
+	display: block;
+	height: 63px;
+	line-height: 63px;
+	margin-bottom: 1px;
+	border: none;
+	width: 100%;
+	text-align: left;
+	cursor: pointer;
+
+	& > span.content {
+		text-transform: uppercase;
+		font-weight: 700;
+		font-size: 14px;
+		padding-left: 18px;
+
+		& > span.icon {
+			float: left;
+			width: 35px;
+			height: 35px;
+			border-style: solid;
+			border-width: 1px;
+			line-height: 34px;
+			border-radius: 100%;
+			text-align: center;
+			margin-top: 14px;
+			margin-left: 12px;
+		}
+
+	}
+
+	& > i.fa {
+		float: right;
+		line-height: 63px;
+		font-size: 22px;
+		font-weight: bold;
+		padding: 0 12px 0 18px;
+	}
+
+	&:last-child {
+		margin-bottom: 0;
+	}
+}
+
+.mui-textfield {
+
+	position: relative;
+	margin-bottom: 0;
+
+	&.mui--is-not-empty > label {
+
+		font-size: 12px;
+		line-height: 15px;
+		text-overflow: ellipsis;
+		transform: translate(0px, 0px);
+
+		& ~ span {
+			opacity: 0;
+		}
+	}
+
+	&.mui--is-empty > label ~ span.error {
+		opacity: 0 !important;
+	}
+
+	&.mui--is-empty > label ~ span.success {
+		opacity: 0 !important;
+	}
+
+	input {
+		border-bottom-style: dotted;
+	}
+
+	span {
+		font-size: 12px;
+		line-height: 15px;
+		color: rgba(0, 0, 0, 0.5);
+		position: absolute;
+		opacity: 0;
+		margin-top: 5px;
+
+		&.info {
+			opacity: 1;
+		}
+
+	}
+
+	&.error {
+
+		input {
+			border-color: $mui-danger-color;
+		}
+
+		label {
+			color: $mui-danger-color;
+		}
+
+		span {
+			opacity: 0;
+		}
+
+		span.error {
+			opacity: 1 !important;
+			color: $mui-danger-color;
+		}
+
+	}
+
+	&.success {
+
+		input {
+			border-color: $mui-success-color;
+		}
+
+		label {
+			color: $mui-success-color;
+		}
+
+		span {
+			opacity: 0;
+		}
+
+		span.success {
+			opacity: 1 !important;
+			color: $mui-success-color;
+		}
+
+	}
+
+	&.password {
+
+		input {
+
+			padding-right: 32px;
+
+			&.real {
+				opacity: 0;
+			}
+
+			&.ghost {
+				position: absolute;
+				z-index: 100;
+
+				& + i {
+					position: absolute;
+					right: 0;
+					height: 32px;
+					width: 20px;
+					line-height: 32px;
+					z-index: 101;
+					cursor: pointer;
+					opacity: 0.4;
+				}
+
+			}
+
+		}
+
+		&.showPassword {
+			input {
+				&.real {
+					opacity: 1;
+				}
+				&.ghost {
+					display: none;
+				}
+			}
+		}
+
+	}
+}
+
+.mui-checkbox {
+
+	& > label {
+		display: block;
+		padding-left: 30px;
+		position: relative;
+
+		& > svg {
+
+			position: absolute;
+			left: 0;
+
+			rect {
+				stroke: $checkbox-color;
+			}
+
+			path.check {
+				opacity: 0;
+				fill: $checkbox-color;
+			}
+		}
+
+	}
+
+	& > input {
+		display: none;
+	}
+
+	& > input:checked + label {
+		& > svg {
+			path.check {
+				opacity: 1;
+			}
+		}
+	}
+
+	& > span {
+		display: none;
+		font-size: 12px;
+		line-height: 15px;
+		color: rgba(0, 0, 0, 0.26);			
+		padding-left: 30px;	
+	}
+
+	&.error {
+
+		& > label {
+			& > svg {
+				rect {
+					stroke: $mui-danger-color;
+				}
+				path.check {
+					fill: $mui-danger-color;
+				}
+			}
+		}
+
+		& > span {
+			display: block;
+			color: $mui-danger-color;
+		}
+	}
+}
+
+.label {
+	font-size: 8px;
+	padding: 2px;
+
+	&.label-black {
+		background: #000;
+		color: #fff;
+	}
+
+}
+
+
+.modal {
+	position: fixed;
+	top: 100%;
+	left: 0;
+	width: 100%;
+	height: 0;
+	background: #DDDDDD;
+	z-index: 10001;
+	overflow: hidden;
+	@include transition(all .5s ease);
+
+	&.open {
+		top: 0;
+		height: 100%;
+	}
+
+	& > .modal-content {
+		height: calc(100% - #{$appbar-height});
+		overflow: scroll;
+	}
+
+}
+
+.action-component {
+
+	text-align: center;
+	padding: 20px 0;
+
+	& > .validation-icon {
+		width: 130px;
+		height: 130px;
+		color: #9D9D9D;
+		border: 1px solid #9D9D9D;
+		line-height: 130px;
+		text-align: center;
+		margin: 0 auto 10px;
+		border-radius: 100%;
+
+		.fa {
+			font-size: 70px;
+			line-height: 130px;
+			color: #7F7F7F;
+			opacity: 0.6;
+		}
+
+	}
+
+}
+
+.suggestion {
+	text-align: center;		
+	margin-top: 25px;
+
+	p {
+		font-size: 14px;
+		line-height: 16px;
+		font-weight: 500;
+		margin: 0;
+		padding: 0;
+	}
+}
+
+
+.mui-panel {
+	/* card: */
+	background: #FFFFFF;
+	box-shadow: 0px 13px 21px 0px #1F6D8A;
+	border-radius: 4px 5px 5px 5px;
+	overflow: hidden;
+}

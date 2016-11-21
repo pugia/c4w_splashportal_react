@@ -1,0 +1,84 @@
+@import "../vars";
+@import "../scss/mixins";
+
+.accordion {
+
+	& > .section {
+		margin-bottom: 1px;
+
+		& > label.accordion-title {
+
+			padding: 0 15px;
+			display: block;
+			height: 34px;
+			line-height: 34px;
+			position: relative;
+			background: #E3E3E3;
+			color: #000000;
+			cursor: pointer;
+
+			&.success {
+				background: lightgreen;
+			}
+
+			&.error {
+				background: lightcoral;
+				color: #fff;
+
+				& > span {
+					color: #fff !important;
+					&.icon-left {
+						background-position: -16px 0;
+					}
+					&.icon-open-close {
+						color: #fff;
+					}
+			}
+
+			}
+
+			& > span {
+
+				position: absolute;
+				height: 34px;
+				line-height: 34px;
+
+				&.icon-open-close {
+					right: 15px;
+					color: $mui-primary-color;
+				}
+
+				&.icon-left {
+					left: 15px;
+					width: 16px;
+					height: 16px;
+					line-height: 16px;
+					top: 50%;
+					margin-top: -8px;
+				}
+
+				&.title {
+					left: 45px;
+				}
+
+			}
+
+		}
+
+		& > .accordion-content {
+			display: block;
+			overflow: hidden;
+			padding: 17px 15px 17px 45px;
+			background: #FBFBFB;
+			@include transition(all .5s ease);
+		}
+
+		&.close > .accordion-content {
+			padding-top: 0;
+			padding-bottom: 0;
+			height: 0 !important;
+		}
+
+	}
+
+}

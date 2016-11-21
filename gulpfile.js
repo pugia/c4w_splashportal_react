@@ -97,7 +97,7 @@ gulp.task('default', ['server', 'watch']);
 /* SASS */
 var sass = require('gulp-sass');
 
-var sass_watch = ['./style/**/*.scss', './style/*.scss']
+var sass_watch = ['./style/*.scss']
 
 function sass_task() {
   return gulp.src(sass_watch)

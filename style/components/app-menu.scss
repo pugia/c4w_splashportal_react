@@ -1,0 +1,258 @@
+@import "../vars";
+@import "../scss/mixins";
+
+.app-menu {
+
+	position: fixed;
+	bottom: 0;
+	z-index: 1900;
+	min-height: 47px;
+	width: 100%;
+	font-weight: 100;
+
+	& > span.icon-open-close {
+		cursor: pointer;
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		color: #000;
+		line-height: 47px;
+		height: 47px;
+		width: 60px;
+		margin: 0;
+		z-index: 1902;
+		text-align: center;
+		padding-top: 3px;
+		cursor: pointer;
+
+		i {
+			display: block;
+			height: 20px;
+			line-height: 24px;
+			font-size: 18px;
+		}
+
+		label {
+			display: block;
+			height: 12px;
+			line-height: 12px;
+			font-size: 12px;
+			cursor: pointer;
+			font-weight: 100;
+		}
+
+	}
+
+	& > div.overflow {
+		display: block;
+		position: absolute;
+		z-index: 1899;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+		background: #000;
+		@include transition(opacity .5s ease);
+	}
+
+	&.pre_open, &.open, &.pre_close {
+		height: 100%;
+	}
+
+	&.pre_open > div.overflow, &.open > div.overflow {
+		opacity: 0.7;
+	}
+
+	&.pre_close > div.overflow {
+		opacity: 0;
+	}
+
+	& > .list {
+
+		background: #fff;
+		position: absolute;
+		z-index: 1901;
+		width: 100%;
+		height: 47px;
+		bottom: 0;
+
+		h3 {
+			position: absolute;
+			height: 47px;
+			width: 100%;
+			text-align: center;
+			text-transform: uppercase;
+			color: #000;
+			background: #fff;
+			font-size: 16px;
+			font-weight: 500;
+			line-height: 47px;
+			margin: 0;
+			padding: 0;
+			top: 100%;
+			z-index: 10;
+			@include transition(all .5s ease);
+		}
+
+		ul {
+
+			position: absolute;
+			white-space: nowrap;
+			margin: 0;
+			padding: 0;
+			width: 100%;
+			@include transition(all .5s ease);
+
+			li {
+
+				background: none;
+				border: none;
+				display: inline-block;
+				height: 47px;
+				width: calc((100% - 60px) / 3);
+				border-right: 1px solid #D3CDCD;
+				text-align: center;
+
+				&:nth-child(n+4) {
+					display: none;
+				}
+
+				span.icon {
+					width: 23px;
+					height: 23px;
+					margin: 0 auto;
+					padding-top: 5px;
+					line-height: 23px;
+					text-align: center;
+					vertical-align: middle;
+
+					img {
+						height: 45%;
+					}
+
+				}
+
+				h4 {
+					font-weight: 300;
+					font-size: 12px;
+					color: rgba(0,0,0,0.87);
+					letter-spacing: 0.42px;
+					text-transform: none;
+					margin: 0;
+				}
+
+				p {
+					display: none;
+				}
+
+			}
+		}
+
+	}
+
+	&.open > .list {
+
+		h3 {
+			top: 0;
+			background: #E2E2E2;
+		}
+
+		ul {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			position: absolute;
+			width: 100%;
+			bottom: 47px;
+			margin-bottom: 0;
+			background-image: linear-gradient(-179deg, #FFFFFF 0%, #D5D6D7 100%);
+
+			li {
+				margin: 0;
+				height: 60px;
+				background: none;
+				position: relative;
+				padding: 15px 15px 15px 50px;
+				cursor: pointer;
+				display: block;
+				width: 100%;
+				border-bottom: 1px solid #fff;
+
+				h4 {
+					margin: 0;
+					padding: 0;
+					line-height: 15px;
+					font-weight: 400;
+					font-size: 14px;
+					color: rgba(0,0,0,0.80);
+					letter-spacing: 0.5px;
+					text-transform: uppercase;
+					text-align: left;
+				}
+
+				p {
+					font-weight: 300;
+					font-size: 10px;
+					color: rgba(0,0,0,0.80);
+					letter-spacing: 0.5px;						
+					margin: 0;
+					padding: 0;
+					line-height: 15px;
+					display: block;
+					text-align: left;
+				}
+
+				span.icon {
+					box-sizing: border-box;
+					position: absolute;
+					height: 24px;
+					width: 24px;
+					top: 50%;
+					left: 11px;
+					margin-top: -12px;
+					overflow: hidden;
+					padding: 0;
+
+					img {
+						height: 80%;
+					}
+
+				}
+
+			}	
+
+		}
+
+	}
+
+	&.pre_open > .list {
+
+		overflow: hidden;
+		height: 47px;
+		bottom: 0;
+
+		h3 {
+			top: 0;
+			@include transition(all .5s ease);
+		}
+
+		ul {
+			margin-bottom: -100%;
+		}
+
+	}
+
+	&.pre_close.open > .list {
+
+		h3 {
+			background: #fff;				
+		}
+
+		ul {
+			@include transition(all .5s ease);
+			margin-bottom: -100%;
+		}
+
+	}
+}

@@ -28,7 +28,7 @@ $hamburger-hover-filter    : opacity(50%) !default;
 // Types (Remove or comment out what you don’t need)
 // ==================================================
 $hamburger-types: (
-  3dx,
+/*  3dx,
   3dx-r,
   3dy,
   3dy-r,
@@ -43,8 +43,8 @@ $hamburger-types: (
   elastic-r,
   emphatic,
   emphatic-r,
-  slider,
-  slider-r,
+*/  slider,
+/*  slider-r,
   spring,
   spring-r,
   stand,
@@ -54,7 +54,7 @@ $hamburger-types: (
   squeeze,
   vortex,
   vortex-r
-) !default;
+*/) !default;
 
 // Base Hamburger (We need this)
 // ==================================================
