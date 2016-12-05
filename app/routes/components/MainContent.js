@@ -35,14 +35,18 @@ var MainContent = React.createClass({
 
     if (this.props.full) {
       this.refs.mainContent.style.height = this.getFullHeight()+'px';
-      this.refs.contentBackground.style.minHeight = this.getFullHeight()+'px';
+      this.refs
+      // this.refs.contentBackground.style.minHeight = this.getFullHeight()+'px';
     }
   },
 
 	render() {
+
+    const cbClass = (this.props.full) ? 'content-background full' : 'content-background';
+
 		return (
       <div className="main-content" id="main-content" ref="mainContent">
-        <div className="content-background" ref="contentBackground" style={this.props.contentBackgroundStyle || null}>
+        <div className={cbClass} ref="contentBackground" style={this.props.contentBackgroundStyle || null}>
 					{this.props.children}
 				</div>
 			</div>

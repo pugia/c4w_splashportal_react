@@ -85,8 +85,8 @@ var Stage01 = React.createClass({
 
 	componentDidMount() {
 
-		localStorage.removeItem('stored_date');
-		localStorage.removeItem('login_time');
+		sessionStorage.removeItem('stored_date');
+		sessionStorage.removeItem('login_time');
 
   },
 

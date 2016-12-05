@@ -15,7 +15,7 @@ var Stage04 = React.createClass({
 	getInitialState() {
 
 		var st = {
-			email: localStorage.getItem('email')
+			email: sessionStorage.getItem('email')
 		}
 
 		return st;

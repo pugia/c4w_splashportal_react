@@ -10,21 +10,6 @@ var Stage03 = require('./routes/Stage03');
 var Stage04 = require('./routes/Stage04');
 var Success = require('./routes/Success');
 
-var loadFont = function(url) {
-
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', url, true);
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState == 4 && xhr.status == 200) {
-      var style = document.createElement('style');
-      style.innerHTML = xhr.responseText;
-      document.head.appendChild(style);
-    }
-  };
-  xhr.send();
-
-}
-
 const App = React.createClass({
   getInitialState() {
     return {
@@ -38,29 +23,11 @@ const App = React.createClass({
         route: window.location.hash.substr(1)
       })
     })
-    window.addEventListener("resize", this.updateDimensions);
-    setTimeout(this.updateDimensions, 100);
 
-    loadFont('https://fonts.googleapis.com/css?family=Roboto:300,400,700');
-
-  },
-
-  componentWillUnmount: function() {
-    window.removeEventListener("resize", this.updateDimensions);
-  },
-
-  componentDidUpdate(prevProps, prevState) {
-    this.updateDimensions();
-  },
-
-  updateDimensions: function() {
-    // if (document.getElementById("main-content")) {
-    //   let m = document.getElementById("main");
-    //   let c = document.getElementById("real-container").childNodes;
-    //   var h = m.offsetHeight;
-    //   for (var x in c) { h -= (c[x].nodeType == '1' && c[x].id != 'main-content') ? c[x].offsetHeight : 0; }
-    //   document.getElementById("main-content").style.height = h+'px';
-    // }
+    setTimeout(() => {
+      document.getElementById('main').style.opacity = 1;
+    }, 500);
+    
   },
 
   render() {

@@ -3,12 +3,8 @@
 
 .login {
 
-	margin-top: 30px;
-	margin-bottom: 30px;
-
-	&:last-child {
-		margin-bottom: 0;
-	}
+	padding-top: 30px;
+	padding-bottom: 30px;
 
 	& > .title {
 		font-family: 'Roboto', sans-serif;
@@ -66,7 +62,7 @@
 	}
 
 	.buttonBar {
-		margin: 0 -15px;
+		/*margin: 0 -15px;*/
 		width: auto;
 
 		button {
@@ -76,6 +72,16 @@
 		}
 
 	}
+
+	&:last-child {
+		padding-bottom: 0;
+
+		.buttonBar {
+			margin: 0 -15px;
+		}
+
+	}
+
 
 	&.login-partner {
 

@@ -1,6 +1,7 @@
 @import "scss/mui";
 @import "vars";
 @import "scss/mixins";
+@import "fonts/Roboto";
 
 /* general classes */
 .navigation-background { background-color: $navigation-color; color: #fff; &:hover { color: #fff; } }
@@ -55,8 +56,18 @@ body {
 
 	font-family: 'Roboto', sans-serif;
 	font-weight: 300;
+	background-position: top center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	overflow: scroll;
+
+  @include fullscreen(10);
+
+	@include transition(opacity .5s ease);
 
 	@import "components/main-structure";
+
+	@import "components/app-menu";	
 	
 	.sliderContainer {
 
@@ -104,9 +115,57 @@ body {
 
 }
 
+#loading_overlay {
+
+  @include fullscreen(5);
+  background: #ECECEC;
+  display: none;
+  position: fixed;
+
+  img {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    margin-left: -75px;
+    margin-top: -75px;
+    top: 50%;
+    left: 50%;
+    opacity: 1 !important;
+    @include transition(opacity .2s ease);
+  }
+
+  &.animate {
+    display: block;
+    opacity: 0;
+    z-index: 32000;
+    @include transition(opacity .5s ease);
+  }
+
+  &.show {
+    opacity: 1;
+  }
+
+}
 
 
+#error {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 20%;
+  z-index: 32200;
+  background: #fff;
+  border-top: 3px solid #f20;
+  padding: 10px;
+  overflow: scroll;
+  margin: 0;
+  display: none;
 
+  &.open {
+    display: block;
+  }
+
+}
 
 
 

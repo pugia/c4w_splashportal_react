@@ -4,11 +4,6 @@ var express = require('express'),
 		port = 5000,
 		bodyParser = require('body-parser');
 
-require('babel-register')({
-   presets: [ 'react' ],
-   extensions: ['.js']
-});
-
 // Include static assets. Not advised for production
 app.use('/node', express.static(path.join(__dirname, 'node_modules')));
 app.use(express.static(path.join(__dirname, 'public')));

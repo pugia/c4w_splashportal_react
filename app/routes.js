@@ -5,12 +5,12 @@ global.rootRequire = function(name) {
   return require(__dirname + '/' + name);
 }
 
+var api = require('./api');
+
 module.exports = function(app) {
 
-	app.get('/stage', function(req, res){
-		// var Child = React.createFactory(require('./components/Showcase'));
-	  var mainHtml = ''; //ReactDOMServer.renderToString(Child({}));
-	  res.render('stages.ejs', { main: mainHtml, rand: Math.random().toString(36).substring(7) });
+	app.get('/stage/', function(req, res){
+	  res.render('stages.ejs');
 	});
 
 	// app.get('/stage01', function(req, res){
@@ -26,21 +26,7 @@ module.exports = function(app) {
 	// });
 
 	app.get('/', function(req, res){
-		var Child = React.createFactory(require('./routes/Landing'));
-	  var mainHtml = ReactDOMServer.renderToString(Child({}));
-	  res.render('landing.ejs', { main: mainHtml });
-	});
-
-	app.get('/success', function(req, res){
-		var Child = React.createFactory(require('./routes/Success'));
-	  var mainHtml = ReactDOMServer.renderToString(Child({}));
-	  res.render('landing.ejs', { main: mainHtml });
-	});
-
-	app.get('/test', function(req, res){
-		var Child = React.createFactory(require('./routes/Stage01test'));
-	  var mainHtml = ReactDOMServer.renderToString(Child({}));
-	  res.render('stages.ejs', { main: mainHtml, rand: Math.random().toString(36).substring(7) });
+	  res.render('landing.ejs');
 	});
 
 	app.get('/full', function(req, res){
@@ -50,5 +36,7 @@ module.exports = function(app) {
 	app.get('/stage03', function(req, res){
 	  res.render('stage03.ejs');
 	});
+
+	app.use('/api', api);
 
 };

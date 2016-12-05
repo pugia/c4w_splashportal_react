@@ -70,8 +70,8 @@ var accordionCheckBoth = function() {
 
 	if (r) {
 		$('#main').data('stored_data', JSON.stringify(this.state));
-		localStorage.setItem('stored_date', JSON.stringify(this.state));
-		localStorage.setItem('login_time', moment().format());
+		sessionStorage.setItem('stored_date', JSON.stringify(this.state));
+		sessionStorage.setItem('login_time', moment().format());
 		window.location.href = '/#/stage03';
 	}
 
@@ -107,10 +107,10 @@ var Stage02 = React.createClass({
 
 	componentDidMount: function() {
 
-		localStorage.removeItem('login_time');
+		sessionStorage.removeItem('login_time');
 
-  	if (localStorage.getItem('stored_date')) {
-  		this.state = JSON.parse(localStorage.getItem('stored_date'));
+  	if (sessionStorage.getItem('stored_date')) {
+  		this.state = JSON.parse(sessionStorage.getItem('stored_date'));
   	} else {
 			this.state = ($('#main').data('stored_data')) ? $.extend(true, this.state, JSON.parse($('#main').data('stored_data'))) : this.state;
 		}

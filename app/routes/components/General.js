@@ -57,11 +57,21 @@ var FieldInput = React.createClass({
 	},
 
 	isValid() {
-		if (typeof this.props.validation == 'function') {
-			return this.props.validation(this.getValue());
+
+		if (typeof this.props.validation == 'string') {
+
+			return evalidation(this.props.validation, this.getValue());
+
 		} else {
-			return true;
+
+			if (typeof this.props.validation == 'function') {
+				return this.props.validation(this.getValue());
+			} else {
+				return true;
+			}
+
 		}
+
 	},
 
 	componentDidMount() {
@@ -132,11 +142,21 @@ var FieldPassword = React.createClass({
 	},
 
 	isValid() {
-		if (typeof this.props.validation == 'function') {
-			return this.props.validation(this.getValue());
+
+		if (typeof this.props.validation == 'string') {
+
+			return evalidation(this.props.validation, this.getValue());
+
 		} else {
-			return true;
+
+			if (typeof this.props.validation == 'function') {
+				return this.props.validation(this.getValue());
+			} else {
+				return true;
+			}
+
 		}
+
 	},
 
 	toggleChange() {
@@ -371,6 +391,28 @@ var ListButton = React.createClass({
 
 })
 
+function evalidation(myFunc, value) {
+	var t = new Function('v', myFunc);
+	return t(value);
+}
+
+var LoadingOverlay = {
+
+	open: function() {
+		document.getElementById('main').style.opacity = 0;
+		const e = document.getElementById('loading_overlay');
+		e.className = 'animate';
+		setTimeout(() => { e.className = 'animate show'; }, 10);
+	},
+
+	close: function() {
+		document.getElementById('main').style.opacity = 1;
+		const e = document.getElementById('loading_overlay');
+		e.className = 'animate';
+		setTimeout(() => { e.className = ''; }, 500);
+	},
+
+}
 
 exports.FieldInput = FieldInput;
 exports.FieldPassword = FieldPassword;
@@ -379,6 +421,7 @@ exports.CheckboxInput = CheckboxInput;
 exports.Paragraph = Paragraph;
 exports.Divider = Divider;
 exports.ListButton = ListButton;
+exports.LoadingOverlay = LoadingOverlay;
 
 module.exports = {
 	FieldInput: FieldInput,
@@ -387,5 +430,6 @@ module.exports = {
 	CheckboxInput: CheckboxInput,
 	Paragraph: Paragraph,
 	Divider: Divider,
-	ListButton: ListButton
+	ListButton: ListButton,
+	LoadingOverlay: LoadingOverlay
 };

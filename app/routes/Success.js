@@ -3,18 +3,32 @@ var General = require('./components/General');
 var TopNav = require('./elements/TopNav');
 var MainContent = require('./components/MainContent');
 var AppMenu = require('./components/AppMenu');
+var Cookies = require('js-cookie');
 
-var config = require('../config');
+// var config = require('../config');
 
 var Success = React.createClass({
 
+  getInitialState() {
+    return {
+      config: Cookies.getJSON('config_stage'),
+      logged: Cookies.getJSON('logged')
+    }
+  },
+
 	componentDidMount() {
-		localStorage.removeItem('stored_data');
+
+    setTimeout(() => {
+      General.LoadingOverlay.close();
+      document.getElementById('main').style.opacity = 1;
+    }, 200);
+
 	},
 
   render() {
 
-  	var self = this;
+  	var self = this,
+        content = null
 
     var style = {
       contentBackground: {
@@ -29,19 +43,25 @@ var Success = React.createClass({
       }
     }
 
-    return (
-      <div id="real-container">
+    if (self.state.config) {
 
-        <TopNav config={config.TopNav} />
+      var config = this.state.config;
 
-	      <MainContent full contentBackgroundStyle={style.contentBackground}>
+      content = (
+        <div id="real-container">
+          <TopNav config={config.TopNav} />
 
-	      </MainContent>
+          <MainContent full contentBackgroundStyle={style.contentBackground}>
 
-        <AppMenu list={config.Apps} />        
+          </MainContent>
 
-      </div>
-    )
+          <AppMenu list={config.Apps} />        
+        </div>
+      )
+    }
+
+    return content
+
   }
 
 });

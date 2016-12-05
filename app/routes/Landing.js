@@ -2,80 +2,189 @@ var React = global.React;
 var General = require('./components/General');
 var TopNav = require('./elements/TopNav');
 var MainContent = require('./components/MainContent');
-
-var config = require('../config');
+var Cookies = require('js-cookie');
 
 var Landing = React.createClass({
 
+  getInitialState() {
+
+    return {
+      config: null
+    }
+
+  },
+
+  componentWillMount() {
+
+    var params = parseQueryString();
+    if (params.res == 'notyet') { Cookies.remove('location') }
+    Cookies.remove('logout');
+    Cookies.remove('config_stage');
+    Cookies.remove('preLogin');    
+
+  },
+
+  loadConfig() {
+
+    console.log('loadConfig')
+
+    var self = this;
+
+    var location = Cookies.getJSON('location');
+
+    if (!location) { 
+      location = JSON.parse(JSON.stringify(window.location));
+      Cookies.set('location', location);
+    } else {
+      if (window.location.search != '' && window.location.search != location.search) { 
+        location = JSON.parse(JSON.stringify(window.location));
+        Cookies.set('location', location); 
+      }
+    }
+
+    var toSend = {
+      ap_redirect: location.href
+    };
+
+    $.ajax({
+      url: endpoint_landing,
+      type:'POST',
+      cache: false,
+      data: JSON.stringify(toSend),
+      async:true,
+      success: function(response) {
+
+        General.LoadingOverlay.close();
+        self.setState({ config: JSON.parse(JSON.stringify(response.config)) })
+        setTimeout(() => {
+          document.getElementById('main').style.opacity = 1;
+        }, 200);
+
+      },
+      error: function(e) {
+
+        console.log('url: '+endpoint_landing);
+        console.log('data: ' + JSON.stringify(toSend) );
+        console.log('error: ' + JSON.stringify(e) );
+
+        $('#error').addClass('open');
+        console.log('error', e);
+      }
+    });
+
+  },
+
   updateSliderContainerHeight() {
-    this.refs.sliderContainer.style.height = ( this.refs.content.getFullHeight() - getAbsoluteHeight(this.refs.goOnlineBtn) ) + 'px';
+
+    if (this.refs.sliderContainer != undefined) {
+      this.refs.sliderContainer.style.height = ( this.refs.content.getFullHeight() - getAbsoluteHeight(this.refs.goOnlineBtn) ) + 'px';
+    }
+
   },
 
 	componentDidMount() {
-		localStorage.removeItem('stored_data');
-    document.getElementById('main').style.opacity = 1;
-    
+
+    this.loadConfig();
     window.addEventListener("resize", this.updateSliderContainerHeight);
     setTimeout(this.updateSliderContainerHeight, 100);
+
   },
 
   componentWillUnmount: function() {
+
     window.removeEventListener("resize", this.updateSliderContainerHeight);
+
   },
 
   componentDidUpdate(prevProps, prevState) {
+
     this.updateSliderContainerHeight();
+
+  },
+
+  next() {
+
+    General.LoadingOverlay.open();
+    setTimeout( () => window.location.href = '/stage/#/01', 300);
+
   },
 
   render() {
 
-  	var self = this;
+    console.log('render landing');    
 
-		var style = {
-			contentBackground: {
-				backgroundRepeat: 'no-repeat',
-				backgroundPosition: 'top center',
-				backgroundSize: 'cover',
-        backgroundImage: "url("+ config.Content.background +")"
-			},
-      sliderContainer: {
-        position: 'absolute',
-        width: '100%'
-      }
-		}
+  	var self = this,
+        content = null;
 
-    return (
-      <div id="real-container">
+    if (self.state.config) {
 
-      	<TopNav config={config.TopNav} />
+      const config = self.state.config;
 
-	      <MainContent ref="content" full contentBackgroundStyle={style.contentBackground}>
+  		var style = {
+        sliderContainer: {
+          position: 'absolute',
+          width: '100%'
+        },
+        contentBackgroundStyle: {
+          height: '100%'
+        }
+  		}
 
-          <div ref="sliderContainer" className="sliderContainer" style={style.sliderContainer}>
-            <div className="slide">
-              <div className="image"></div>
-              <div className="details">
-                <h3 className="headline">Welcome to our new Portal</h3>
-                <p className="description"></p>
-                <p className="action"></p>
-              </div>
+      document.getElementById('main').style.backgroundImage = "url("+ config.Content.background +")";
+
+      content = ( <div id="real-container">
+
+          <TopNav config={config.TopNav} />
+
+          <MainContent ref="content" full contentBackgroundStyle={style.contentBackgroundStyle}>
+
+            <div ref="sliderContainer" className="sliderContainer" style={style.sliderContainer}>
+              {config.Content.slides.map( (s) => {
+                return <Slide {...s} />
+              } )}
             </div>
-          </div>
 
-        	<button onClick={() => window.location.href = '/stage/#/01'} ref="goOnlineBtn" className="go-online-button main-button">
-        		<span>CONNECT TO OUR WIFI</span>
-        		<i className="fa fa-angle-right"></i>
-        	</button>
+            <button onClick={self.next} ref="goOnlineBtn" className="go-online-button main-button">
+              <span>CONNECT TO OUR WIFI</span>
+              <i className="fa fa-angle-right"></i>
+            </button>
 
-	      </MainContent>
+          </MainContent>
 
-      </div>
-    )
+        </div> );
+
+    }
+
+    return content
+
   }
 
 });
 
+var Slide = React.createClass({
+
+  render() {
+    return (
+
+      <div className="slide">
+        <div className="image"></div>
+        <div className="details">
+          <h3 className="headline">{this.props.headline}</h3>
+          <p className="description"></p>
+          <p className="action"></p>
+        </div>
+      </div>
+
+    )
+  }
+
+})
+
+
 function getAbsoluteHeight(el) {
+
+  console.log('getAbsoluteHeight');
+
   // Get the DOM Node if you pass in a string
   el = (typeof el === 'string') ? document.querySelector(el) : el; 
 
@@ -84,7 +193,22 @@ function getAbsoluteHeight(el) {
                parseFloat(styles['marginBottom']);
 
   return Math.ceil(el.offsetHeight + margin);
+
 }
+
+var parseQueryString = function() {
+
+    var str = window.location.search;
+    var objURL = {};
+
+    str.replace(
+        new RegExp( "([^?=&]+)(=([^&]*))?", "g" ),
+        function( $0, $1, $2, $3 ){
+            objURL[ $1 ] = $3;
+        }
+    );
+    return objURL;
+};
 
 /* Module.exports instead of normal dom mounting */
 module.exports = Landing;

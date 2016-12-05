@@ -6,9 +6,10 @@ var BottomNav = require('./components/BottomNav');
 var Accordion = require('./components/Accordion');
 
 var moment = require('moment');
-var config = require('../config');
 
 var accordion1Check = function(self, focus = false) {
+
+	var config = self.state.config;
 
 	var toFocus = null;
 	var r = true;
@@ -58,6 +59,8 @@ var accordion2Check = function(self) {
 
 var accordion3Check = function(self, focus = false) {
 
+	var config = self.state.config;
+
 	var toFocus = null;
 	var r = true;
 	config.Login.account.custom.map((c,i) => {
@@ -87,6 +90,8 @@ var accordion3Check = function(self, focus = false) {
 }
 
 var loadingBarStatus = function(self) {
+
+	var config = self.state.config;
 
 	var toCheck = 1;
 	var completed = 0
@@ -121,8 +126,8 @@ var accordionCheckBoth = function() {
 
 	if (r) {
 		$('#main').data('stored_data', JSON.stringify(this.state));
-		localStorage.setItem('stored_data', JSON.stringify(this.state));
-		localStorage.setItem('login_time', moment().format());
+		sessionStorage.setItem('stored_data', JSON.stringify(this.state));
+		sessionStorage.setItem('login_time', moment().format());
 		window.location.href = '/stage/#/03';
 	}
 
@@ -135,14 +140,15 @@ var Stage02 = React.createClass({
 	getInitialState() {
 
 		var st = {
+			config: null,
 			completed: 0,
 			fields: {},
 			terms_privacy_flag: false,
 			marketing_flag: false
 		}
 
-  	if (localStorage.getItem('stored_data')) {
-  		st = JSON.parse(localStorage.getItem('stored_data'));
+  	if (sessionStorage.getItem('stored_data')) {
+  		st = $.extend(true, st, JSON.parse(sessionStorage.getItem('stored_data')));
   	} else {
 			st = ($('#main').data('stored_data')) ? $.extend(true, st, JSON.parse($('#main').data('stored_data'))) : st;
 		}
@@ -152,7 +158,7 @@ var Stage02 = React.createClass({
 	},
 
 	componentDidMount: function() {
-		localStorage.removeItem('login_time');
+		sessionStorage.removeItem('login_time');
 		loadingBarStatus(this);
 	},
 
@@ -173,6 +179,8 @@ var Stage02 = React.createClass({
   render() {
 
   	var self = this;
+
+  	var config = this.state.config;
 
 		// generate fields
 		var generateField = function(conf, index, accordion) {
@@ -230,7 +238,7 @@ var Stage02 = React.createClass({
       	</TopNav.Bar>
     		<TopNav.Loading ref="loadingBar" />
 
-	      <MainContent contentBackgroundStyle={{ paddingBottom: '60px' }}>
+	      <MainContent>
 
 	      	<Accordion.Main>
 	      		<Accordion.Section ref="access_data" open={true} title="Access data" iconLeft="fa fa-unlock-alt">
@@ -264,19 +272,17 @@ var Stage02 = React.createClass({
 	      		</Accordion.Section>
 	      	</Accordion.Main>
 
+		      <BottomNav.Bar>
+		      	<button className="main-button main-button-height" onClick={accordionCheckBoth.bind(this)}>NEXT</button>
+		      </BottomNav.Bar>
+
 	      </MainContent>
-
-	      <BottomNav.Bar fixed={true}>
-	      	<button className="main-button main-button-height" onClick={accordionCheckBoth.bind(this)}>NEXT</button>
-	      </BottomNav.Bar>
-
 
       </div>
     )
   }
 
 });
-// 	      	<BottomNav.Button background="0075aa" iconRight="fa-chevron-right" iconRightType="fa" text="NEXT" />
 
 /* Module.exports instead of normal dom mounting */
 module.exports = Stage02;

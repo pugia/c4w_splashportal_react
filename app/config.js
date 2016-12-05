@@ -38,48 +38,36 @@ var config = {
 	Login: {
 		order: ['social','account'],
 		social: {
-			list: ['facebook','twitter','google-plus']
+			list: ['facebook1','twitter','google-plus']
 		},
 		account: {
 			access: [
 				{
 					type: 'email',
 					label: 'E-mail address',
-					validation: (v) => {
-					  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      			return re.test(v);
-      		}
+					validation: 'var re = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/; return re.test(v)'
 				},
 				{
 					type: 'password',
 					label: 'Password',
-					validation: (v) => {
-						return v.length >= 5;
-					}
+					validation: 'return v.length >= 5'
 				}
 			],
 			custom: [
 				{
 					type: 'text',
 					label: 'First name',
-					validation: (v) => {
-						return v.length > 0;
-					}
+					validation: 'return v.length > 0'
 				},
 				{
 					type: 'text',
 					label: 'Last name',
-					validation: (v) => {
-						return v.length > 0;
-					}
+					validation: 'return v.length > 0'
 				},
 				{
 					type: 'date',
 					label: 'Birthday',
-      		validation: (v) => {
-      			var re = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
-      			return re.test(v)
-      		}			
+      		validation: 'var re = /^\\d{1,2}\\/\\d{1,2}\\/\\d{4}$/;	return re.test(v)'
 				},
 				{
 					type: 'select',

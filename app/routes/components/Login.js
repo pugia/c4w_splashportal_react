@@ -8,6 +8,22 @@ var BottomNav = require('./BottomNav');
 
 var LoginSocial = React.createClass({
 
+	allowed: [
+		'facebook',
+		'twitter',
+		'linkedin',
+		'google-plus',
+		'google',
+		'vk',
+		'instagram',
+		'foursquare',
+		'pinterest',
+		'weibo',
+		'baidu',
+		'qq',
+		'renren'
+	],
+
   handleSocial(e) {
   	if (this.props.handleSocial) {
   		this.props.handleSocial(e.target.value);
@@ -48,8 +64,14 @@ var LoginSocial = React.createClass({
 			}
 		}
 
+		var socials = [];
+		this.props.socials.map((s) => {
+			if (self.allowed.indexOf(s) != -1) { socials.push(s); }
+			else { console.warn('social not valid: '+s) }
+		})
+
 		var showmore = null;
-		if (this.props.socials.length > 4) {
+		if (socials.length > 4) {
 			showmore = <button className="social show-more" onClick={this.showMore}><i className="fa fa-plus"></i></button>
 		}
 
@@ -59,7 +81,7 @@ var LoginSocial = React.createClass({
         <p className="title mui--text-center">{this.props.title}</p>
 
         <div className="buttons">
-        	{this.props.socials.map(createButton)}
+        	{socials.map(createButton)}
         	{showmore}
         </div>
 	      <Modal ref="modal" title="CHOOSE A SOCIAL ACCOUNT">
@@ -183,11 +205,11 @@ var LoginAccount = React.createClass({
 
 	getValues() {
 
-		var values = [];
+		var values = {};
 		for (var k in this.props.config) {
 			var c = this.props.config[k];
 			var r = c.type + '_' + k;
-			values.push(this.refs[r].getValue());
+			values[c.name] = this.refs[r].getValue();
 		}
 		return values;
 
@@ -247,8 +269,14 @@ var LoginAccount = React.createClass({
 					break;
 
 				default: 
-					r = <General.FieldInput key={'text'+'_'+index} />
-			
+					r = <General.FieldInput
+						key={ref} 
+	      		label={conf.label || ''}
+	      		validation={conf.validation}
+						ref={ref}
+	      		handleChange={self.checkField.bind(self,ref)}
+	      		/>
+
 			// end switch
 			}
 
@@ -279,6 +307,35 @@ var LoginAccount = React.createClass({
 
 })
 
+var LoginPassThrough =  React.createClass({
+
+	goOnline() {
+
+		General.LoadingOverlay.open();
+		window.location.href = this.props.config.url
+
+	},
+
+	render() {
+
+		return (
+
+      <div className="login login-passThrough mui-container">
+      	<General.Paragraph customClass="title" align="center" text="JUST A CLICK TO GO ONLINE" />
+
+	      <div className="buttonBar">
+	      	<button className="main-button-background main-button-height" onClick={this.goOnline}>GO ONLINE</button>
+	      </div>      		
+
+      </div>
+
+		)
+
+	}
+
+})
+
+
 function mapObject(object, callback) {
   return Object.keys(object).map(function (key) {
     return callback(key, object[key]);
@@ -289,10 +346,12 @@ exports.Social = LoginSocial;
 exports.ClickThrough = LoginClickThrough;
 exports.Partner = LoginPartner;
 exports.Account = LoginAccount;
+exports.PassThrough = LoginPassThrough;
 
 module.exports = {
 	Social: LoginSocial,
 	ClickThrough: LoginClickThrough,
 	Partner: LoginPartner,
-	Account: LoginAccount
+	Account: LoginAccount,
+	PassThrough: LoginPassThrough
 };

@@ -3,7 +3,9 @@
 @import "hamburgers/hamburgers";
 
 .main-content {
+
 	position: relative;
+	@include transition(all .5s ease);
 
 	&.overlay {
 		.main-menu .overlay {
@@ -13,7 +15,29 @@
 
 	.content-background {
 		position: relative;
+		max-width: 375px;
+		margin-left: auto;
+		margin-right: auto;
+		border-radius: 3px;
+		margin-top: -3px;
 		overflow: hidden;
+		box-shadow: 0px 2px 6px 0px rgba(0,0,0,0.6);
+
+		@media only screen and (min-device-width : 376px) {
+			margin-top: 50px;
+			margin-bottom: 50px;
+		}
+
+		&.full {
+
+			box-shadow: none;
+
+			@media only screen and (min-device-width : 376px) {
+				margin-top: 0;
+				margin-bottom: 0;
+			}
+
+		}
 
 		.verticalCentered {
 			@include transition(all .5s ease);
@@ -23,6 +47,8 @@
 }
 
 nav {
+
+  @include transition(top .5s ease);
 
 	&.fixed {
 		position: fixed;
@@ -321,12 +347,12 @@ nav.fixed + .loading-bar {
 }
 
 nav.fixed + .loading-bar + .main-content {
-	margin-top: calc(#{$appbar-height} + #{$loading-bar-height});
+	padding-top: calc(#{$appbar-height} + #{$loading-bar-height});
 	overflow: auto;
 }
 
 nav.fixed + .main-content {
-	margin-top: $appbar-height;
+	padding-top: $appbar-height;
 }
 
 .bottombar {

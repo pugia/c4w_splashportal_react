@@ -14,12 +14,12 @@ var goBack = function() {
 
 var goNext = function() {
 	clearInterval(timer);
-	localStorage.setItem('email', this.state.email);
+	sessionStorage.setItem('email', this.state.email);
 	window.location.href = '/#/stage04';
 }
 
 var popolateLoadbar = function(self) {
-	var start = moment(localStorage.getItem('login_time'));
+	var start = moment(sessionStorage.getItem('login_time'));
  	var perc = 100 / minutes / 60;
  	var seconds = moment().diff(start, 'seconds');
  	var w = seconds * perc
@@ -42,8 +42,8 @@ var Stage03 = React.createClass({
 		}
 
 		var loaded_st = false;
-  	if (localStorage.getItem('stored_data')) {
-  		loaded_st = JSON.parse(localStorage.getItem('stored_data'));
+  	if (sessionStorage.getItem('stored_data')) {
+  		loaded_st = JSON.parse(sessionStorage.getItem('stored_data'));
   	} else {
 			loaded_st = ($('#main').data('stored_data')) ? $.extend(true, st, JSON.parse($('#main').data('stored_data'))) : st;
 		}

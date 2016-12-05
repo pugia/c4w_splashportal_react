@@ -19,14 +19,15 @@ var Stage03 = React.createClass({
 	getInitialState() {
 
 		var st = {
+			config: null,
 			completed: 0,
 			fields: {},
 			terms_privacy_flag: false,
 			marketing_flag: false
 		}
 
-  	if (localStorage.getItem('stored_data')) {
-  		st = JSON.parse(localStorage.getItem('stored_data'));
+  	if (sessionStorage.getItem('stored_data')) {
+  		st = $.extend(true, st, JSON.parse(sessionStorage.getItem('stored_data')));
   	} else {
 			st = ($('#main').data('stored_data')) ? $.extend(true, st, JSON.parse($('#main').data('stored_data'))) : st;
 		}

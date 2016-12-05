@@ -2,6 +2,8 @@
 exports.__esModule = true;
 
 var React = global.React;
+var Cookies = require('js-cookie');
+var General = require('./General');
 
 var TopNav = React.createClass({
 
@@ -160,18 +162,21 @@ var MainMenu = React.createClass({
 
 	componentDidMount() {
 		
-    var w = window,
+    var self = this,
+    		w = window,
         d = document,
         e = d.documentElement,
         g = d.getElementsByTagName('body')[0],
         h = w.innerHeight|| e.clientHeight|| g.clientHeight,
         c = h - d.getElementsByTagName('nav')[0].offsetHeight;
-    this.refs.menu.style.height = h+'px';
+    self.refs.menu.style.height = h+'px';
 
-		this.refs.ul.style.height = this.refs.ul.offsetHeight + 'px';
-		if (!this.state.open) {
-			this.refs.menu.className = this.refs.menu.className + ' close hide';
-		}
+		setTimeout(() => {
+			self.refs.ul.style.height = self.refs.ul.offsetHeight + 'px';
+			if (!self.state.open) {
+				self.refs.menu.className = self.refs.menu.className + ' close hide';
+			}
+		}, 100)
 
 	},
 
@@ -202,6 +207,8 @@ var MainMenu = React.createClass({
 
 	renderElement(key, value) {
 
+		var self = this;
+
 		// TODO TRANSLATE
 		var labels = {
 			myProfile: 'My Profile',
@@ -213,7 +220,7 @@ var MainMenu = React.createClass({
 		var element;
 		switch(key) {
 			case 'logout':
-				element = <li key={key} onClick={() => window.location.href = '/'}>{labels[key]}</li> 
+				element = <li key={key} onClick={self.doLogout}>{labels[key]}</li> 
 				break;
 			default: 
 				if (value) {
@@ -222,6 +229,25 @@ var MainMenu = React.createClass({
 		}
 
 		return element;
+
+	},
+
+	doLogout() {
+
+		var logout = Cookies.getJSON('logout');
+		if (logout) {
+
+	    General.LoadingOverlay.open();
+
+			Cookies.remove('logout');
+			Cookies.remove('config_stage');
+			Cookies.remove('preLogin');
+
+			setTimeout( () => {
+				window.location.href = logout.url;
+			}, 300);
+			
+		}
 
 	},
 
