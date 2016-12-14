@@ -89,7 +89,10 @@ var AccordionHeader = React.createClass({
 var AccordionContent = React.createClass({
 
 	componentDidMount() {
-		this.refs.contentDiv.style.height = this.refs.contentDiv.clientHeight + 'px';
+		var self = this;
+		setTimeout( () => {
+			self.refs.contentDiv.style.height = self.refs.contentDiv.clientHeight + 'px';
+		}, 100);
 	},
 
 	getHeight() {

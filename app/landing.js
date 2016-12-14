@@ -63,7 +63,7 @@ const App = React.createClass({
           async:true,
           success: function(response) {
 
-            if (response.loginStatus.isLogged && response.postAuth.msg == 'SUCCESS') {
+            if (response.loginStatus.isLogged === true && response.postAuth.msg == 'SUCCESS') {
 
               self.setState({
                 loading: false,

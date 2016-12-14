@@ -41,11 +41,13 @@ var Stage01 = React.createClass({
   componentWillMount() {
 
     console.log('componentWillMount');
+    Cookies.remove('fields');
 
     var self = this;
 
     var toSend = {
-      ap_redirect: self.state.location.href
+      ap_redirect: self.state.location.href,
+      session: Cookies.get('session')
     };
 
     $.ajax({
@@ -106,31 +108,6 @@ var Stage01 = React.createClass({
 
   },
 
-  refreshApRedirect() {
-
-    var self = this;
-
-    $.ajax({
-        type: "GET",
-        url: self.state.config.ApRefresh.url,
-        success: function(data, textStatus) {
-
-          console.log('data', data);
-          console.log('textStatus', textStatus);
-
-            // if (data.redirect) {
-            //     // data.redirect contains the string URL to redirect to
-            //     window.location.href = data.redirect;
-            // }
-            // else {
-            //     // data.form contains the HTML for the replacement form
-            //     $("#myform").replaceWith(data.form);
-            // }
-        }
-    });
-
-  },
-
   render() {
 
     console.log('render Stage01');
@@ -138,25 +115,6 @@ var Stage01 = React.createClass({
   	var self = this,
         content = null,
         notify = null;
-
-		var style = {
-			title: {
-				fontFamily: 'Roboto',
-				fontSize: '35px',
-				color: '#63747F',
-				marginBottom: '0'
-			},
-			subTitle: {
-				fontFamily: 'Roboto',
-				fontSize: '16px',
-				color: '#0075AA',
-				textTransform: 'uppercase',
-				marginBottom: '20px'
-			},
-      contentBackgroundStyle: {
-        backgroundColor: '#fff'
-      }
-		}
 
     if (self.state.config) {
 
@@ -177,8 +135,7 @@ var Stage01 = React.createClass({
         if (type == 'social') {
           rend = (
             <Login.Social key={key}
-              title="use your social account" 
-              socials={config.Login.social.list}
+              config={config.Login.social}
               handleSocial={self.handleSocial}
             />
           )
@@ -196,8 +153,7 @@ var Stage01 = React.createClass({
           rend = (
             <Login.Account key={key}
               ref="login_account"
-              title="LOGIN WITH OUR ACCOUNT"
-              config={config.Login.account.access}
+              config={config.Login.account}
               doLogin={self.accountDoLogin}
               doRegister={() => window.location.href = '/stage/#/02' }
             />
@@ -223,7 +179,7 @@ var Stage01 = React.createClass({
 
       content = (
 
-        <MainContent contentBackgroundStyle={style.contentBackgroundStyle}>
+        <MainContent>
 
           {order.map( generateLoginBloc )}
 

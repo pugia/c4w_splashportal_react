@@ -87,6 +87,7 @@ var Landing = React.createClass({
   getInitialState: function getInitialState() {
 
     return {
+      lang: Cookies.get('lang') || 'eng',
       config: null
     };
   },
@@ -131,6 +132,7 @@ var Landing = React.createClass({
       success: function success(response) {
 
         General.LoadingOverlay.close();
+        Cookies.set('session', response.session);
         self.setState({ config: JSON.parse(JSON.stringify(response.config)) });
         setTimeout(function () {
           document.getElementById('main').style.opacity = 1;
@@ -194,7 +196,8 @@ var Landing = React.createClass({
           width: '100%'
         },
         contentBackgroundStyle: {
-          height: '100%'
+          height: '100%',
+          background: 'transparent'
         }
       };
 
@@ -216,11 +219,11 @@ var Landing = React.createClass({
           ),
           React.createElement(
             'button',
-            { onClick: self.next, ref: 'goOnlineBtn', className: 'go-online-button main-button' },
+            { onClick: self.next, ref: 'goOnlineBtn', className: 'go-online-button main-button', style: config.Content.go_online_button.style },
             React.createElement(
               'span',
               null,
-              'CONNECT TO OUR WIFI'
+              config.Content.go_online_button.labels.title
             ),
             React.createElement('i', { className: 'fa fa-angle-right' })
           )
@@ -327,11 +330,13 @@ var Stage01 = React.createClass({
   componentWillMount: function componentWillMount() {
 
     console.log('componentWillMount');
+    Cookies.remove('fields');
 
     var self = this;
 
     var toSend = {
-      ap_redirect: self.state.location.href
+      ap_redirect: self.state.location.href,
+      session: Cookies.get('session')
     };
 
     $.ajax({
@@ -385,29 +390,6 @@ var Stage01 = React.createClass({
 
     window.location.href = this.state.config.ApRefresh.url;
   },
-  refreshApRedirect: function refreshApRedirect() {
-
-    var self = this;
-
-    $.ajax({
-      type: "GET",
-      url: self.state.config.ApRefresh.url,
-      success: function success(data, textStatus) {
-
-        console.log('data', data);
-        console.log('textStatus', textStatus);
-
-        // if (data.redirect) {
-        //     // data.redirect contains the string URL to redirect to
-        //     window.location.href = data.redirect;
-        // }
-        // else {
-        //     // data.form contains the HTML for the replacement form
-        //     $("#myform").replaceWith(data.form);
-        // }
-      }
-    });
-  },
   render: function render() {
 
     console.log('render Stage01');
@@ -415,25 +397,6 @@ var Stage01 = React.createClass({
     var self = this,
         content = null,
         notify = null;
-
-    var style = {
-      title: {
-        fontFamily: 'Roboto',
-        fontSize: '35px',
-        color: '#63747F',
-        marginBottom: '0'
-      },
-      subTitle: {
-        fontFamily: 'Roboto',
-        fontSize: '16px',
-        color: '#0075AA',
-        textTransform: 'uppercase',
-        marginBottom: '20px'
-      },
-      contentBackgroundStyle: {
-        backgroundColor: '#fff'
-      }
-    };
 
     if (self.state.config) {
 
@@ -451,8 +414,7 @@ var Stage01 = React.createClass({
 
         if (type == 'social') {
           rend = React.createElement(Login.Social, { key: key,
-            title: 'use your social account',
-            socials: config.Login.social.list,
+            config: config.Login.social,
             handleSocial: self.handleSocial
           });
         }
@@ -466,8 +428,7 @@ var Stage01 = React.createClass({
         if (type == 'account') {
           rend = React.createElement(Login.Account, { key: key,
             ref: 'login_account',
-            title: 'LOGIN WITH OUR ACCOUNT',
-            config: config.Login.account.access,
+            config: config.Login.account,
             doLogin: self.accountDoLogin,
             doRegister: function doRegister() {
               return window.location.href = '/stage/#/02';
@@ -494,7 +455,7 @@ var Stage01 = React.createClass({
 
       content = React.createElement(
         MainContent,
-        { contentBackgroundStyle: style.contentBackgroundStyle },
+        null,
         order.map(generateLoginBloc)
       );
     }
@@ -642,6 +603,7 @@ var TopNav = require('./components/TopNav');
 var MainContent = require('./components/MainContent');
 var BottomNav = require('./components/BottomNav');
 var Accordion = require('./components/Accordion');
+var Cookies = require('js-cookie');
 
 var moment = require('moment');
 
@@ -654,7 +616,8 @@ var accordion1Check = function accordion1Check(self) {
 	var toFocus = null;
 	var r = true;
 	config.Login.account.access.map(function (c, i) {
-		var ref = 'access_' + c.type + '_' + i;
+		var ref = c.name;
+
 		if (c.validation) {
 			if (!self.refs[ref].isValid()) {
 				r = false;
@@ -710,7 +673,7 @@ var accordion3Check = function accordion3Check(self) {
 	var toFocus = null;
 	var r = true;
 	config.Login.account.custom.map(function (c, i) {
-		var ref = 'custom_' + c.type + '_' + i;
+		var ref = c.name;
 		if (c.validation) {
 			if (!self.refs[ref].isValid()) {
 				r = false;
@@ -758,14 +721,14 @@ var loadingBarStatus = function loadingBarStatus(self) {
 	var step = 100 / toCheck;
 
 	config.Login.account.access.map(function (c, i) {
-		var ref = 'access_' + c.type + '_' + i;
+		var ref = c.name;
 		if (c.validation && self.refs[ref].isValid()) {
 			completed += step;
 		}
 	});
 
 	config.Login.account.custom.map(function (d, j) {
-		var ref = 'custom_' + d.type + '_' + j;
+		var ref = d.name;
 		if (d.validation && self.refs[ref].isValid()) {
 			completed += step;
 		}
@@ -793,10 +756,43 @@ var accordionCheckBoth = function accordionCheckBoth() {
 	}
 
 	if (r) {
-		$('#main').data('stored_data', JSON.stringify(this.state));
-		sessionStorage.setItem('stored_data', JSON.stringify(this.state));
-		sessionStorage.setItem('login_time', moment().format());
-		window.location.href = '/stage/#/03';
+
+		Cookies.set('fields', this.state.fields);
+
+		var toSend = this.state.fields;
+		toSend['ap_redirect'] = this.state.location.href;
+
+		$.ajax({
+			url: endpoint_register,
+			type: 'POST',
+			cache: false,
+			data: JSON.stringify(toSend),
+			async: true,
+			success: function success(response) {
+
+				console.log(response);
+
+				// General.LoadingOverlay.close();
+				// setTimeout(() => {
+				//   document.getElementById('main').style.opacity = 1;
+				// }, 500);
+			},
+			error: function error(e) {
+
+				console.log('url: ' + endpoint_register);
+				console.log('data: ' + JSON.stringify(toSend));
+				console.log('error: ' + JSON.stringify(e));
+
+				$('#error').addClass('open');
+
+				console.log('error', e);
+			}
+		});
+
+		// $('#main').data('stored_data', JSON.stringify(this.state));
+		// sessionStorage.setItem('stored_data', JSON.stringify(this.state));
+		// sessionStorage.setItem('login_time', moment().format());
+		// window.location.href = '/stage/#/03';
 	}
 
 	return false;
@@ -807,26 +803,28 @@ var Stage02 = React.createClass({
 	getInitialState: function getInitialState() {
 
 		var st = {
-			config: null,
+			location: Cookies.getJSON('location'),
+			config: Cookies.getJSON('config_stage'),
+			fields: Cookies.getJSON('fields') || {},
 			completed: 0,
-			fields: {},
 			terms_privacy_flag: false,
 			marketing_flag: false
 		};
-
-		if (sessionStorage.getItem('stored_data')) {
-			st = $.extend(true, st, JSON.parse(sessionStorage.getItem('stored_data')));
-		} else {
-			st = $('#main').data('stored_data') ? $.extend(true, st, JSON.parse($('#main').data('stored_data'))) : st;
-		}
 
 		return st;
 	},
 
 
 	componentDidMount: function componentDidMount() {
-		sessionStorage.removeItem('login_time');
+		Cookies.remove('login_time');
 		loadingBarStatus(this);
+
+		if (this.state.config) {
+			General.LoadingOverlay.close();
+			document.getElementById('main').style.opacity = 1;
+		} else {
+			window.location.href = '/stage/#/01';
+		}
 	},
 
 	checkField: function checkField(ref, accordion) {
@@ -851,11 +849,12 @@ var Stage02 = React.createClass({
 		var self = this;
 
 		var config = this.state.config;
+		document.getElementById('main').style.backgroundImage = "url(" + config.Content.background + ")";
 
 		// generate fields
-		var generateField = function generateField(conf, index, accordion) {
+		var generateField = function generateField(conf, accordion) {
 			var r = null,
-			    ref = accordion + '_' + conf.type + '_' + index;
+			    ref = conf.name;
 
 			var props = {
 				key: ref,
@@ -903,6 +902,11 @@ var Stage02 = React.createClass({
 			return r;
 		};
 
+		if (Cookies.get('registration_error')) {
+			notify = React.createElement(Notify, { text: Cookies.get('registration_error') });
+			Cookies.remove('registration_error');
+		}
+
 		return React.createElement(
 			'div',
 			{ id: 'real-container' },
@@ -928,15 +932,15 @@ var Stage02 = React.createClass({
 					React.createElement(
 						Accordion.Section,
 						{ ref: 'access_data', open: true, title: 'Access data', iconLeft: 'fa fa-unlock-alt' },
-						config.Login.account.access.map(function (c, i) {
-							return generateField(c, i, 'access');
+						config.Login.account.access.map(function (c) {
+							return generateField(c, 'access');
 						})
 					),
 					React.createElement(
 						Accordion.Section,
 						{ ref: 'personal_data', open: true, title: 'Personal Data', iconLeft: 'fa fa-user-o' },
-						config.Login.account.custom.map(function (c, i) {
-							return generateField(c, i, 'custom');
+						config.Login.account.custom.map(function (c) {
+							return generateField(c, 'custom');
 						})
 					),
 					React.createElement(
@@ -1005,7 +1009,7 @@ module.exports = Stage02;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./components/Accordion":8,"./components/BottomNav":10,"./components/General":11,"./components/MainContent":13,"./components/TopNav":15,"moment":19}],5:[function(require,module,exports){
+},{"./components/Accordion":8,"./components/BottomNav":10,"./components/General":11,"./components/MainContent":13,"./components/TopNav":15,"js-cookie":18,"moment":19}],5:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -1545,7 +1549,10 @@ var AccordionHeader = React.createClass({
 var AccordionContent = React.createClass({
 	displayName: 'AccordionContent',
 	componentDidMount: function componentDidMount() {
-		this.refs.contentDiv.style.height = this.refs.contentDiv.clientHeight + 'px';
+		var self = this;
+		setTimeout(function () {
+			self.refs.contentDiv.style.height = self.refs.contentDiv.clientHeight + 'px';
+		}, 100);
 	},
 	getHeight: function getHeight() {
 		return this.refs.contentDiv.clientHeight;
@@ -2314,7 +2321,7 @@ var LoginSocial = React.createClass({
 		};
 
 		var socials = [];
-		this.props.socials.map(function (s) {
+		this.props.config.list.map(function (s) {
 			if (self.allowed.indexOf(s) != -1) {
 				socials.push(s);
 			} else {
@@ -2337,7 +2344,7 @@ var LoginSocial = React.createClass({
 			React.createElement(
 				'p',
 				{ className: 'title mui--text-center' },
-				this.props.title
+				this.props.config.labels.title
 			),
 			React.createElement(
 				'div',
@@ -2347,8 +2354,8 @@ var LoginSocial = React.createClass({
 			),
 			React.createElement(
 				Modal,
-				{ ref: 'modal', title: 'CHOOSE A SOCIAL ACCOUNT' },
-				this.props.socials.map(createButtonModal)
+				{ ref: 'modal', title: this.props.config.labels.modal },
+				this.props.config.list.map(createButtonModal)
 			)
 		);
 	}
@@ -2463,8 +2470,8 @@ var LoginAccount = React.createClass({
 	getValues: function getValues() {
 
 		var values = {};
-		for (var k in this.props.config) {
-			var c = this.props.config[k];
+		for (var k in this.props.config.access) {
+			var c = this.props.config.access[k];
 			var r = c.type + '_' + k;
 			values[c.name] = this.refs[r].getValue();
 		}
@@ -2538,8 +2545,8 @@ var LoginAccount = React.createClass({
 		return React.createElement(
 			'div',
 			{ className: 'login login-account mui-container' },
-			React.createElement(General.Paragraph, { customClass: 'title', align: 'center', text: this.props.title }),
-			this.props.config.map(function (c, i) {
+			React.createElement(General.Paragraph, { customClass: 'title', align: 'center', text: this.props.config.labels.title }),
+			this.props.config.access.map(function (c, i) {
 				return generateField(c, i);
 			}),
 			React.createElement(
@@ -2548,13 +2555,14 @@ var LoginAccount = React.createClass({
 				React.createElement(
 					'a',
 					{ className: 'mui--pull-right' },
-					'Forgot password?'
+					this.props.config.labels.recover
 				),
 				React.createElement(
 					'label',
 					{ htmlFor: 'remember_me' },
 					React.createElement('input', { id: 'remember_me', type: 'checkbox', value: '1' }),
-					' Remember me'
+					' ',
+					this.props.config.labels.remember
 				)
 			),
 			React.createElement(
@@ -2563,12 +2571,12 @@ var LoginAccount = React.createClass({
 				React.createElement(
 					'button',
 					{ className: 'main-button-background main-button-height', onClick: this.doLogin },
-					'LOGIN'
+					this.props.config.labels.login
 				),
 				React.createElement(
 					'button',
 					{ className: 'navigation-background main-button-height', onClick: this.doRegister },
-					'NEW USER? REGISTER'
+					this.props.config.labels.register
 				)
 			)
 		);
@@ -2587,14 +2595,14 @@ var LoginPassThrough = React.createClass({
 		return React.createElement(
 			'div',
 			{ className: 'login login-passThrough mui-container' },
-			React.createElement(General.Paragraph, { customClass: 'title', align: 'center', text: 'JUST A CLICK TO GO ONLINE' }),
+			React.createElement(General.Paragraph, { customClass: 'title', align: 'center', text: this.props.config.labels.title }),
 			React.createElement(
 				'div',
 				{ className: 'buttonBar' },
 				React.createElement(
 					'button',
-					{ className: 'main-button-background main-button-height', onClick: this.goOnline },
-					'GO ONLINE'
+					{ className: 'main-button-background main-button-height', style: this.props.config.style, onClick: this.goOnline },
+					this.props.config.labels.button
 				)
 			)
 		);

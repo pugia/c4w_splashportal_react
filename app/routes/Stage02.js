@@ -4,6 +4,7 @@ var TopNav = require('./components/TopNav');
 var MainContent = require('./components/MainContent');
 var BottomNav = require('./components/BottomNav');
 var Accordion = require('./components/Accordion');
+var Cookies = require('js-cookie');
 
 var moment = require('moment');
 
@@ -14,7 +15,8 @@ var accordion1Check = function(self, focus = false) {
 	var toFocus = null;
 	var r = true;
 	config.Login.account.access.map((c,i) => {
-		var ref = 'access_'+c.type+'_'+i;
+		var ref = c.name;
+
 		if (c.validation) {
 			if (!self.refs[ref].isValid()) { 
 				r = false; 
@@ -64,7 +66,7 @@ var accordion3Check = function(self, focus = false) {
 	var toFocus = null;
 	var r = true;
 	config.Login.account.custom.map((c,i) => {
-		var ref = 'custom_'+c.type+'_'+i;
+		var ref = c.name;
 		if (c.validation) {
 			if (!self.refs[ref].isValid()) { 
 				r = false; 
@@ -101,12 +103,12 @@ var loadingBarStatus = function(self) {
 	var step = 100 / toCheck;
 
 	config.Login.account.access.map( (c,i) => { 
-		var ref = 'access_'+c.type+'_'+i;
+		var ref = c.name;
 		if (c.validation && self.refs[ref].isValid()) { completed += step }
 	})
 
 	config.Login.account.custom.map( (d,j) => { 
-		var ref = 'custom_'+d.type+'_'+j;
+		var ref = d.name;
 		if (d.validation && self.refs[ref].isValid()) { completed += step }
 	})
 
@@ -125,10 +127,44 @@ var accordionCheckBoth = function() {
 	if (r && !accordion2Check(this)) { r = false; }
 
 	if (r) {
-		$('#main').data('stored_data', JSON.stringify(this.state));
-		sessionStorage.setItem('stored_data', JSON.stringify(this.state));
-		sessionStorage.setItem('login_time', moment().format());
-		window.location.href = '/stage/#/03';
+
+		Cookies.set('fields', this.state.fields);		
+
+		var toSend = this.state.fields;
+		toSend['ap_redirect'] = this.state.location.href;
+
+    $.ajax({
+      url: endpoint_register,
+      type:'POST',
+      cache: false,
+      data: JSON.stringify(toSend),
+      async:true,
+      success: function(response) {
+
+      	console.log(response);
+
+        // General.LoadingOverlay.close();
+        // setTimeout(() => {
+        //   document.getElementById('main').style.opacity = 1;
+        // }, 500);
+
+      },
+      error: function(e) {
+
+        console.log('url: '+endpoint_register);
+        console.log('data: ' + JSON.stringify(toSend) );
+        console.log('error: ' + JSON.stringify(e) );
+
+        $('#error').addClass('open');
+
+        console.log('error', e);
+      }
+    });
+
+		// $('#main').data('stored_data', JSON.stringify(this.state));
+		// sessionStorage.setItem('stored_data', JSON.stringify(this.state));
+		// sessionStorage.setItem('login_time', moment().format());
+		// window.location.href = '/stage/#/03';
 	}
 
 	return false;
@@ -140,17 +176,12 @@ var Stage02 = React.createClass({
 	getInitialState() {
 
 		var st = {
-			config: null,
+      location: Cookies.getJSON('location'),
+      config: Cookies.getJSON('config_stage'),
+			fields: Cookies.getJSON('fields') || {},
 			completed: 0,
-			fields: {},
 			terms_privacy_flag: false,
 			marketing_flag: false
-		}
-
-  	if (sessionStorage.getItem('stored_data')) {
-  		st = $.extend(true, st, JSON.parse(sessionStorage.getItem('stored_data')));
-  	} else {
-			st = ($('#main').data('stored_data')) ? $.extend(true, st, JSON.parse($('#main').data('stored_data'))) : st;
 		}
 
 		return st;
@@ -158,8 +189,16 @@ var Stage02 = React.createClass({
 	},
 
 	componentDidMount: function() {
-		sessionStorage.removeItem('login_time');
+		Cookies.remove('login_time');
 		loadingBarStatus(this);
+
+		if (this.state.config) {
+      General.LoadingOverlay.close();
+      document.getElementById('main').style.opacity = 1;
+		} else {
+			window.location.href = '/stage/#/01'
+		}
+
 	},
 
 	checkField(ref,accordion) {
@@ -180,12 +219,13 @@ var Stage02 = React.createClass({
 
   	var self = this;
 
-  	var config = this.state.config;
+    var config = this.state.config;
+    document.getElementById('main').style.backgroundImage = "url("+ config.Content.background +")";
 
 		// generate fields
-		var generateField = function(conf, index, accordion) {
+		var generateField = function(conf, accordion) {
 			var r = null,
-					ref = accordion+'_'+conf.type+'_'+index;
+					ref = conf.name;
 
 			var props = {
 				key :ref, 
@@ -226,6 +266,10 @@ var Stage02 = React.createClass({
 
 		}
 
+    if (Cookies.get('registration_error')) {
+      notify = <Notify text={Cookies.get('registration_error')} />;
+      Cookies.remove('registration_error');
+    }
 
     return (
       <div id="real-container">
@@ -243,13 +287,13 @@ var Stage02 = React.createClass({
 	      	<Accordion.Main>
 	      		<Accordion.Section ref="access_data" open={true} title="Access data" iconLeft="fa fa-unlock-alt">
 			      	
-	      			{config.Login.account.access.map( (c,i) => generateField(c,i,'access') )}
+	      			{config.Login.account.access.map( (c) => generateField(c,'access') )}
 
 	      		</Accordion.Section>
 
 	      		<Accordion.Section ref="personal_data" open={true} title="Personal Data" iconLeft="fa fa-user-o">
 
-	      			{config.Login.account.custom.map( (c,i) => generateField(c,i,'custom') )}
+	      			{config.Login.account.custom.map( (c) => generateField(c,'custom') )}
 
 	      		</Accordion.Section>
 

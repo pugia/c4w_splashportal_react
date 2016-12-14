@@ -62,7 +62,7 @@ var App = React.createClass({
           async: true,
           success: function success(response) {
 
-            if (response.loginStatus.isLogged && response.postAuth.msg == 'SUCCESS') {
+            if (response.loginStatus.isLogged === true && response.postAuth.msg == 'SUCCESS') {
 
               self.setState({
                 loading: false,
@@ -135,6 +135,7 @@ var Landing = React.createClass({
   getInitialState: function getInitialState() {
 
     return {
+      lang: Cookies.get('lang') || 'eng',
       config: null
     };
   },
@@ -179,6 +180,7 @@ var Landing = React.createClass({
       success: function success(response) {
 
         General.LoadingOverlay.close();
+        Cookies.set('session', response.session);
         self.setState({ config: JSON.parse(JSON.stringify(response.config)) });
         setTimeout(function () {
           document.getElementById('main').style.opacity = 1;
@@ -242,7 +244,8 @@ var Landing = React.createClass({
           width: '100%'
         },
         contentBackgroundStyle: {
-          height: '100%'
+          height: '100%',
+          background: 'transparent'
         }
       };
 
@@ -264,11 +267,11 @@ var Landing = React.createClass({
           ),
           React.createElement(
             'button',
-            { onClick: self.next, ref: 'goOnlineBtn', className: 'go-online-button main-button' },
+            { onClick: self.next, ref: 'goOnlineBtn', className: 'go-online-button main-button', style: config.Content.go_online_button.style },
             React.createElement(
               'span',
               null,
-              'CONNECT TO OUR WIFI'
+              config.Content.go_online_button.labels.title
             ),
             React.createElement('i', { className: 'fa fa-angle-right' })
           )

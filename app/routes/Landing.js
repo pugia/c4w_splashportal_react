@@ -9,6 +9,7 @@ var Landing = React.createClass({
   getInitialState() {
 
     return {
+      lang: Cookies.get('lang') || 'eng',
       config: null
     }
 
@@ -55,6 +56,7 @@ var Landing = React.createClass({
       success: function(response) {
 
         General.LoadingOverlay.close();
+        Cookies.set('session', response.session);
         self.setState({ config: JSON.parse(JSON.stringify(response.config)) })
         setTimeout(() => {
           document.getElementById('main').style.opacity = 1;
@@ -126,7 +128,8 @@ var Landing = React.createClass({
           width: '100%'
         },
         contentBackgroundStyle: {
-          height: '100%'
+          height: '100%',
+          background: 'transparent'
         }
   		}
 
@@ -144,8 +147,8 @@ var Landing = React.createClass({
               } )}
             </div>
 
-            <button onClick={self.next} ref="goOnlineBtn" className="go-online-button main-button">
-              <span>CONNECT TO OUR WIFI</span>
+            <button onClick={self.next} ref="goOnlineBtn" className="go-online-button main-button" style={config.Content.go_online_button.style}>
+              <span>{config.Content.go_online_button.labels.title}</span>
               <i className="fa fa-angle-right"></i>
             </button>
 

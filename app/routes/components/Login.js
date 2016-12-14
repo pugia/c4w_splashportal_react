@@ -65,7 +65,7 @@ var LoginSocial = React.createClass({
 		}
 
 		var socials = [];
-		this.props.socials.map((s) => {
+		this.props.config.list.map((s) => {
 			if (self.allowed.indexOf(s) != -1) { socials.push(s); }
 			else { console.warn('social not valid: '+s) }
 		})
@@ -78,14 +78,14 @@ var LoginSocial = React.createClass({
 		return (
 
       <div className="login login-social">
-        <p className="title mui--text-center">{this.props.title}</p>
+        <p className="title mui--text-center">{this.props.config.labels.title}</p>
 
         <div className="buttons">
         	{socials.map(createButton)}
         	{showmore}
         </div>
-	      <Modal ref="modal" title="CHOOSE A SOCIAL ACCOUNT">
-	      	{this.props.socials.map(createButtonModal)}
+	      <Modal ref="modal" title={this.props.config.labels.modal}>
+	      	{this.props.config.list.map(createButtonModal)}
 	      </Modal>
       </div>
 
@@ -206,8 +206,8 @@ var LoginAccount = React.createClass({
 	getValues() {
 
 		var values = {};
-		for (var k in this.props.config) {
-			var c = this.props.config[k];
+		for (var k in this.props.config.access) {
+			var c = this.props.config.access[k];
 			var r = c.type + '_' + k;
 			values[c.name] = this.refs[r].getValue();
 		}
@@ -287,17 +287,17 @@ var LoginAccount = React.createClass({
 		return(
 
       <div className="login login-account mui-container">
-      	<General.Paragraph customClass="title" align="center" text={this.props.title} />
-      	{this.props.config.map( (c,i) => generateField(c,i) )}
+      	<General.Paragraph customClass="title" align="center" text={this.props.config.labels.title} />
+      	{this.props.config.access.map( (c,i) => generateField(c,i) )}
 
       	<General.Paragraph style={style.pararaph}>
-      		<a className="mui--pull-right">Forgot password?</a>
-      		<label htmlFor="remember_me"><input id="remember_me" type="checkbox" value="1" /> Remember me</label>
+      		<a className="mui--pull-right">{this.props.config.labels.recover}</a>
+      		<label htmlFor="remember_me"><input id="remember_me" type="checkbox" value="1" /> {this.props.config.labels.remember}</label>
       	</General.Paragraph>
 
 	      <div className="buttonBar">
-	      	<button className="main-button-background main-button-height" onClick={this.doLogin}>LOGIN</button>
-	      	<button className="navigation-background main-button-height" onClick={this.doRegister}>NEW USER? REGISTER</button>
+	      	<button className="main-button-background main-button-height" onClick={this.doLogin}>{this.props.config.labels.login}</button>
+	      	<button className="navigation-background main-button-height" onClick={this.doRegister}>{this.props.config.labels.register}</button>
 	      </div>      		
 
       </div>
@@ -321,10 +321,10 @@ var LoginPassThrough =  React.createClass({
 		return (
 
       <div className="login login-passThrough mui-container">
-      	<General.Paragraph customClass="title" align="center" text="JUST A CLICK TO GO ONLINE" />
+      	<General.Paragraph customClass="title" align="center" text={this.props.config.labels.title} />
 
 	      <div className="buttonBar">
-	      	<button className="main-button-background main-button-height" onClick={this.goOnline}>GO ONLINE</button>
+	      	<button className="main-button-background main-button-height" style={this.props.config.style} onClick={this.goOnline}>{this.props.config.labels.button}</button>
 	      </div>      		
 
       </div>
