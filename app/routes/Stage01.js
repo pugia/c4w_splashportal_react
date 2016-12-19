@@ -47,7 +47,7 @@ var Stage01 = React.createClass({
 
     var toSend = {
       ap_redirect: self.state.location.href,
-      session: Cookies.get('session')
+      session: Cookies.getJSON('session')
     };
 
     $.ajax({

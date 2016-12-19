@@ -58,16 +58,22 @@ var FieldInput = React.createClass({
 
 	isValid() {
 
-		if (typeof this.props.validation == 'string') {
-
-			return evalidation(this.props.validation, this.getValue());
-
+		if (this.getValue() == '' && this.props.required == false) {
+			return true;
 		} else {
 
-			if (typeof this.props.validation == 'function') {
-				return this.props.validation(this.getValue());
+			if (typeof this.props.validation == 'string') {
+
+				return evalidation(this.props.validation, this.getValue());
+
 			} else {
-				return true;
+
+				if (typeof this.props.validation == 'function') {
+					return this.props.validation(this.getValue());
+				} else {
+					return true;
+				}
+
 			}
 
 		}
@@ -98,6 +104,62 @@ var FieldInput = React.createClass({
         <span className="error">{this.state.error}</span>
         <span className="success">{this.state.success}</span>
       </div>
+
+		)
+	}
+
+})
+
+var FieldHidden = React.createClass({
+
+	refInput: Math.random().toString(36).substring(7),
+
+	getValue() {
+		return this.refs[this.refInput].value;
+	},
+
+	setValue(v) {
+		if (v) { this.refs[this.refInput].value = v; }
+	},
+
+	isValid() {
+
+		if (this.getValue() == '' && this.props.required == false) {
+			return true;
+		} else {
+
+			if (typeof this.props.validation == 'string') {
+
+				return evalidation(this.props.validation, this.getValue());
+
+			} else {
+
+				if (typeof this.props.validation == 'function') {
+					return this.props.validation(this.getValue());
+				} else {
+					return true;
+				}
+
+			}
+
+		}
+
+	},
+
+	componentDidMount() {
+
+		console.log(this.props);
+
+		if (this.props.value) {
+			this.setValue(this.props.value);
+		}
+	},
+
+	render() {
+
+		return(
+
+      <input ref={this.refInput} type="hidden" onChange={this.props.handleChange || null} />
 
 		)
 	}
@@ -143,16 +205,22 @@ var FieldPassword = React.createClass({
 
 	isValid() {
 
-		if (typeof this.props.validation == 'string') {
-
-			return evalidation(this.props.validation, this.getValue());
-
+		if (this.getValue() == '' && this.props.required == false) {
+			return true;
 		} else {
 
-			if (typeof this.props.validation == 'function') {
-				return this.props.validation(this.getValue());
+			if (typeof this.props.validation == 'string') {
+
+				return evalidation(this.props.validation, this.getValue());
+
 			} else {
-				return true;
+
+				if (typeof this.props.validation == 'function') {
+					return this.props.validation(this.getValue());
+				} else {
+					return true;
+				}
+
 			}
 
 		}
@@ -302,11 +370,21 @@ var FieldSelect = React.createClass({
 	},
 
 	isValid() {
-		if (typeof this.props.validation == 'function') {
-			return this.props.validation(this.getValue());
-		} else {
+
+		if (this.props.required == false) {
+		
 			return true;
+		
+		} else {
+
+			if (typeof this.props.validation == 'function') {
+				return this.props.validation(this.getValue());
+			} else {
+				return true;
+			}
+
 		}
+
 	},
 
 	componentDidMount() {
@@ -415,6 +493,7 @@ var LoadingOverlay = {
 }
 
 exports.FieldInput = FieldInput;
+exports.FieldHidden = FieldHidden;
 exports.FieldPassword = FieldPassword;
 exports.FieldSelect = FieldSelect;
 exports.CheckboxInput = CheckboxInput;
@@ -425,6 +504,7 @@ exports.LoadingOverlay = LoadingOverlay;
 
 module.exports = {
 	FieldInput: FieldInput,
+	FieldHidden: FieldHidden,
 	FieldPassword: FieldPassword,
 	FieldSelect: FieldSelect,
 	CheckboxInput: CheckboxInput,

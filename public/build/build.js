@@ -100,6 +100,7 @@ var Landing = React.createClass({
     Cookies.remove('logout');
     Cookies.remove('config_stage');
     Cookies.remove('preLogin');
+    Cookies.remove('session');
   },
   loadConfig: function loadConfig() {
 
@@ -336,7 +337,7 @@ var Stage01 = React.createClass({
 
     var toSend = {
       ap_redirect: self.state.location.href,
-      session: Cookies.get('session')
+      session: Cookies.getJSON('session')
     };
 
     $.ajax({
@@ -618,7 +619,7 @@ var accordion1Check = function accordion1Check(self) {
 	config.Login.account.access.map(function (c, i) {
 		var ref = c.name;
 
-		if (c.validation) {
+		if (c.required && c.validation && c.registration == true) {
 			if (!self.refs[ref].isValid()) {
 				r = false;
 				if (!toFocus) {
@@ -626,11 +627,15 @@ var accordion1Check = function accordion1Check(self) {
 				}
 			}
 		}
-		var fields = self.state.fields;
-		fields[ref] = self.refs[ref].getValue();
-		self.setState({
-			fields: fields
-		});
+
+		if (c.registration == true && c.type != 'hidden') {
+
+			var fields = self.state.fields;
+			fields[ref] = self.refs[ref].getValue();
+			self.setState({
+				fields: fields
+			});
+		}
 	});
 
 	self.refs.access_data.setState({
@@ -674,7 +679,7 @@ var accordion3Check = function accordion3Check(self) {
 	var r = true;
 	config.Login.account.custom.map(function (c, i) {
 		var ref = c.name;
-		if (c.validation) {
+		if (c.required && c.validation) {
 			if (!self.refs[ref].isValid()) {
 				r = false;
 				if (!toFocus) {
@@ -682,11 +687,14 @@ var accordion3Check = function accordion3Check(self) {
 				}
 			}
 		}
-		var fields = self.state.fields;
-		fields[ref] = self.refs[ref].getValue();
-		self.setState({
-			fields: fields
-		});
+
+		if (c.type != 'hidden') {
+			var fields = self.state.fields;
+			fields[ref] = self.refs[ref].getValue();
+			self.setState({
+				fields: fields
+			});
+		}
 	});
 
 	self.refs.personal_data.setState({
@@ -708,12 +716,12 @@ var loadingBarStatus = function loadingBarStatus(self) {
 	var toCheck = 1;
 	var completed = 0;
 	config.Login.account.access.map(function (c, i) {
-		if (c.validation) {
+		if (c.required && c.validation && c.registration == true) {
 			toCheck++;
 		}
 	});
 	config.Login.account.custom.map(function (c, i) {
-		if (c.validation) {
+		if (c.required && c.validation && c.tyle) {
 			toCheck++;
 		}
 	});
@@ -722,14 +730,14 @@ var loadingBarStatus = function loadingBarStatus(self) {
 
 	config.Login.account.access.map(function (c, i) {
 		var ref = c.name;
-		if (c.validation && self.refs[ref].isValid()) {
+		if (c.required && c.validation && c.registration == true && self.refs[ref].isValid()) {
 			completed += step;
 		}
 	});
 
 	config.Login.account.custom.map(function (d, j) {
 		var ref = d.name;
-		if (d.validation && self.refs[ref].isValid()) {
+		if (d.required && d.validation && self.refs[ref].isValid()) {
 			completed += step;
 		}
 	});
@@ -761,6 +769,9 @@ var accordionCheckBoth = function accordionCheckBoth() {
 
 		var toSend = this.state.fields;
 		toSend['ap_redirect'] = this.state.location.href;
+		toSend['session'] = Cookies.getJSON('session');
+
+		console.log(toSend);
 
 		$.ajax({
 			url: endpoint_register,
@@ -819,6 +830,8 @@ var Stage02 = React.createClass({
 		Cookies.remove('login_time');
 		loadingBarStatus(this);
 
+		console.log(this.state.config.Login.account);
+
 		if (this.state.config) {
 			General.LoadingOverlay.close();
 			document.getElementById('main').style.opacity = 1;
@@ -859,44 +872,52 @@ var Stage02 = React.createClass({
 			var props = {
 				key: ref,
 				label: conf.label || '',
-				validation: conf.validation,
 				ref: ref,
+				validation: conf.validation,
+				required: conf.required || false,
 				handleChange: self.checkField.bind(self, ref, accordion)
 			};
 
-			switch (conf.type) {
-				// start switch
-				// email
-				case 'email':
-					if (self.state.fields[ref]) {
-						props.value = self.state.fields[ref];
-					}
-					r = React.createElement(General.FieldInput, props);
-					break;
+			if (conf.registration == undefined || conf.registration == true) {
 
-				// password
-				case 'password':
-					if (self.state.fields[ref]) {
-						props.value = self.state.fields[ref];
-					}
-					r = React.createElement(General.FieldPassword, props);
-					break;
+				switch (conf.type) {
+					// start switch
+					// email
+					case 'email':
+						if (self.state.fields[ref]) {
+							props.value = self.state.fields[ref];
+						}
+						r = React.createElement(General.FieldInput, props);
+						break;
 
-				case 'select':
-					props.options = conf.options;
-					if (self.state.fields[ref]) {
-						props.value = self.state.fields[ref];
-					}
-					r = React.createElement(General.FieldSelect, props);
-					break;
+					// password
+					case 'password':
+						if (self.state.fields[ref]) {
+							props.value = self.state.fields[ref];
+						}
+						r = React.createElement(General.FieldPassword, props);
+						break;
 
-				default:
-					if (self.state.fields[ref]) {
-						props.value = self.state.fields[ref];
-					}
-					r = React.createElement(General.FieldInput, props);
+					case 'select':
+						props.options = conf.options;
+						if (self.state.fields[ref]) {
+							props.value = self.state.fields[ref];
+						}
+						r = React.createElement(General.FieldSelect, props);
+						break;
 
-				// end switch
+					case 'hidden':
+						self.state.fields[ref] = conf.value;
+						break;
+
+					default:
+						if (self.state.fields[ref]) {
+							props.value = self.state.fields[ref];
+						}
+						r = React.createElement(General.FieldInput, props);
+
+					// end switch
+				}
 			}
 
 			return r;
@@ -1825,15 +1846,20 @@ var FieldInput = React.createClass({
 	},
 	isValid: function isValid() {
 
-		if (typeof this.props.validation == 'string') {
-
-			return evalidation(this.props.validation, this.getValue());
+		if (this.getValue() == '' && this.props.required == false) {
+			return true;
 		} else {
 
-			if (typeof this.props.validation == 'function') {
-				return this.props.validation(this.getValue());
+			if (typeof this.props.validation == 'string') {
+
+				return evalidation(this.props.validation, this.getValue());
 			} else {
-				return true;
+
+				if (typeof this.props.validation == 'function') {
+					return this.props.validation(this.getValue());
+				} else {
+					return true;
+				}
 			}
 		}
 	},
@@ -1879,6 +1905,53 @@ var FieldInput = React.createClass({
 	}
 });
 
+var FieldHidden = React.createClass({
+	displayName: 'FieldHidden',
+
+
+	refInput: Math.random().toString(36).substring(7),
+
+	getValue: function getValue() {
+		return this.refs[this.refInput].value;
+	},
+	setValue: function setValue(v) {
+		if (v) {
+			this.refs[this.refInput].value = v;
+		}
+	},
+	isValid: function isValid() {
+
+		if (this.getValue() == '' && this.props.required == false) {
+			return true;
+		} else {
+
+			if (typeof this.props.validation == 'string') {
+
+				return evalidation(this.props.validation, this.getValue());
+			} else {
+
+				if (typeof this.props.validation == 'function') {
+					return this.props.validation(this.getValue());
+				} else {
+					return true;
+				}
+			}
+		}
+	},
+	componentDidMount: function componentDidMount() {
+
+		console.log(this.props);
+
+		if (this.props.value) {
+			this.setValue(this.props.value);
+		}
+	},
+	render: function render() {
+
+		return React.createElement('input', { ref: this.refInput, type: 'hidden', onChange: this.props.handleChange || null });
+	}
+});
+
 var FieldPassword = React.createClass({
 	displayName: 'FieldPassword',
 
@@ -1917,15 +1990,20 @@ var FieldPassword = React.createClass({
 	},
 	isValid: function isValid() {
 
-		if (typeof this.props.validation == 'string') {
-
-			return evalidation(this.props.validation, this.getValue());
+		if (this.getValue() == '' && this.props.required == false) {
+			return true;
 		} else {
 
-			if (typeof this.props.validation == 'function') {
-				return this.props.validation(this.getValue());
+			if (typeof this.props.validation == 'string') {
+
+				return evalidation(this.props.validation, this.getValue());
 			} else {
-				return true;
+
+				if (typeof this.props.validation == 'function') {
+					return this.props.validation(this.getValue());
+				} else {
+					return true;
+				}
 			}
 		}
 	},
@@ -2090,10 +2168,17 @@ var FieldSelect = React.createClass({
 		centerVerticalElement(this.refs[this.refInput]);
 	},
 	isValid: function isValid() {
-		if (typeof this.props.validation == 'function') {
-			return this.props.validation(this.getValue());
-		} else {
+
+		if (this.props.required == false) {
+
 			return true;
+		} else {
+
+			if (typeof this.props.validation == 'function') {
+				return this.props.validation(this.getValue());
+			} else {
+				return true;
+			}
 		}
 	},
 	componentDidMount: function componentDidMount() {
@@ -2236,6 +2321,7 @@ var LoadingOverlay = {
 };
 
 exports.FieldInput = FieldInput;
+exports.FieldHidden = FieldHidden;
 exports.FieldPassword = FieldPassword;
 exports.FieldSelect = FieldSelect;
 exports.CheckboxInput = CheckboxInput;
@@ -2246,6 +2332,7 @@ exports.LoadingOverlay = LoadingOverlay;
 
 module.exports = {
 	FieldInput: FieldInput,
+	FieldHidden: FieldHidden,
 	FieldPassword: FieldPassword,
 	FieldSelect: FieldSelect,
 	CheckboxInput: CheckboxInput,
@@ -2444,9 +2531,9 @@ var LoginAccount = React.createClass({
 
 		var r = true;
 		var toFocus = null;
-		for (var k in this.props.config) {
+		for (var k in this.props.config.access) {
 			if (r) {
-				var c = this.props.config[k];
+				var c = this.props.config.access[k];
 				toFocus = c.type + '_' + k;
 				if (!this.refs[toFocus].isValid()) {
 					r = false;
@@ -2503,38 +2590,37 @@ var LoginAccount = React.createClass({
 			var r = null,
 			    ref = conf.type + '_' + index;
 
+			var props = {
+				key: ref,
+				ref: ref,
+				label: conf.label || '',
+				handleChange: self.checkField.bind(self, ref)
+			};
+
+			if (conf.required && conf.validation) {
+				props['validation'] = conf.validation;
+			}
+
 			switch (conf.type) {
 				// start switch
 				// email
 				case 'email':
-					r = React.createElement(General.FieldInput, {
-						key: ref,
-						label: conf.label || '',
-						validation: conf.validation,
-						ref: ref,
-						handleChange: self.checkField.bind(self, ref)
-					});
+					r = React.createElement(General.FieldInput, props);
 					break;
 
 				// password
 				case 'password':
-					r = React.createElement(General.FieldPassword, {
-						key: ref,
-						label: conf.label || '',
-						validation: conf.validation,
-						ref: ref,
-						handleChange: self.checkField.bind(self, ref)
-					});
+					r = React.createElement(General.FieldPassword, props);
+					break;
+
+				// hidden
+				case 'hidden':
+					delete props.label;
+					r = React.createElement(General.FieldHidden, props);
 					break;
 
 				default:
-					r = React.createElement(General.FieldInput, {
-						key: ref,
-						label: conf.label || '',
-						validation: conf.validation,
-						ref: ref,
-						handleChange: self.checkField.bind(self, ref)
-					});
+					r = React.createElement(General.FieldInput, props);
 
 				// end switch
 			}

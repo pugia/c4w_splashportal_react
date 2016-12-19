@@ -22,6 +22,7 @@ var Landing = React.createClass({
     Cookies.remove('logout');
     Cookies.remove('config_stage');
     Cookies.remove('preLogin');    
+    Cookies.remove('session');
 
   },
 

@@ -17,15 +17,28 @@
 
 		<iframe id="iframe_service" width="300" height="100" style="display: none; position: fixed; z-index: 32001; bottom: 0; left: 0; background: #f20; border: none; width: 100%;"></iframe>
 
-		<div id="error"></div>
+		<script type="text/javascript">
+		if (typeof console  != "undefined") 
+		  if (typeof console.log != 'undefined')
+		    console.olog = console.log;
+		else
+		  console.olog = function() {};
+
+		console.log = function(message) {
+		  console.olog(message);
+		  $('#error').append('<p>' + message + '</p>');
+		};
+		console.error = console.debug = console.info = console.log			
+		</script>
+		<pre id="error"></pre>
 
 		<script src="/endpoints.js"></script>
 
-		<script src="/components/mui/packages/cdn/js/mui.min.js?v_0.0.3"></script>
-		<script src="/components/jquery/dist/jquery.min.js?v_0.0.3"></script>
+		<script defer src="/components/mui/packages/cdn/js/mui.min.js?v_0.0.3"></script>
+		<script defer src="/components/jquery/dist/jquery.min.js?v_0.0.3"></script>
 		<script src="/components/react/react.min.js?v_0.0.3"></script>
 		<script src="/components/react/react-dom.min.js?v_0.0.3"></script>
-		<script src="/build/build.min.js?v_0.0.3"></script>
+		<script defer src="/build/build.js?v_0.0.3"></script>
 
 		<link href="/css/fonts/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />  
 		<link href="/css/custom.css" rel="stylesheet">

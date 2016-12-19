@@ -17,17 +17,23 @@ var accordion1Check = function(self, focus = false) {
 	config.Login.account.access.map((c,i) => {
 		var ref = c.name;
 
-		if (c.validation) {
+		if (c.required && c.validation && c.registration == true) {
 			if (!self.refs[ref].isValid()) { 
 				r = false; 
 				if (!toFocus) { toFocus = ref; }
 			}
 		}
-		var fields = self.state.fields;
-		fields[ref] = self.refs[ref].getValue()
-		self.setState({
-			fields: fields
-		})
+
+		if (c.registration == true && c.type != 'hidden') {
+
+			var fields = self.state.fields;
+			fields[ref] = self.refs[ref].getValue()
+			self.setState({
+				fields: fields
+			})
+
+		}
+
 	})
 
   self.refs.access_data.setState({
@@ -67,17 +73,21 @@ var accordion3Check = function(self, focus = false) {
 	var r = true;
 	config.Login.account.custom.map((c,i) => {
 		var ref = c.name;
-		if (c.validation) {
+		if (c.required && c.validation) {
 			if (!self.refs[ref].isValid()) { 
 				r = false; 
 				if (!toFocus) { toFocus = ref; }
 			}
 		}
-		var fields = self.state.fields;
-		fields[ref] = self.refs[ref].getValue()
-		self.setState({
-			fields: fields
-		})
+
+		if (c.type != 'hidden') {
+			var fields = self.state.fields;
+			fields[ref] = self.refs[ref].getValue()
+			self.setState({
+				fields: fields
+			})
+		}
+
 	})
 
   self.refs.personal_data.setState({
@@ -97,19 +107,23 @@ var loadingBarStatus = function(self) {
 
 	var toCheck = 1;
 	var completed = 0
-	config.Login.account.access.map( (c,i) => { if (c.validation) { toCheck++ }	})
-	config.Login.account.custom.map( (c,i) => { if (c.validation) { toCheck++ }	})
+	config.Login.account.access.map( (c,i) => {
+		if (c.required && c.validation && c.registration == true) { toCheck++ }	
+	})
+	config.Login.account.custom.map( (c,i) => { 
+		if (c.required && c.validation && c.tyle) { toCheck++ }	
+	})
 
 	var step = 100 / toCheck;
 
 	config.Login.account.access.map( (c,i) => { 
 		var ref = c.name;
-		if (c.validation && self.refs[ref].isValid()) { completed += step }
+		if (c.required && c.validation && c.registration == true && self.refs[ref].isValid()) { completed += step }
 	})
 
 	config.Login.account.custom.map( (d,j) => { 
 		var ref = d.name;
-		if (d.validation && self.refs[ref].isValid()) { completed += step }
+		if (d.required && d.validation && self.refs[ref].isValid()) { completed += step }
 	})
 
 	if (self.refs.terms_privacy_flag.getValue()) { completed += step; }
@@ -132,6 +146,9 @@ var accordionCheckBoth = function() {
 
 		var toSend = this.state.fields;
 		toSend['ap_redirect'] = this.state.location.href;
+		toSend['session'] = Cookies.getJSON('session');
+
+		console.log(toSend);
 
     $.ajax({
       url: endpoint_register,
@@ -192,6 +209,8 @@ var Stage02 = React.createClass({
 		Cookies.remove('login_time');
 		loadingBarStatus(this);
 
+		console.log(this.state.config.Login.account);
+
 		if (this.state.config) {
       General.LoadingOverlay.close();
       document.getElementById('main').style.opacity = 1;
@@ -230,36 +249,45 @@ var Stage02 = React.createClass({
 			var props = {
 				key :ref, 
     		label: conf.label || '',
-    		validation: conf.validation,
 				ref: ref,
+				validation: conf.validation,
+				required: conf.required || false,
     		handleChange: self.checkField.bind(self,ref,accordion),
 			}
 
-			switch (conf.type) {
-			// start switch
-				// email
-				case 'email':
-					if (self.state.fields[ref]) { props.value = self.state.fields[ref];	}
-					r = <General.FieldInput {...props} />
-					break;
+			if (conf.registration == undefined || conf.registration == true) {
 
-				// password
-				case 'password':
-					if (self.state.fields[ref]) { props.value = self.state.fields[ref];	}
-					r = <General.FieldPassword {...props} />
-					break;
+				switch (conf.type) {
+				// start switch
+					// email
+					case 'email':
+						if (self.state.fields[ref]) { props.value = self.state.fields[ref];	}
+						r = <General.FieldInput {...props} />
+						break;
 
-				case 'select':
-					props.options = conf.options;
-					if (self.state.fields[ref]) { props.value = self.state.fields[ref];	}
-					r = <General.FieldSelect {...props} />
-					break;
+					// password
+					case 'password':
+						if (self.state.fields[ref]) { props.value = self.state.fields[ref];	}
+						r = <General.FieldPassword {...props} />
+						break;
 
-				default: 
-					if (self.state.fields[ref]) { props.value = self.state.fields[ref];	}
-					r = <General.FieldInput {...props} />
-			
-			// end switch
+					case 'select':
+						props.options = conf.options;
+						if (self.state.fields[ref]) { props.value = self.state.fields[ref];	}
+						r = <General.FieldSelect {...props} />
+						break;
+
+					case 'hidden': 
+						self.state.fields[ref] = conf.value
+						break;
+
+					default: 
+						if (self.state.fields[ref]) { props.value = self.state.fields[ref];	}
+						r = <General.FieldInput {...props} />
+				
+				// end switch
+				}
+
 			}
 
 			return r;

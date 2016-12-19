@@ -179,9 +179,9 @@ var LoginAccount = React.createClass({
 
 		var r = true
 		var toFocus = null;
-		for (var k in this.props.config) {
+		for (var k in this.props.config.access) {
 			if (r) {
-				var c = this.props.config[k];
+				var c = this.props.config.access[k];
 				toFocus = c.type + '_' + k;
 				if (!this.refs[toFocus].isValid()) { r = false; }
 			}
@@ -244,38 +244,37 @@ var LoginAccount = React.createClass({
 			var r = null,
 					ref = conf.type+'_'+index;
 
+			var props = {
+				key: ref, 
+				ref: ref,
+    		label: conf.label || '',
+    		handleChange: self.checkField.bind(self,ref)
+			}
+
+			if (conf.required && conf.validation) {
+				props['validation'] = conf.validation
+			}
+
 			switch (conf.type) {
 			// start switch
 				// email
 				case ('email'):
-					r = <General.FieldInput
-						key={ref} 
-	      		label={conf.label || ''}
-	      		validation={conf.validation}
-						ref={ref}
-	      		handleChange={self.checkField.bind(self,ref)}
-	      		/>
+					r = <General.FieldInput {...props} />
 					break;
 
 				// password
 				case ('password'):
-					r = <General.FieldPassword
-						key={ref} 
-	      		label={conf.label || ''}
-	      		validation={conf.validation}
-						ref={ref}
-	      		handleChange={self.checkField.bind(self,ref)}
-	      		/>
+					r = <General.FieldPassword  {...props} />
+					break;
+
+				// hidden
+				case ('hidden'):
+					delete props.label;
+					r = <General.FieldHidden {...props} />
 					break;
 
 				default: 
-					r = <General.FieldInput
-						key={ref} 
-	      		label={conf.label || ''}
-	      		validation={conf.validation}
-						ref={ref}
-	      		handleChange={self.checkField.bind(self,ref)}
-	      		/>
+					r = <General.FieldInput {...props} />
 
 			// end switch
 			}

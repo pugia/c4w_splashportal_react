@@ -22,6 +22,7 @@ const App = React.createClass({
 
       var toSend = Cookies.getJSON('doLogin'); Cookies.remove('doLogin')
       toSend['ap_redirect'] = location.href;
+      toSend['session'] = Cookies.getJSON('session');
 
       $.ajax({
         url: endpoint_login,
@@ -55,11 +56,16 @@ const App = React.createClass({
 
       if (Cookies.get('preLogin') || Cookies.get('logout')) {
 
+        var location = Cookies.getJSON('location');
+        var toSend = Cookies.getJSON('preLogin');
+        toSend['ap_redirect'] = location.href;
+        toSend['session'] = Cookies.getJSON('session');
+
         $.ajax({
           url: endpoint_isLogged,
           type:'POST',
           cache: false,
-          data: JSON.stringify(Cookies.getJSON('preLogin')),
+          data: JSON.stringify(toSend),
           async:true,
           success: function(response) {
 
